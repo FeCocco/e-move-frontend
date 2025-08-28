@@ -1,7 +1,9 @@
 :root {
+    --branco: white;
+    --preto: black;
     --background-color: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
-    --verde-claro: #00ff88;
-    --azul-claro: #00ffff;
+    --verde-claro: rgba(81, 254, 126, 0.8);
+    --azul-claro: rgba(44, 171, 255, 0.8);
     --texto-claro: #f0f0f0;
     --amarelo-status: #eedc3d;
     --vermelho-status: #ff5555;
