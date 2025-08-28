@@ -1,6 +1,15 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+    --background-color: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+    --verde-claro: #00ff88;
+    --azul-claro: #00ffff;
+    --texto-claro: #f0f0f0;
+    --amarelo-status: #eedc3d;
+    --vermelho-status: #ff5555;
+
+body {
+    background: var(--background-color);
+    min-height: 100vh;
+}
 }
 
 @media (prefers-color-scheme: dark) {
