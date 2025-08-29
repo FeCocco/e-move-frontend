@@ -29,11 +29,8 @@ export default function LoginStepper() {
     };
 
     const redirectToHome = () => {
-        setTimeout(() => {
-            alert("Login bem-sucedido! Redirecionando para a página principal...");
-            router.push('/dashboard');
-            clearMessagesAndFields();
-        }, 1500);
+        //IMPLEMENTAR REDRECIONAMENTO
+        console.log('redirecionando');
     };
 
     const handleEmailSubmit = async (e) => {
