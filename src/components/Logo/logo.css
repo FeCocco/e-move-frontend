@@ -1,0 +1,15 @@
+.project-title {
+    position: fixed;
+    top: 25px;
+    left: 30px;
+    font-family: var(--font-orbitron);
+    font-size: 1.6rem;
+    color: rgba(0, 255, 255, 0.7);
+    text-shadow: 0 0 8px rgba(0, 255, 255, 0.4);
+    z-index: 1002;
+    transition: opacity 0.3s ease;
+}
+
+.project-title .e {
+    color: rgba(0, 255, 136, 0.7);
+}
