@@ -4,7 +4,7 @@ import DashboardNav from '@/components/DashboardNav/DashboardNav';
 import { AnimatePresence, motion } from 'framer-motion';
 
 export default function DashboardPage() {
-    const [activeTab, setActiveTab] = useState('#tabVehicles');
+    const [activeTab, setActiveTab] = useState('');
 
     return (
         <div className="w-full max-w-6xl h-[calc(100vh-80px)] p-6 bg-white/[.08] backdrop-blur-md border-white/20 shadow-lg rounded-2xl text-texto-claro overflow-hidden flex flex-col">
