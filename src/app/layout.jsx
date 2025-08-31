@@ -1,6 +1,6 @@
 import { Orbitron, Poppins, Josefin_Sans } from "next/font/google";
 import "./globals.css";
-import Logo from "/src/components/Logo/logo";
+import Logo from "../components/Logo/Logo";
 
 const orbitron = Orbitron({
     subsets: ["latin"],
@@ -40,7 +40,8 @@ export default function RootLayout({ children }) {
         <body
             className={`${orbitron.variable} ${poppins.variable} ${josefinSans.variable}`}
         >
-        <Logo />
+        {/* Aqui aplicamos o estilo original da logo do layout */}
+        <Logo className="fixed top-[25px] left-[30px] z-[1002] text-[1.6rem] text-azul-claro/70 drop-shadow-[0_0_8px_rgba(0,255,255,0.4)]" />
         {children}
         </body>
         </html>
