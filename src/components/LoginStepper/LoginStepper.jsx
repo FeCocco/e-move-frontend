@@ -1,6 +1,8 @@
 'use client';
 import { useState } from 'react';
-import {Card, CardHeader, CardDescription, CardContent, CardTitle} from "@/components/ui/card";
+import { useRouter} from "next/navigation";
+import {CardHeader, CardDescription, CardContent, CardTitle} from "@/components/ui/card";
+import AppCard from "@/components/AppCard/AppCard";
 import Logo from "@/components/Logo/Logo";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
@@ -8,10 +10,15 @@ import {Label} from "@/components/ui/label";
 import {AnimatePresence, motion} from "framer-motion";
 
 export default function LoginStepper() {
+    const router = useRouter();
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({ email: '', senha: '', nome: ''});
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+
+    const RedirecionarParaPainel = () => {
+        router.push('/dashboard');
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -25,7 +32,7 @@ export default function LoginStepper() {
     };
 
     return (
-        <Card className="w-full max-w-md bg-transparent border-white/20 shadow-lg backdrop-blur-sm">
+        <AppCard>
             {error && <p className="text-red-400 bg-red-900/20 border border-red-400 p-3 m-6 rounded-lg text-center">{error}</p>}
             {success && <p className="text-green-400 bg-green-900/20 border border-green-400 p-3 m-6 rounded-lg text-center">{success}</p>}
             <AnimatePresence mode="wait">
@@ -81,7 +88,8 @@ export default function LoginStepper() {
                         </form>
                         <Button variant="link" onClick={() => setStep(2)} className="mt-3 text-azul-claro underline hover:text-azul-botao">Criar nova conta</Button>
                         <button
-                            type=""
+                            type="button" //PARA NAO PEDIR CONFIRMACAO DO FORMULARIO
+                            onClick={RedirecionarParaPainel}
                             className="text-white uppercase bg-red-600 cursor-pointer rounded-xl py-3 px-6 text-base font-bold transition-all duration-300 ease-in-out mt-3 hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(0,255,255,0.4)]">
                             Acesso ao painel (DEV)
                         </button>
@@ -91,7 +99,7 @@ export default function LoginStepper() {
             )}
             {step === 2 && (
                 <motion.div
-                    key="register" // Chave única
+                    key="register"
                     variants={animationVariants}
                     initial="hidden"
                     animate="visible"
@@ -135,6 +143,6 @@ export default function LoginStepper() {
                 </motion.div>
             )}
             </AnimatePresence>
-        </Card>
+        </AppCard>
     );
 }
