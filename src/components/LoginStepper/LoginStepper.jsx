@@ -5,6 +5,7 @@ import Logo from "@/components/Logo/Logo";
 import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
+import {AnimatePresence, motion} from "framer-motion";
 
 export default function LoginStepper() {
     const [step, setStep] = useState(1);
@@ -17,13 +18,26 @@ export default function LoginStepper() {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
+    const animationVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0 },
+        exit: { opacity: 0, y: -20 },
+    };
+
     return (
         <Card className="w-full max-w-md bg-transparent border-white/20 shadow-lg backdrop-blur-sm">
             {error && <p className="text-red-400 bg-red-900/20 border border-red-400 p-3 m-6 rounded-lg text-center">{error}</p>}
             {success && <p className="text-green-400 bg-green-900/20 border border-green-400 p-3 m-6 rounded-lg text-center">{success}</p>}
-
+            <AnimatePresence mode="wait">
             {step === 1 && (
-                <>
+                <motion.div
+                    key="login"
+                    variants={animationVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    transition={{ duration: 0.3 }}
+                >
                     <CardHeader>
                         <Logo className="text-[3.5vmin] font-bold tracking-widest mb-5 text-azul-claro drop-shadow-[0_0_8px_rgba(0,255,255,0.4)] text-center"/>
                         <CardDescription className="text-texto-claro/80 text-center pt-2">Insira suas informações de Login</CardDescription>
@@ -40,7 +54,15 @@ export default function LoginStepper() {
                                 required
                                 className="w-full p-3 rounded-lg border border-white/30 bg-white/5 text-white placeholder:text-white/50 focus:outline-none focus:border-azul-claro focus:ring-2 focus:ring-azul-claro/50"
                             />
-                            <Label htmlFor="senha">Senha:</Label>
+                            <div className="flex items-center">
+                                <Label htmlFor="password">Senha:</Label>
+                                <Button
+                                    variant="link"
+                                    className="ml-auto inline-block text-azul-claro underline hover:text-azul-botao"
+                                >
+                                    Esqueci minha senha
+                                </Button>
+                            </div>
                             <input
                                 name="senha"
                                 type="password"
@@ -57,7 +79,6 @@ export default function LoginStepper() {
                                 Entrar
                             </button>
                         </form>
-                        <Button variant="link" className="mt-3 text-azul-claro underline hover:text-azul-botao">Esqueci minha senha</Button>
                         <Button variant="link" onClick={() => setStep(2)} className="mt-3 text-azul-claro underline hover:text-azul-botao">Criar nova conta</Button>
                         <button
                             type=""
@@ -66,10 +87,17 @@ export default function LoginStepper() {
                         </button>
 
                     </CardContent>
-                </>
+                </motion.div>
             )}
             {step === 2 && (
-                <>
+                <motion.div
+                    key="register" // Chave única
+                    variants={animationVariants}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    transition={{ duration: 0.3 }}
+                >
                     <CardHeader className="text-center">
                         <CardTitle className="text-2xl font-bold">Criar Conta</CardTitle>
                         <CardDescription className="text-texto-claro/80 pt-2">
@@ -87,19 +115,26 @@ export default function LoginStepper() {
                             <Label htmlFor="email_cadastro" className="mt-4">Email</Label>
                             <Input id="email_cadastro" name="email" type="email" placeholder="seu@email.com" required onChange={handleInputChange} className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro"/>
 
+                            <Label htmlFor="telefone_cadastro" className="mt-4">Telefone</Label>
+                            <Input id="telefone_cadastro" name="telefone" type="phone" placeholder="(xx) xxxxx-xxxx" required onChange={handleInputChange} className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro"/>
+
                             <Label htmlFor="senha_cadastro" className="mt-4">Senha</Label>
                             <Input id="senha_cadastro" name="senha" type="password" placeholder="Crie uma senha" required onChange={handleInputChange} className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro"/>
 
+                            <Label htmlFor="senha_confirmacao" className="mt-4">Confirme sua Senha</Label>
+                            <Input id="senha_confirmacao" name="senha" type="password" placeholder="Confirme sua senha" required onChange={handleInputChange} className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro"/>
+
                             <button
                                 type="submit"
-                                className="text-white uppercase bg-azul-botao cursor-pointer rounded-xl py-3 px-6 text-base font-bold transition-all duration-300 ease-in-out mt-3 hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(0,255,255,0.4)]"
+                                className="text-white uppercase bg-azul-botao cursor-pointer rounded-xl py-3 px-6 text-base font-bold transition-all duration-300 ease-in-out mt-6 hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(0,255,255,0.4)]"
                             >
                                 Cadastrar
                             </button>
                         </form>
                     </CardContent>
-                </>
+                </motion.div>
             )}
+            </AnimatePresence>
         </Card>
     );
 }
