@@ -12,16 +12,50 @@ module.exports = {
                 'josefin-sans': ['var(--font-josefin-sans)', 'sans-serif'],
             },
             colors: {
-                'azul-claro': '#00ffff',
-                'verde-claro': '#00ff88',
-                'texto-claro': '#f0f0f0',
-                'amarelo-status': '#eedc3d',
-                'vermelho-status': '#ff5555',
+                'azul-claro': 'hsl(var(--azul-claro))',
+                'verde-claro': 'hsl(var(--verde-claro))',
+                'texto-claro': 'hsl(var(--texto-claro))',
+                'amarelo-status': 'hsl(var(--amarelo-status))',
+                'vermelho-status': 'hsl(var(--vermelho-status))',
+                'azul-botao': 'hsl(var(--azul-botao))',
+
+                border: "hsl(var(--border))",
+                input: "hsl(var(--input))",
+                ring: "hsl(var(--ring))",
+                background: "hsl(var(--background))",
+                foreground: "hsl(var(--foreground))",
+                primary: {
+                    DEFAULT: "hsl(var(--primary))",
+                    foreground: "hsl(var(--primary-foreground))",
+                },
+                secondary: {
+                    DEFAULT: "hsl(var(--secondary))",
+                    foreground: "hsl(var(--secondary-foreground))",
+                },
+                destructive: {
+                    DEFAULT: "hsl(var(--destructive))",
+                    foreground: "hsl(var(--destructive-foreground))",
+                },
+                muted: {
+                    DEFAULT: "hsl(var(--muted))",
+                    foreground: "hsl(var(--muted-foreground))",
+                },
+                accent: {
+                    DEFAULT: "hsl(var(--accent))",
+                    foreground: "hsl(var(--accent-foreground))",
+                },
+                popover: {
+                    DEFAULT: "hsl(var(--popover))",
+                    foreground: "hsl(var(--popover-foreground))",
+                },
+                card: {
+                    DEFAULT: "hsl(var(--card))",
+                    foreground: "hsl(var(--card-foreground))",
+                },
             },
             backgroundImage: {
                 'gradient-body': 'linear-gradient(120deg, #0f2027, #203a43, #2c5364)',
             },
-            // Adicionando a animação de fade-in para a Welcome Screen
             keyframes: {
                 welcomeFadeIn: {
                     'from': { opacity: '0', transform: 'translateY(20px)' },
@@ -30,8 +64,13 @@ module.exports = {
             },
             animation: {
                 'welcome-fade-in': 'welcomeFadeIn 2s ease-in-out 0.5s forwards',
-            }
+            },
+            borderRadius: {
+                lg: "var(--radius)",
+                md: "calc(var(--radius) - 2px)",
+                sm: "calc(var(--radius) - 4px)",
+            },
         },
     },
-    plugins: [],
+    plugins: [require("tailwindcss-animate")],
 };

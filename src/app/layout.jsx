@@ -29,20 +29,14 @@ export default function RootLayout({ children }) {
     return (
         <html lang="pt-br">
         <head>
-            <link
-                rel="stylesheet"
-                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-                integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw=="
-                crossOrigin="anonymous"
-                referrerPolicy="no-referrer"
-            />
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossOrigin="anonymous" referrerPolicy="no-referrer" />
+            <title>e-Move</title>
         </head>
-        <body
-            className={`${orbitron.variable} ${poppins.variable} ${josefinSans.variable}`}
-        >
-        {/* Aqui aplicamos o estilo original da logo do layout */}
+        <body className={`${orbitron.variable} ${poppins.variable} ${josefinSans.variable}`}>
         <Logo className="fixed top-[25px] left-[30px] z-[1002] text-[1.6rem] text-azul-claro/70 drop-shadow-[0_0_8px_rgba(0,255,255,0.4)]" />
-        {children}
+        <main className="min-h-screen w-full bg-gradient-body flex flex-col items-center justify-center">
+            {children}
+        </main>
         </body>
         </html>
     );
