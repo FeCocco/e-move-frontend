@@ -8,6 +8,7 @@ import {Button} from "@/components/ui/button";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {AnimatePresence, motion} from "framer-motion";
+import {DatePicker} from "@/components/DatePicker/DatePicker";
 
 export default function LoginStepper() {
     const API_URL = 'http://localhost:8080/api';
@@ -24,6 +25,10 @@ export default function LoginStepper() {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleDateChange = (date) => {
+        setFormData(prev => ({ ...prev, dataNascimento: date }));
     };
 
     const animationVariants = {
@@ -146,19 +151,25 @@ export default function LoginStepper() {
                     <CardContent>
                         <form className="flex flex-col gap-2 text-left">
                             <Label htmlFor="nome">Nome Completo</Label>
-                            <Input id="nome" name="nome" type="text" placeholder="Seu nome completo" required onChange={handleInputChange} className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro"/>
+                            <Input id="nome" name="nome" type="text" placeholder="Seu nome completo" required onChange={handleInputChange} className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro h-12" />
 
                             <Label htmlFor="email_cadastro" className="mt-4">Email</Label>
-                            <Input id="email_cadastro" name="email" type="email" placeholder="seu@email.com" required onChange={handleInputChange} className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro"/>
+                            <Input id="email_cadastro" name="email" type="email" placeholder="seu@email.com" required onChange={handleInputChange} className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro h-12" />
+
+                            <Label htmlFor="cpf" className="mt-4">CPF</Label>
+                            <Input id="cpf" name="cpf" type="text" placeholder="000.000.000-00" required onChange={handleInputChange} className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro h-12" />
 
                             <Label htmlFor="telefone_cadastro" className="mt-4">Telefone</Label>
-                            <Input id="telefone_cadastro" name="telefone" type="phone" placeholder="(xx) xxxxx-xxxx" required onChange={handleInputChange} className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro"/>
+                            <Input id="telefone_cadastro" name="telefone" type="phone" placeholder="(xx) xxxxx-xxxx" required onChange={handleInputChange} className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro h-12" />
+
+                            <Label htmlFor="dataNascimento" className="mt-4">Data de Nascimento</Label>
+                            <DatePicker onDateChange={handleDateChange} />
 
                             <Label htmlFor="senha_cadastro" className="mt-4">Senha</Label>
-                            <Input id="senha_cadastro" name="senha" type="password" placeholder="Crie uma senha" required onChange={handleInputChange} className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro"/>
+                            <Input id="senha_cadastro" name="senha" type="password" placeholder="Crie uma senha" required onChange={handleInputChange} className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro h-12" />
 
                             <Label htmlFor="senha_confirmacao" className="mt-4">Confirme sua Senha</Label>
-                            <Input id="senha_confirmacao" name="senha" type="password" placeholder="Confirme sua senha" required onChange={handleInputChange} className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro"/>
+                            <Input id="senha_confirmacao" name="senha_confirmacao" type="password" placeholder="Confirme sua senha" required onChange={handleInputChange} className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro h-12" />
 
                             <button
                                 type="submit"
