@@ -1,7 +1,15 @@
+'use client';
 import React from 'react';
 import Logo from '../Logo/Logo';
+import { useRouter } from 'next/navigation';
 
-const TelaInicial = ({ onStart }) => {
+const TelaInicial = () => {
+    const router = useRouter();
+
+    const handleStart = () => {
+        router.push('/login');
+    };
+
     return (
         <div className="fixed top-0 left-0 w-full h-full flex flex-col justify-center items-center z-[100] text-white bg-gradient-body">
             <div className="absolute w-full h-full bg-black/30 z-10"></div>
@@ -12,7 +20,7 @@ const TelaInicial = ({ onStart }) => {
                 </p>
                 <button
                     className="font-josefin-sans bg-azul-claro text-[#1a1a1a] py-3 px-8 text-[2.5vmin] uppercase border-none rounded-full cursor-pointer tracking-wider shadow-[0_5px_15px_rgba(0,255,255,0.3)] transition-transform duration-300 ease-in-out hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(0,255,255,0.5)] mb-7"
-                    onClick={onStart}
+                    onClick={handleStart}
                 >
                     Iniciar Jornada
                 </button>
