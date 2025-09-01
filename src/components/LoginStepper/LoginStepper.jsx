@@ -43,15 +43,17 @@ export default function LoginStepper() {
             });
             if (!response.ok) throw new Error(await response.text() || 'E-mail ou senha inválidos.');
 
-            const loggedUser = await response.json();
-            if (!loggedUser.cpf || !loggedUser.telefone) {
-                setNewUserId(loggedUser.id);
-                setFormData(loggedUser);
-                setStep(4);
-            } else {
-                setSuccess(`Bem-vindo(a) de volta, ${loggedUser.nome}!`);
-                RedirecionarParaPainel();
-            }
+            const data = await response.json();
+
+            console.log("Dados recebidos da API:", data);
+            console.log("Token que será salvo:", data.token);
+
+            // Armazena o token no localStorage
+            localStorage.setItem('e-move-token', data.token);
+
+            setSuccess(`Login bem-sucedido! Redirecionando...`);
+            RedirecionarParaPainel();
+
         } catch (err) {
             setError(err.message);
         }
