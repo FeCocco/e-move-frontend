@@ -10,6 +10,7 @@ import {Label} from "@/components/ui/label";
 import {AnimatePresence, motion} from "framer-motion";
 
 export default function LoginStepper() {
+    const API_URL = 'http://localhost:8080/api';
     const router = useRouter();
     const [step, setStep] = useState(1);
     const [formData, setFormData] = useState({ email: '', senha: '', nome: ''});
@@ -31,6 +32,31 @@ export default function LoginStepper() {
         exit: { opacity: 0, y: -20 },
     };
 
+    const handleLoginSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+        try {
+            const response = await fetch(`${API_URL}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: formData.email, senha: formData.senha }),
+            });
+            if (!response.ok) throw new Error(await response.text() || 'E-mail ou senha inválidos.');
+
+            const loggedUser = await response.json();
+            if (!loggedUser.cpf || !loggedUser.telefone) {
+                setNewUserId(loggedUser.id);
+                setFormData(loggedUser);
+                setStep(4);
+            } else {
+                setSuccess(`Bem-vindo(a) de volta, ${loggedUser.nome}!`);
+                RedirecionarParaPainel();
+            }
+        } catch (err) {
+            setError(err.message);
+        }
+    };
+
     return (
         <AppCard>
             {error && <p className="text-red-400 bg-red-900/20 border border-red-400 p-3 m-6 rounded-lg text-center">{error}</p>}
@@ -50,7 +76,7 @@ export default function LoginStepper() {
                         <CardDescription className="text-texto-claro/80 text-center pt-2">Insira suas informações de Login</CardDescription>
                     </CardHeader>
                     <CardContent className="text-center flex-col flex">
-                        <form onSubmit={() => {}} className="flex flex-col gap-4 text-left">
+                        <form onSubmit={handleLoginSubmit} className="flex flex-col gap-4 text-left">
                             <Label htmlFor="email">Email: </Label>
                             <input
                                 name="email"
