@@ -7,8 +7,8 @@ module.exports = {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['var(--font-orbitron)', 'sans-serif'],
                 orbitron: ['var(--font-orbitron)', 'sans-serif'],
+                poppins: ['var(--font-poppins)', 'sans-serif'],
                 'josefin-sans': ['var(--font-josefin-sans)', 'sans-serif'],
             },
             colors: {
