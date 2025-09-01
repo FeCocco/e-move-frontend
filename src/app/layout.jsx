@@ -32,7 +32,7 @@ export default function RootLayout({ children }) {
             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossOrigin="anonymous" referrerPolicy="no-referrer" />
             <title>e-Move</title>
         </head>
-        <body className={`${orbitron.variable} ${poppins.variable} ${josefinSans.variable}`}>
+        <body className={`${orbitron.variable} ${poppins.variable} ${josefinSans.variable} font-poppins`}>
         <Logo className="fixed top-[25px] left-[30px] z-[1002] text-[1.6rem] text-azul-claro/70 drop-shadow-[0_0_8px_rgba(0,255,255,0.4)]" />
         <main className="min-h-screen w-full bg-gradient-body flex flex-col items-center justify-center">
             {children}

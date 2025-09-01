@@ -9,6 +9,7 @@ import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
 import {AnimatePresence, motion} from "framer-motion";
 import {DatePicker} from "@/components/DatePicker/DatePicker";
+import MedidorForcaSenha from "@/components/ui/MedidorForcaSenha";
 
 export default function LoginStepper() {
     const API_URL = 'http://localhost:8080/api';
@@ -167,6 +168,7 @@ export default function LoginStepper() {
 
                             <Label htmlFor="senha_cadastro" className="mt-4">Senha</Label>
                             <Input id="senha_cadastro" name="senha" type="password" placeholder="Crie uma senha" required onChange={handleInputChange} className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro h-12" />
+                            <MedidorForcaSenha password={formData.senha || ''} />
 
                             <Label htmlFor="senha_confirmacao" className="mt-4">Confirme sua Senha</Label>
                             <Input id="senha_confirmacao" name="senha_confirmacao" type="password" placeholder="Confirme sua senha" required onChange={handleInputChange} className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro h-12" />

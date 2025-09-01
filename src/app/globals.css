@@ -4,11 +4,12 @@
 
 @layer base {
     :root {
-        /* SUAS CORES */
         --azul-claro: 180 100% 50%;
         --verde-claro: 145 100% 50%;
         --texto-claro: 0 0% 94.1%;
         --azul-botao: 200 100% 50%;
+        --amarelo-status: 52 93% 60%;
+        --vermelho-status: 0 100% 67%;
 
         --background: 204 10% 3.9%;
         --foreground: 210 20% 98%;
@@ -26,6 +27,5 @@
     }
     body {
         @apply text-foreground;
-        font-family: var(--font-poppins);
     }
 }
