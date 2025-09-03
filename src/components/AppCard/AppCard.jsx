@@ -1,14 +1,31 @@
-import { Card } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
 const AppCard = ({ className, children }) => {
     return (
         <Card className={cn(
-            "w-full max-w-md md:w-[448px]",
+            "w-full max-w-md md:w-[448px] flex flex-col",
             "bg-white/[.08] backdrop-blur-md border-white/20 shadow-lg text-texto-claro overflow-hidden",
+            // "max-h-[90vh]", // REMOVA OU COMENTE ESTA LINHA
             className
         )}>
             {children}
         </Card>
     );
-}; export default AppCard;
+};
+
+const AppCardHeader = ({ className, children }) => {
+    return (
+        <CardHeader className={cn("flex-shrink-0", className)}>
+            {children}
+        </CardHeader>
+    );
+};
+
+const AppCardContent = ({ className, children }) => {
+    return (
+        <CardContent className={cn("overflow-y-auto", className)}>
+            {children}
+        </CardContent>
+    );
+}; export { AppCard, AppCardHeader, AppCardContent }; // Exporte todos
