@@ -47,8 +47,8 @@ Siga os passos abaixo para rodar o projeto na sua máquina.
 
 **1. Clone o repositório:**
 ```bash
-git clone [https://github.com/FeCocco/e-Move.git](https://github.com/FeCocco/e-Move.git)
-cd e-Move/e-move-frontend
+git clone https://github.com/FeCocco/e-move-frontend.git
+cd e-move-frontend
 ```
 
 **2. Instale as dependências:**
