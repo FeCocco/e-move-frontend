@@ -6,7 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { jwtDecode } from 'jwt-decode';
 
 export default function DashboardPage() {
-    const [activeTab, setActiveTab] = useState('#AbaVeiculos');
+    const [activeTab, setActiveTab] = useState('#BemVindo');
     const router = useRouter();
     const [user, setUser] = useState(null);
     const [profileData, setProfileData] = useState(null);
@@ -61,10 +61,6 @@ export default function DashboardPage() {
                 Painel de Controle e-Move
             </h1>
 
-            <p className="text-center text-texto-claro/80 mb-6">
-                Bem-vindo(a), {user.nome}!
-            </p>
-
             <div className="flex justify-center mb-8">
                 <DashboardNav activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
@@ -78,6 +74,16 @@ export default function DashboardPage() {
                         exit={{ opacity: 0, y: -10 }}
                         transition={{ duration: 0.2 }}
                     >
+                        {activeTab === '#BemVindo' && (
+                            <div className="">
+                                <h1 className="text-3xl font-bold font-orbitron text-center mb-20">
+                                    Bem-vindo(a), {user.nome}!
+                                </h1>
+                                <p className="">
+                                    Esse é o seu menu do aplicativo, sinta-se a vontade para se familiarizar com as abas.
+                                </p>
+                            </div>
+                        )}
                         {activeTab === '#AbaVeiculos' && (
                             <div>
                                 <h2 className="text-2xl font-orbitron text-verde-claro mb-4">Meus Veículos</h2>
@@ -97,7 +103,6 @@ export default function DashboardPage() {
                             <div>
                                 <h2 className="text-2xl font-orbitron text-verde-claro mb-4">Minha Conta</h2>
                                 <div className="bg-black/20 p-4 rounded-lg">
-                                    <p><strong>ID:</strong> {profileData.id}</p>
                                     <p><strong>Nome:</strong> {profileData.nome}</p>
                                     <p><strong>Email:</strong> {profileData.email}</p>
                                     <p><strong>Telefone:</strong> {profileData.telefone}</p>

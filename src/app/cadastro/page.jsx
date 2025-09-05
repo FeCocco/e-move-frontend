@@ -11,57 +11,49 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
 // Componentes da Interface (UI)
-import { CardHeader, CardDescription, CardContent, CardTitle } from "@/components/ui/card";
+import { CardDescription, CardTitle } from "@/components/ui/card";
 import { AppCard, AppCardHeader, AppCardContent } from "@/components/AppCard/AppCard";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { DatePicker } from '@/components/DatePicker/DatePicker';
+import { getApiErrorMessage } from '@/lib/errorHandler';
 import GenderSelector from "@/components/ui/GenderSlector";
 import MedidorForcaSenha from "@/components/ui/MedidorForcaSenha";
-
 
 // ============================================================================
 // SCHEMA DE VALIDAÇÃO (ZOD)
 // ============================================================================
-// Define um schema central para todas as regras de validação do formulário.
 const cadastroSchema = z.object({
     nome: z.string().min(3, { message: "O nome deve ter no mínimo 3 caracteres." }),
-    email: z.string().email({ message: "Formato de e-mail inválido." }),
-    cpf: z.string().min(11, { message: "O CPF deve ter no mínimo 11 dígitos." }),
-    telefone: z.string().min(10, { message: "O telefone deve ter no mínimo 10 dígitos." }),
+    email: z.email({ message: "Formato de e-mail inválido." }),
+    cpf: z.string().min(11, { message: "O CPF deve ter pelo menos 11 dígitos." }),
+    telefone: z.string().min(10, { message: "O telefone deve ter pelo menos 10 dígitos." }),
     sexo: z.string({ required_error: "Por favor, selecione um gênero." }),
     dataNascimento: z.date({ required_error: "Por favor, selecione uma data." }),
     senha: z.string().min(8, { message: "A senha deve ter no mínimo 8 caracteres." }),
     senha_confirmacao: z.string()
 }).refine(data => data.senha === data.senha_confirmacao, {
     message: "As senhas não coincidem.",
-    path: ["senha_confirmacao"], // Aplica o erro de refinamento no campo de confirmação
+    path: ["senha_confirmacao"],
 });
 
 // ============================================================================
 // COMPONENTE DA PÁGINA DE CADASTRO
 // ============================================================================
 export default function CadastroPage() {
-    // --- Hooks e State Management ---
     const API_URL = 'http://localhost:8080/api';
     const router = useRouter();
-
-    // Estados para feedback da API (erros ou sucesso após o envio)
     const [apiError, setApiError] = useState('');
     const [success, setSuccess] = useState('');
 
-    // Configuração do React Hook Form, conectando-o com o schema do Zod
     const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm({
         resolver: zodResolver(cadastroSchema),
+        mode: "onBlur",
     });
 
-    // 'watch' observa os valores dos campos em tempo real, útil para componentes reativos
     const senhaValue = watch('senha');
     const sexoValue = watch('sexo');
 
-    // --- Funções de Manipulação de Eventos ---
-
-    // Função de envio do formulário, executada apenas após a validação do Zod
     const handleCadastroSubmit = async (data) => {
         setApiError('');
         setSuccess('');
@@ -84,15 +76,14 @@ export default function CadastroPage() {
             }, 2000);
 
         } catch (err) {
-            setApiError(getApiErrorMessage(err));
+            // CORREÇÃO: Usando o errorHandler para formatar a mensagem de erro
+            setApiError(getApiErrorMessage(err.message));
         }
     };
 
-    // --- Renderização do Componente (JSX) ---
     return (
         <AppCard>
             <AppCardHeader>
-                {/* Seção para exibir feedback da API */}
                 {apiError && <p className="text-red-400 bg-red-900/20 border border-red-400 p-3 mb-4 rounded-lg text-center">{apiError}</p>}
                 {success && <p className="text-green-400 bg-green-900/20 border border-green-400 p-3 mb-4 rounded-lg text-center">{success}</p>}
 
@@ -111,11 +102,9 @@ export default function CadastroPage() {
                 <form onSubmit={handleSubmit(handleCadastroSubmit)} className="flex flex-col gap-2 text-left">
 
                     <Label htmlFor="nome">Nome Completo</Label>
-                    {/* Altura reduzida para h-11 */}
                     <Input id="nome" {...register("nome")} placeholder="Seu nome completo" className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro h-11" />
                     {errors.nome && <p className="text-vermelho-status text-xs mt-1">{errors.nome.message}</p>}
 
-                    {/* Espaçamento reduzido para mt-3 */}
                     <Label htmlFor="email" className="mt-3">Email</Label>
                     <Input id="email" {...register("email")} placeholder="seu@email.com" className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro h-11" />
                     {errors.email && <p className="text-vermelho-status text-xs mt-1">{errors.email.message}</p>}
