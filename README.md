@@ -1,8 +1,8 @@
 # e-Move Frontend
 
-![e-Move](https://i.imgur.com/your-image-url.png) O **e-Move** é uma plataforma de planejamento de rotas inteligente para motoristas de veículos elétricos. Este repositório contém o código-fonte do **frontend**, desenvolvido com Next.js e Tailwind CSS.
+O **e-Move** é uma plataforma de planejamento de rotas inteligente para motoristas de veículos elétricos. Este repositório contém o código-fonte do **frontend**, desenvolvido com Next.js e Tailwind CSS.
 
-A aplicação frontend consome os dados da nossa [API de backend (e-Move Backend)](https://github.com/FeCocco/e-Move/tree/main/e-move-backend), que é responsável por toda a lógica de negócios, gerenciamento de usuários e integração com serviços externos.
+A aplicação frontend consome os dados da nossa [API de backend (e-Move Backend)](https://github.com/FeCocco/e-move-backend), que é responsável por toda a lógica de negócios, gerenciamento de usuários e integração com serviços externos.
 
 ---
 
