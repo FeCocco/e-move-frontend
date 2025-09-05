@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# e-Move Frontend
 
-## Getting Started
+![e-Move](https://i.imgur.com/your-image-url.png) O **e-Move** é uma plataforma de planejamento de rotas inteligente para motoristas de veículos elétricos. Este repositório contém o código-fonte do **frontend**, desenvolvido com Next.js e Tailwind CSS.
 
-First, run the development server:
+A aplicação frontend consome os dados da nossa [API de backend (e-Move Backend)](https://github.com/FeCocco/e-Move/tree/main/e-move-backend), que é responsável por toda a lógica de negócios, gerenciamento de usuários e integração com serviços externos.
 
+---
+
+## Funcionalidades Principais
+
+* **Autenticação Segura:** Sistema de Login e Cadastro com validação de dados e autenticação baseada em Cookies `HttpOnly`.
+* **Dashboard Interativo:** Painel de controle para o usuário gerenciar suas informações, veículos e rotas.
+* **Planejamento de Rota Inteligente:** Ferramenta para calcular rotas, considerando a autonomia do veículo e sugerindo paradas para recarga.
+* **Visualização de Mapa:** Integração com APIs de mapa (MapLibre) e roteamento (OSRM) para uma experiência visual rica.
+* **Busca de Estações:** Consulta em tempo real de estações de recarga através da API OpenChargeMap.
+* **Interface Responsiva:** Design que se adapta a desktops, tablets e celulares.
+
+---
+
+## Tecnologias Utilizadas
+
+* **Framework:** [Next.js](https://nextjs.org/) (React)
+* **Estilização:** [Tailwind CSS](https://tailwindcss.com/)
+* **Componentes UI:** [shadcn/ui](https://ui.shadcn.com/)
+* **Animações:** [Framer Motion](https://www.framer.com/motion/)
+* **Gerenciamento de Formulários:** [React Hook Form](https://react-hook-form.com/)
+* **Validação de Schema:** [Zod](https://zod.dev/)
+* **Gerenciador de Pacotes:** [pnpm](https://pnpm.io/)
+
+---
+
+## Pré-requisitos
+
+Antes de começar, você precisa ter as seguintes ferramentas instaladas em sua máquina:
+
+1.  **[Node.js](https://nodejs.org/en/)**: Versão 18.x ou superior. Essencial para o ambiente JavaScript.
+2.  **[pnpm](https://pnpm.io/installation)**: Um gerenciador de pacotes rápido e eficiente. Para instalar, após ter o Node.js, rode no seu terminal:
+    ```bash
+    npm install -g pnpm
+    ```
+
+---
+
+## Configuração do Ambiente Local
+
+Siga os passos abaixo para rodar o projeto na sua máquina.
+
+**1. Clone o repositório:**
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone [https://github.com/FeCocco/e-Move.git](https://github.com/FeCocco/e-Move.git)
+cd e-Move/e-move-frontend
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**2. Instale as dependências:**
+Use o `pnpm` para instalar todos os pacotes necessários definidos no `package.json`.
+```bash
+pnpm install
+```
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+**3. Inicie o servidor de desenvolvimento:**
+Este comando irá iniciar a aplicação em modo de desenvolvimento, geralmente na porta `3000`.
+```bash
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+**4. Acesse a aplicação:**
+Abra seu navegador e acesse [http://localhost:3000](http://localhost:3000).
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> **Nota:** Para que a aplicação funcione completamente (login, cadastro, etc.), o **servidor backend** precisa estar rodando simultaneamente. Consulte o README do [e-Move Backend](https://github.com/FeCocco/e-Move/tree/main/e-move-backend) para as instruções de setup.
