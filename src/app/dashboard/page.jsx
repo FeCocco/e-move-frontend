@@ -3,42 +3,34 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardNav from '@/components/DashboardNav/DashboardNav';
 import { AnimatePresence, motion } from 'framer-motion';
-import { jwtDecode } from 'jwt-decode';
 
 export default function DashboardPage() {
     const [activeTab, setActiveTab] = useState('#BemVindo');
     const router = useRouter();
-    const [user, setUser] = useState(null);
+    // O 'profileData' agora será a nossa única fonte da verdade sobre o usuário.
     const [profileData, setProfileData] = useState(null);
 
     useEffect(() => {
-        const token = localStorage.getItem('e-move-token');
-        if (!token) {
-            router.push('/');
-            return;
-        }
-
-        const decodedToken = jwtDecode(token);
-        setUser(decodedToken);
-
         const fetchProfile = async () => {
             try {
                 const response = await fetch('http://localhost:8080/api/usuario/me', {
                     method: 'GET',
+                    credentials: 'include',
                     headers: {
-                        'Authorization': `Bearer ${token}`
+                        'Content-Type': 'application/json'
                     }
                 });
 
                 if (!response.ok) {
-                    throw new Error('Falha ao buscar dados do perfil. Token pode ser inválido.');
+                    throw new Error('Sessão inválida ou expirada.');
                 }
 
                 const data = await response.json();
-                setProfileData(data);
+                setProfileData(data); // Salva os dados do usuario se a chamada for bem-sucedida
+
             } catch (error) {
                 console.error(error);
-                localStorage.removeItem('e-move-token');
+                // Se qualquer erro ocorrer (falha de rede, token inválido), redireciona para o login.
                 router.push('/');
             }
         };
@@ -47,10 +39,12 @@ export default function DashboardPage() {
 
     }, [router]);
 
-    if (!user || !profileData) {
+    // Exibe "Carregando..." enquanto esperamos a resposta do fetchProfile.
+    // Se o fetch falhar, o usuário será redirecionado antes de ver a página.
+    if (!profileData) {
         return (
             <div className="flex justify-center items-center h-screen">
-                <p className="text-white text-2xl">Carregando...</p>
+                <p className="text-white text-2xl">Verificando sessão...</p>
             </div>
         );
     }
@@ -75,11 +69,11 @@ export default function DashboardPage() {
                         transition={{ duration: 0.2 }}
                     >
                         {activeTab === '#BemVindo' && (
-                            <div className="">
-                                <h1 className="text-3xl font-bold font-orbitron text-center mb-20">
-                                    Bem-vindo(a), {user.nome}!
+                            <div className="text-center">
+                                <h1 className="text-3xl font-bold font-orbitron mb-4">
+                                    Bem-vindo(a), {profileData.nome}!
                                 </h1>
-                                <p className="">
+                                <p className="text-texto-claro/80">
                                     Esse é o seu menu do aplicativo, sinta-se a vontade para se familiarizar com as abas.
                                 </p>
                             </div>

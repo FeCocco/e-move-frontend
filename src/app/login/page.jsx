@@ -23,8 +23,8 @@ import { getApiErrorMessage } from "@/lib/errorHandler";
 // SCHEMA DE VALIDAÇÃO (ZOD)
 // ============================================================================
 const loginSchema = z.object({
-    email: z.string().email({ message: "Formato de e-mail inválido." }),
-    senha: z.string().min(1, { message: "A senha não pode estar em branco." }),
+    email: z.email({ message: "Formato de e-mail inválido." }),
+    senha: z.string().min(1, { message: "A senha не pode estar em branco." }),
 });
 
 // ============================================================================
@@ -38,7 +38,7 @@ export default function LoginPage() {
 
     const { register, handleSubmit, formState: { errors } } = useForm({
         resolver: zodResolver(loginSchema),
-        mode: "onBlur", // Adicionado para consistência com a tela de cadastro
+        mode: "onBlur",
     });
 
     const handleLoginSubmit = async (data) => {
@@ -48,6 +48,7 @@ export default function LoginPage() {
         try {
             const response = await fetch(`${API_URL}/login`, {
                 method: 'POST',
+                credentials: "include",
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(data),
             });
@@ -57,13 +58,10 @@ export default function LoginPage() {
                 throw new Error(errorText || 'E-mail ou senha inválidos.');
             }
 
-            const responseData = await response.json();
-            localStorage.setItem('e-move-token', responseData.token);
             setSuccess('Login bem-sucedido! Redirecionando...');
             router.push('/dashboard');
 
         } catch (err) {
-            // CORREÇÃO: Usando o errorHandler para formatar a mensagem de erro
             setApiError(getApiErrorMessage(err.message));
         }
     };
