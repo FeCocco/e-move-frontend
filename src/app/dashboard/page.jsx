@@ -3,6 +3,19 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardNav from '@/components/DashboardNav/DashboardNav';
 import { AnimatePresence, motion } from 'framer-motion';
+import { Button } from "@/components/ui/button"
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 
 export default function DashboardPage() {
     const [activeTab, setActiveTab] = useState('#BemVindo');
@@ -102,7 +115,45 @@ export default function DashboardPage() {
                                     <p><strong>Telefone:</strong> {profileData.telefone}</p>
                                     <p><strong>CPF:</strong> {profileData.cpf}</p>
                                     <p><strong>Sexo:</strong> {profileData.sexo}</p>
+                                    <div className="p-4 flex justify-center">
+                                        <Dialog>
+                                            <form>
+                                                <DialogTrigger asChild>
+                                                    <Button variant="outline"><i className="fas fa-user-edit"></i>Editar Meus Dados</Button>
+                                                </DialogTrigger>
+                                                <DialogContent className="sm:max-w-[425px]">
+                                                    <DialogHeader>
+                                                        <DialogTitle>Editar Perfil</DialogTitle>
+                                                        <DialogDescription>
+                                                            Faça suas modificações aqui e salve quando tiver finalizado.
+                                                        </DialogDescription>
+                                                    </DialogHeader>
+                                                    <div className="grid gap-4">
+                                                        <div className="grid gap-3">
+                                                            <Label htmlFor="edit_nome">Nome</Label>
+                                                            <Input id="edit_nome" name="nome" defaultValue={profileData.nome} />
+                                                        </div>
+                                                        <div className="grid gap-3">
+                                                            <Label htmlFor="edit_email">e-mail</Label>
+                                                            <Input id="edit_email" name="e-mail" defaultValue={profileData.email} />
+                                                        </div>
+                                                        <div className="grid gap-3">
+                                                            <Label htmlFor="edit_telefone">Telefone</Label>
+                                                            <Input id="edit_telefone" name="telefone" defaultValue={profileData.telefone} />
+                                                        </div>
+                                                    </div>
+                                                    <DialogFooter>
+                                                        <DialogClose asChild>
+                                                            <Button variant="outline">Cancelar</Button>
+                                                        </DialogClose>
+                                                        <Button type="submit" className="underline hover: hover:text-verde-claro">Salvar</Button>
+                                                    </DialogFooter>
+                                                </DialogContent>
+                                            </form>
+                                        </Dialog>
+                                    </div>
                                 </div>
+
                             </div>
                         )}
                     </motion.div>
