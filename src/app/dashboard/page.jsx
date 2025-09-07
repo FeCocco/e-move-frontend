@@ -1,4 +1,5 @@
 'use client';
+
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import DashboardNav from '@/components/DashboardNav/DashboardNav';
@@ -16,12 +17,71 @@ import {
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { z } from 'zod';
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { getApiErrorMessage } from '@/lib/errorHandler';
+
+// ============================================================================
+// SCHEMA DE VALIDAÇÃO (ZOD)
+// ============================================================================
+const EditarUsuarioSchema = z.object({
+    nome: z.string().min(3, { message: "O nome deve ter no mínimo 3 caracteres." }),
+    email: z.email({ message: "Formato de e-mail inválido." }),
+    telefone: z.string()
+        .regex(/^\d+$/, { message: "O telefone deve conter apenas números." })
+        .min(10, { message: "O telefone deve ter no mínimo 10 dígitos." })
+        .max(11, { message: "O telefone não pode ter mais de 11 dígitos." }),
+});
 
 export default function DashboardPage() {
+    const API_URL = 'http://localhost:8080/api';
     const [activeTab, setActiveTab] = useState('#BemVindo');
     const router = useRouter();
-    // O 'profileData' agora será a nossa única fonte da verdade sobre o usuário.
     const [profileData, setProfileData] = useState(null);
+    const [apiError, setApiError] = useState('');
+
+    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [formStatus, setFormStatus] = useState('idle'); // 'idle', 'submitting', 'success'
+
+    const { register, handleSubmit, formState: { errors } } = useForm({
+        resolver: zodResolver(EditarUsuarioSchema),
+        mode: "onBlur",
+    });
+
+    const EditarUsuarioSubmit = async (data) => {
+        setApiError('');
+        setFormStatus('submitting');
+
+        try {
+            const response = await fetch(`${API_URL}/usuario/me`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                cache: 'no-store',
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || 'Falha ao atualizar.');
+            }
+
+            const updatedProfile = await response.json();
+            setProfileData(updatedProfile);
+            setFormStatus('success');
+
+            setTimeout(() => {
+                setIsDialogOpen(false);
+                setFormStatus('idle');
+                router.refresh();
+            }, 2000);
+
+        } catch (error) {
+            setApiError(getApiErrorMessage(error.message));
+            setFormStatus('idle');
+        }
+    }
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -31,7 +91,8 @@ export default function DashboardPage() {
                     credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json'
-                    }
+                    },
+                    cache: 'no-store'
                 });
 
                 if (!response.ok) {
@@ -39,11 +100,10 @@ export default function DashboardPage() {
                 }
 
                 const data = await response.json();
-                setProfileData(data); // Salva os dados do usuario se a chamada for bem-sucedida
+                setProfileData(data);
 
             } catch (error) {
                 console.error(error);
-                // Se qualquer erro ocorrer (falha de rede, token inválido), redireciona para o login.
                 router.push('/');
             }
         };
@@ -52,8 +112,6 @@ export default function DashboardPage() {
 
     }, [router]);
 
-    // Exibe "Carregando..." enquanto esperamos a resposta do fetchProfile.
-    // Se o fetch falhar, o usuário será redirecionado antes de ver a página.
     if (!profileData) {
         return (
             <div className="flex justify-center items-center h-screen">
@@ -116,44 +174,63 @@ export default function DashboardPage() {
                                     <p><strong>CPF:</strong> {profileData.cpf}</p>
                                     <p><strong>Sexo:</strong> {profileData.sexo}</p>
                                     <div className="p-4 flex justify-center">
-                                        <Dialog>
-                                            <form>
-                                                <DialogTrigger asChild>
-                                                    <Button variant="outline"><i className="fas fa-user-edit"></i>Editar Meus Dados</Button>
-                                                </DialogTrigger>
-                                                <DialogContent className="sm:max-w-[425px]">
-                                                    <DialogHeader>
-                                                        <DialogTitle>Editar Perfil</DialogTitle>
+                                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                                            <DialogTrigger asChild>
+                                                <Button variant="outline"><i className="fas fa-user-edit"></i> Editar Meus Dados</Button>
+                                            </DialogTrigger>
+                                            <DialogContent className="sm:max-w-[425px]">
+                                                {formStatus === 'success' ? (
+                                                    <div className="flex flex-col items-center justify-center p-8 h-48">
+                                                        <i className="fas fa-check-circle text-verde-claro text-5xl mb-4"></i>
+                                                        <DialogTitle className="text-xl">Perfil Atualizado!</DialogTitle>
                                                         <DialogDescription>
-                                                            Faça suas modificações aqui e salve quando tiver finalizado.
+                                                            Seus dados foram salvos com sucesso.
                                                         </DialogDescription>
-                                                    </DialogHeader>
-                                                    <div className="grid gap-4">
-                                                        <div className="grid gap-3">
-                                                            <Label htmlFor="edit_nome">Nome</Label>
-                                                            <Input id="edit_nome" name="nome" defaultValue={profileData.nome} />
-                                                        </div>
-                                                        <div className="grid gap-3">
-                                                            <Label htmlFor="edit_email">e-mail</Label>
-                                                            <Input id="edit_email" name="e-mail" defaultValue={profileData.email} />
-                                                        </div>
-                                                        <div className="grid gap-3">
-                                                            <Label htmlFor="edit_telefone">Telefone</Label>
-                                                            <Input id="edit_telefone" name="telefone" defaultValue={profileData.telefone} />
-                                                        </div>
                                                     </div>
-                                                    <DialogFooter>
-                                                        <DialogClose asChild>
-                                                            <Button variant="outline">Cancelar</Button>
-                                                        </DialogClose>
-                                                        <Button type="submit" className="underline hover: hover:text-verde-claro">Salvar</Button>
-                                                    </DialogFooter>
-                                                </DialogContent>
-                                            </form>
+                                                ) : (
+                                                    <form onSubmit={handleSubmit(EditarUsuarioSubmit)}>
+                                                        <DialogHeader>
+                                                            <DialogTitle>Editar Perfil</DialogTitle>
+                                                            <DialogDescription>
+                                                                Faça suas modificações aqui e salve quando tiver finalizado.
+                                                            </DialogDescription>
+                                                        </DialogHeader>
+                                                        <div className="grid gap-4 py-4">
+                                                            <div className="grid gap-2">
+                                                                <Label htmlFor="edit_nome">Nome</Label>
+                                                                <Input id="edit_nome" {...register("nome")} defaultValue={profileData.nome} />
+                                                                {errors.nome && <p className="text-vermelho-status text-xs mt-1">{errors.nome.message}</p>}
+                                                            </div>
+                                                            <div className="grid gap-2">
+                                                                <Label htmlFor="edit_email">E-mail</Label>
+                                                                <Input id="edit_email" {...register("email")} defaultValue={profileData.email} />
+                                                                {errors.email && <p className="text-vermelho-status text-xs mt-1">{errors.email.message}</p>}
+                                                            </div>
+                                                            <div className="grid gap-2">
+                                                                <Label htmlFor="edit_telefone">Telefone</Label>
+                                                                <Input id="edit_telefone" {...register("telefone")} defaultValue={profileData.telefone} />
+                                                                {errors.telefone && <p className="text-vermelho-status text-xs mt-1">{errors.telefone.message}</p>}
+                                                            </div>
+                                                        </div>
+                                                        {apiError && <p className="text-vermelho-status text-center text-sm mb-2">{apiError}</p>}
+                                                        <DialogFooter>
+                                                            <DialogClose asChild>
+                                                                <Button variant="outline" type="button">Cancelar</Button>
+                                                            </DialogClose>
+                                                            <Button
+                                                                type="submit"
+                                                                className="underline hover:text-verde-claro"
+                                                                disabled={formStatus === 'submitting'}
+                                                            >
+                                                                {formStatus === 'submitting' ? 'Salvando...' : 'Salvar'}
+                                                            </Button>
+                                                        </DialogFooter>
+                                                    </form>
+                                                )}
+                                            </DialogContent>
                                         </Dialog>
                                     </div>
                                 </div>
-
                             </div>
                         )}
                     </motion.div>
