@@ -31,8 +31,13 @@ const cadastroSchema = z.object({
         .regex(/^\d+$/, { message: "O telefone deve conter apenas números." })
         .min(10, { message: "O telefone deve ter no mínimo 10 dígitos." })
         .max(12, { message: "O telefone não pode ter mais de 11 dígitos." }),
-    sexo: z.string({ required_error: "Por favor, selecione um gênero." }),
-    dataNascimento: z.date({ required_error: "Por favor, selecione uma data." }),
+    sexo: z.string().nonempty("Por favor, selecione um gênero."),
+    dataNascimento: z
+        .date()
+        .nullable()
+        .refine((date) => date !== null && !isNaN(date.getTime()), {
+            message: "Por favor, selecione uma data."
+        }),
     senha: z.string().min(8, { message: "A senha deve ter no mínimo 8 caracteres." }),
     senha_confirmacao: z.string()
 }).refine(data => data.senha === data.senha_confirmacao, {
@@ -52,6 +57,16 @@ export default function CadastroPage() {
     const { register, handleSubmit, formState: { errors }, setValue, watch } = useForm({
         resolver: zodResolver(cadastroSchema),
         mode: "onBlur",
+        defaultValues: {
+            nome: "",
+            email: "",
+            cpf: "",
+            telefone: "",
+            sexo: "",
+            dataNascimento: null,
+            senha: "",
+            senha_confirmacao: "",
+        }
     });
 
     const senhaValue = watch('senha');
