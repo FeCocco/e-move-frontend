@@ -21,6 +21,7 @@ import { z } from 'zod';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { getApiErrorMessage } from '@/lib/errorHandler';
+import {AppCard} from "@/components/AppCard/AppCard";
 
 // ============================================================================
 // SCHEMA DE VALIDAÇÃO (ZOD)
@@ -82,6 +83,22 @@ export default function DashboardPage() {
             setFormStatus('idle');
         }
     }
+
+    const handleLogout = async () => {
+        try {
+            await fetch('http://localhost:8080/api/logout', {
+                method: 'POST',
+                credentials: 'include', // Necessário para que o navegador envie o cookie para o backend
+            });
+        } catch (error) {
+            // Mesmo que a chamada falhe, o redirecionamento deve acontecer
+            console.error("Erro ao fazer logout no servidor:", error);
+        } finally {
+            // Redireciona o usuário para a página inicial após a tentativa de logout
+            router.push('/');
+        }
+    };
+
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -167,69 +184,78 @@ export default function DashboardPage() {
                         {activeTab === '#AbaUsuarios' && (
                             <div>
                                 <h2 className="text-2xl font-orbitron text-verde-claro mb-4">Minha Conta</h2>
-                                <div className="bg-black/20 p-4 rounded-lg">
-                                    <p><strong>Nome:</strong> {profileData.nome}</p>
-                                    <p><strong>Email:</strong> {profileData.email}</p>
-                                    <p><strong>Telefone:</strong> {profileData.telefone}</p>
-                                    <p><strong>CPF:</strong> {profileData.cpf}</p>
-                                    <p><strong>Sexo:</strong> {profileData.sexo}</p>
-                                    <div className="p-4 flex justify-center">
-                                        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-                                            <DialogTrigger asChild>
-                                                <Button variant="outline"><i className="fas fa-user-edit"></i> Editar Meus Dados</Button>
-                                            </DialogTrigger>
-                                            <DialogContent className="sm:max-w-[425px]">
-                                                {formStatus === 'success' ? (
-                                                    <div className="flex flex-col items-center justify-center p-8 h-48">
-                                                        <i className="fas fa-check-circle text-verde-claro text-5xl mb-4"></i>
-                                                        <DialogTitle className="text-xl">Perfil Atualizado!</DialogTitle>
-                                                        <DialogDescription>
-                                                            Seus dados foram salvos com sucesso.
-                                                        </DialogDescription>
-                                                    </div>
-                                                ) : (
-                                                    <form onSubmit={handleSubmit(EditarUsuarioSubmit)}>
-                                                        <DialogHeader>
-                                                            <DialogTitle>Editar Perfil</DialogTitle>
+                                <div className="flex justify-center">
+                                    <AppCard className="bg-black/20 p-4 rounded-lg w-fill">
+                                        <p><strong>Nome:</strong> {profileData.nome}</p>
+                                        <p><strong>Email:</strong> {profileData.email}</p>
+                                        <p><strong>Telefone:</strong> {profileData.telefone}</p>
+                                        <p><strong>CPF:</strong> {profileData.cpf}</p>
+                                        <p><strong>Sexo:</strong> {profileData.sexo}</p>
+                                        <div className="p-4 flex justify-center">
+                                            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                                                <DialogTrigger asChild>
+                                                    <Button variant="outline"><i className="fas fa-user-edit"></i> Editar Meus Dados</Button>
+                                                </DialogTrigger>
+                                                <DialogContent className="sm:max-w-[425px]">
+                                                    {formStatus === 'success' ? (
+                                                        <div className="flex flex-col items-center justify-center p-8 h-48">
+                                                            <i className="fas fa-check-circle text-verde-claro text-5xl mb-4"></i>
+                                                            <DialogTitle className="text-xl">Perfil Atualizado!</DialogTitle>
                                                             <DialogDescription>
-                                                                Faça suas modificações aqui e salve quando tiver finalizado.
+                                                                Seus dados foram salvos com sucesso.
                                                             </DialogDescription>
-                                                        </DialogHeader>
-                                                        <div className="grid gap-4 py-4">
-                                                            <div className="grid gap-2">
-                                                                <Label htmlFor="edit_nome">Nome</Label>
-                                                                <Input id="edit_nome" {...register("nome")} defaultValue={profileData.nome} />
-                                                                {errors.nome && <p className="text-vermelho-status text-xs mt-1">{errors.nome.message}</p>}
-                                                            </div>
-                                                            <div className="grid gap-2">
-                                                                <Label htmlFor="edit_email">E-mail</Label>
-                                                                <Input id="edit_email" {...register("email")} defaultValue={profileData.email} />
-                                                                {errors.email && <p className="text-vermelho-status text-xs mt-1">{errors.email.message}</p>}
-                                                            </div>
-                                                            <div className="grid gap-2">
-                                                                <Label htmlFor="edit_telefone">Telefone</Label>
-                                                                <Input id="edit_telefone" {...register("telefone")} defaultValue={profileData.telefone} />
-                                                                {errors.telefone && <p className="text-vermelho-status text-xs mt-1">{errors.telefone.message}</p>}
-                                                            </div>
                                                         </div>
-                                                        {apiError && <p className="text-vermelho-status text-center text-sm mb-2">{apiError}</p>}
-                                                        <DialogFooter>
-                                                            <DialogClose asChild>
-                                                                <Button variant="outline" type="button">Cancelar</Button>
-                                                            </DialogClose>
-                                                            <Button
-                                                                type="submit"
-                                                                className="underline hover:text-verde-claro"
-                                                                disabled={formStatus === 'submitting'}
-                                                            >
-                                                                {formStatus === 'submitting' ? 'Salvando...' : 'Salvar'}
-                                                            </Button>
-                                                        </DialogFooter>
-                                                    </form>
-                                                )}
-                                            </DialogContent>
-                                        </Dialog>
-                                    </div>
+                                                    ) : (
+                                                        <form onSubmit={handleSubmit(EditarUsuarioSubmit)}>
+                                                            <DialogHeader>
+                                                                <DialogTitle>Editar Perfil</DialogTitle>
+                                                                <DialogDescription>
+                                                                    Faça suas modificações aqui e salve quando tiver finalizado.
+                                                                </DialogDescription>
+                                                            </DialogHeader>
+                                                            <div className="grid gap-4 py-4">
+                                                                <div className="grid gap-2">
+                                                                    <Label htmlFor="edit_nome">Nome</Label>
+                                                                    <Input id="edit_nome" {...register("nome")} defaultValue={profileData.nome} />
+                                                                    {errors.nome && <p className="text-vermelho-status text-xs mt-1">{errors.nome.message}</p>}
+                                                                </div>
+                                                                <div className="grid gap-2">
+                                                                    <Label htmlFor="edit_email">E-mail</Label>
+                                                                    <Input id="edit_email" {...register("email")} defaultValue={profileData.email} />
+                                                                    {errors.email && <p className="text-vermelho-status text-xs mt-1">{errors.email.message}</p>}
+                                                                </div>
+                                                                <div className="grid gap-2">
+                                                                    <Label htmlFor="edit_telefone">Telefone</Label>
+                                                                    <Input id="edit_telefone" {...register("telefone")} defaultValue={profileData.telefone} />
+                                                                    {errors.telefone && <p className="text-vermelho-status text-xs mt-1">{errors.telefone.message}</p>}
+                                                                </div>
+                                                            </div>
+                                                            {apiError && <p className="text-vermelho-status text-center text-sm mb-2">{apiError}</p>}
+                                                            <DialogFooter>
+                                                                <DialogClose asChild>
+                                                                    <Button variant="outline" type="button">Cancelar</Button>
+                                                                </DialogClose>
+                                                                <Button
+                                                                    type="submit"
+                                                                    className="underline hover:text-verde-claro"
+                                                                    disabled={formStatus === 'submitting'}
+                                                                >
+                                                                    {formStatus === 'submitting' ? 'Salvando...' : 'Salvar'}
+                                                                </Button>
+                                                            </DialogFooter>
+                                                        </form>
+                                                    )}
+                                                </DialogContent>
+                                            </Dialog>
+                                        </div>
+                                    </AppCard>
+                                </div>
+                                <div className="text-center mt-4">
+                                    <button
+                                        onClick={handleLogout}
+                                        className="text-azul-claro/80 hover:text-azul-claro hover:underline transition-colors">
+                                        <i className="fas fa-sign-out-alt"></i> Sair da Conta
+                                    </button>
                                 </div>
                             </div>
                         )}
