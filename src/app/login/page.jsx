@@ -24,7 +24,7 @@ import { getApiErrorMessage } from "@/lib/errorHandler";
 // ============================================================================
 const loginSchema = z.object({
     email: z.email({ message: "Formato de e-mail inválido." }),
-    senha: z.string().min(1, { message: "A senha не pode estar em branco." }),
+    senha: z.string().min(1, { message: "A senha não pode estar em branco." }),
 });
 
 // ============================================================================
