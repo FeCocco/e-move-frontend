@@ -139,7 +139,7 @@ export default function DashboardPage() {
 
     return (
         <div className="w-full max-w-6xl h-[calc(100vh-80px)] p-6 bg-white/[.08] backdrop-blur-md border-white/20 shadow-lg rounded-2xl text-texto-claro overflow-hidden flex flex-col">
-            <h1 className="text-3xl font-bold font-orbitron text-azul-claro text-center mb-2">
+            <h1 className="text-3xl font-bold font-orbitron text-azul-claro text-center mb-7">
                 Painel de Controle e-Move
             </h1>
 
