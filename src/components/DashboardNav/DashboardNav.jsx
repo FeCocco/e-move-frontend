@@ -8,6 +8,7 @@ const navItems = [
     { id: '#AbaEstacoes', icon: 'fas fa-charging-station', label: 'Estações' },
     { id: '#AbaMapa', icon: 'fas fa-map-marked-alt', label: 'Planejar Rota' },
     { id: '#AbaUsuarios', icon: 'fas fa-user-cog', label: 'Conta' },
+    { id: '#AbaRelatorio', icon: 'fas fa-user-cog', label: 'Relatorio' },
 ];
 
 const DashboardNav = ({ activeTab, setActiveTab }) => {

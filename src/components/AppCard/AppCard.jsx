@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 const AppCard = ({ className, children }) => {
     return (
         <Card className={cn(
-            "w-full max-w-md md:w-[448px] flex flex-col",
+            "w-full flex flex-col",
             "bg-white/[.08] backdrop-blur-md border-white/20 shadow-lg text-texto-claro overflow-hidden",
             // "max-h-[90vh]", // REMOVA OU COMENTE ESTA LINHA
             className

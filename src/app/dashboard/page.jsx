@@ -259,6 +259,12 @@ export default function DashboardPage() {
                                 </div>
                             </div>
                         )}
+                        {activeTab === '#AbaRelatorio' && (
+                            <div>
+                                <h2 className="text-2xl font-orbitron text-verde-claro mb-4">Meus Relatório</h2>
+                                <p>Conteúdo do relatório de veículos aqui...</p>
+                            </div>
+                        )}
                     </motion.div>
                 </AnimatePresence>
             </div>
