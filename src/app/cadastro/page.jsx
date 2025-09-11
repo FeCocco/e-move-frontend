@@ -26,7 +26,9 @@ import MedidorForcaSenha from "@/components/ui/MedidorForcaSenha";
 const cadastroSchema = z.object({
     nome: z.string().min(3, { message: "O nome deve ter no mínimo 3 caracteres." }),
     email: z.email({ message: "Formato de e-mail inválido." }),
-    cpf: z.string().min(11, { message: "O CPF deve ter pelo menos 11 dígitos." }),
+    cpf: z.string()
+        .min(11, { message: "O CPF deve ter 11 dígitos." })
+        .max(11, {message: "O CPF deve ter 11 dígitos."}),
     telefone: z.string()
         .regex(/^\d+$/, { message: "O telefone deve conter apenas números." })
         .min(10, { message: "O telefone deve ter no mínimo 10 dígitos." })

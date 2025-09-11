@@ -7,18 +7,15 @@ import Footer from "@/components/Footer/Footer";
 
 export default function Home() {
   return (
-    <>
-      {/* Tela Inicial - full screen no topo */}
-      <TelaInicial />
-
-      {/* Restante da landing page */}
-      <Header />
-      <main>
-        <SobreNos />
-        <Inovacao />
-        <Suporte />
-      </main>
+      <>
+          <Header />
+          <main>
+            <TelaInicial />
+            <SobreNos />
+            <Inovacao />
+            <Suporte />
+          </main>
       <Footer />
-    </>
+      </>
   );
 }
