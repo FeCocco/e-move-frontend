@@ -37,9 +37,10 @@ export default function RootLayout({ children }) {
         <Link href="/">
             <Logo className="fixed top-[25px] left-[30px] z-[1002] text-[1.6rem] text-azul-claro/70 drop-shadow-[0_0_8px_rgba(0,255,255,0.4)] cursor-pointer" />
         </Link>
-        <main className="min-h-screen w-full bg-gradient-body flex flex-col items-center justify-center p-4">
+        <main className="min-h-screen w-full bg-gradient-body flex flex-col">
             {children}
         </main>
+
         </body>
         </html>
     );

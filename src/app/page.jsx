@@ -6,16 +6,14 @@ import Suporte from "@/components/Suporte/Suporte";
 import Footer from "@/components/Footer/Footer";
 
 export default function Home() {
-  return (
-      <>
-          <Header />
-          <main>
+    return (
+        <>
+            <Header />
             <TelaInicial />
             <SobreNos />
             <Inovacao />
             <Suporte />
-          </main>
-      <Footer />
-      </>
-  );
+            <Footer />
+        </>
+    );
 }
