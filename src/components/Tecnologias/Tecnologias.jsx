@@ -8,9 +8,8 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-// 1. Importe os ícones do Lucide
 import { Wrench, Database } from 'lucide-react';
-import { SiNextdotjs, SiSpringboot } from "@icons-pack/react-simple-icons"; // Ícones específicos mais bonitos
+import { SiNextdotjs, SiSpringboot } from "@icons-pack/react-simple-icons";
 
 export default function Tecnologias() {
     const technologies = [
@@ -34,7 +33,6 @@ export default function Tecnologias() {
     return (
         <section id="tecnologias" className="w-full bg-slate-900 py-32 px-6">
             <div className="max-w-7xl mx-auto text-center">
-                {/* 2. Título atualizado com ícone e correção de fonte */}
                 <h2 className="text-5xl font-bold drop-shadow flex items-center justify-center gap-4 mb-16">
                     <Wrench size={48} className="text-green-400" />
                     <span className="bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent leading-snug">

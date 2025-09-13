@@ -1,6 +1,5 @@
 "use client";
 
-// 1. Importe os ícones do Lucide
 import { Mail, Phone } from 'lucide-react';
 
 export default function Footer() {
@@ -10,7 +9,6 @@ export default function Footer() {
                 <div className="w-full h-px bg-blue-500/20 mb-24"></div>
                 <div className="text-center">
 
-                    {/* 2. Título atualizado com ícone e correção de fonte */}
                     <h2 className="text-5xl font-bold drop-shadow flex items-center justify-center gap-4 mb-6">
                         <Mail size={48} className="text-green-400" />
                         <span className="bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent leading-snug">
@@ -25,7 +23,6 @@ export default function Footer() {
                         emovesuporte@gmail.com
                     </a>
 
-                    {/* 3. Ícones de contato trocados para Lucide */}
                     <div className="flex justify-center gap-8 my-10">
                         <a href="mailto:emovesuporte@gmail.com" aria-label="Enviar e-mail" className="text-slate-400 hover:text-green-400 transition-colors">
                             <Mail size={32} />
