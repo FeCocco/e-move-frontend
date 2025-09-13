@@ -1,19 +1,17 @@
 "use client";
 import { useEffect, useRef, useState } from 'react';
 
-// Easing function para uma animação mais suave
 function easeOutCubic(t) {
     return (--t) * t * t + 1;
 }
 
-export default function AnimatedStat({ icon, finalValue, label }) {
+export default function AnimatedStat({ icon: IconComponent, finalValue, label }) {
     const [count, setCount] = useState(0);
     const ref = useRef(null);
 
     useEffect(() => {
         const observer = new IntersectionObserver(
             ([entry]) => {
-                // Começa a animação quando o elemento entra na tela
                 if (entry.isIntersecting) {
                     let startTimestamp = null;
                     const duration = 2500;
@@ -31,7 +29,7 @@ export default function AnimatedStat({ icon, finalValue, label }) {
                     };
 
                     window.requestAnimationFrame(step);
-                    observer.unobserve(ref.current); // Anima apenas uma vez
+                    observer.unobserve(ref.current);
                 }
             },
             { threshold: 0.5 }
@@ -46,7 +44,8 @@ export default function AnimatedStat({ icon, finalValue, label }) {
 
     return (
         <div ref={ref} className="bg-slate-800 p-8 rounded-2xl flex flex-col items-center text-center">
-            <i className={`fas ${icon} text-green-400 text-3xl mb-4`}></i>
+            {/* Ícone do Lucide sendo renderizado */}
+            <IconComponent className="text-green-400 h-8 w-8 mb-4" strokeWidth={2.5} />
             <span className="text-5xl lg:text-6xl font-bold text-white tracking-tighter">
                 {count.toLocaleString('pt-BR')}
             </span>
