@@ -1,5 +1,7 @@
 "use client";
 
+import { MessageSquare } from 'lucide-react';
+
 export default function Suporte() {
     const faqItems = [
         {
@@ -19,14 +21,18 @@ export default function Suporte() {
     return (
         <section id="suporte" className="w-full py-32 px-6">
             <div className="max-w-4xl mx-auto text-center">
-                <h2 className="text-5xl font-bold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent mb-8 drop-shadow">
-                    🤔 Dúvidas Frequentes (FAQ)
+
+                <h2 className="text-5xl font-bold drop-shadow flex items-center justify-center gap-4 mb-8">
+                    <MessageSquare size={48} className="text-green-400" />
+                    <span className="bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent leading-snug">
+                Dúvidas Frequentes (FAQ)
+            </span>
                 </h2>
+
                 <p className="max-w-2xl mx-auto text-xl text-slate-300 leading-relaxed mb-16">
                     Tem alguma pergunta? Confira nossa lista de dúvidas frequentes para encontrar a resposta que você procura.
                 </p>
 
-                {/* Mapeia o array para renderizar cada item do FAQ */}
                 <div className="space-y-6 text-left">
                     {faqItems.map((item, index) => (
                         <div key={index} className="bg-slate-900 p-8 rounded-lg border-l-4 border-blue-500">
