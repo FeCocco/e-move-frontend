@@ -69,6 +69,9 @@ export default function Header() {
                     <ScrollLink to="sobre-nos" spy={true} smooth={true} offset={-90} duration={500} onClick={closeMenu}>Sobre Nós</ScrollLink>
                 </li>
                 <li onClick={closeMenu} className="text-slate-300 hover:text-white cursor-pointer transition text-lg font-semibold py-2 list-none">
+                    <ScrollLink to="roadmap" spy={true} smooth={true} offset={-90} duration={500} onClick={closeMenu}>Roadmap</ScrollLink>
+                </li>
+                <li onClick={closeMenu} className="text-slate-300 hover:text-white cursor-pointer transition text-lg font-semibold py-2 list-none">
                     <ScrollLink to="inovacao" spy={true} smooth={true} offset={-90} duration={500} onClick={closeMenu}>Inovação</ScrollLink>
                 </li>
                 <li onClick={closeMenu} className="text-slate-300 hover:text-white cursor-pointer transition text-lg font-semibold py-2 list-none">

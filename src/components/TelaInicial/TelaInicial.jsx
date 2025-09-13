@@ -11,9 +11,7 @@ const TelaInicial = () => {
   };
 
   return (
-    // Tornamos a tela parte do fluxo da página (min-h-screen) em vez de fixed
-    <section className="w-full min-h-screen text-white relative">
-      {/* Overlay visual — pointer-events-none evita bloqueio de scroll/cliques */}
+    <section id="inicio" className="w-full min-h-screen text-white relative">
       <div className="absolute inset-0 z-10 pointer-events-none"></div>
 
       <div className="relative z-20 w-full">

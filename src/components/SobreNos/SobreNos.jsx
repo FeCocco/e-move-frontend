@@ -1,10 +1,10 @@
 "use client";
+import MemberCard from ".//MemberCard";
 
 export default function SobreNos() {
     return (
-        <section id="sobre-nos" className="w-full bg-slate-900 py-32 px-6 text-center">
+        <section id="sobre-nos" className="w-full py-32 px-6 text-center">
             <div className="max-w-7xl mx-auto">
-
                 <h2 className="text-5xl font-bold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent mb-8 drop-shadow">
                     🚀 Nossa Missão
                 </h2>
@@ -15,32 +15,11 @@ export default function SobreNos() {
                 <h3 className="text-3xl font-semibold text-white mb-12">👥 A Equipe</h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-
-                    <div className="bg-slate-800 p-8 rounded-2xl shadow hover:-translate-y-2 hover:shadow-lg transition-transform duration-300">
-                        <i className="fas fa-code text-blue-400 text-4xl mb-5 animate-pulseGlow"></i>
-                        <h4 className="text-lg text-green-400 font-semibold">Felipe Giacomini Cocco</h4>
-                        <span className="text-slate-400 text-sm mt-1">116525</span>
-                    </div>
-                    <div className="bg-slate-800 p-8 rounded-2xl shadow hover:-translate-y-2 hover:shadow-lg transition-transform duration-300">
-                        <i className="fas fa-database text-blue-400 text-4xl mb-5 animate-floatVertical"></i>
-                        <h4 className="text-lg text-green-400 font-semibold">Fernando Gabriel Perinotto</h4>
-                        <span className="text-slate-400 text-sm mt-1">115575</span>
-                    </div>
-                    <div className="bg-slate-800 p-8 rounded-2xl shadow hover:-translate-y-2 hover:shadow-lg transition-transform duration-300">
-                        <i className="fas fa-bolt text-blue-400 text-4xl mb-5 animate-flicker"></i>
-                        <h4 className="text-lg text-green-400 font-semibold">Jhonatas Kévin de Oliveira Braga</h4>
-                        <span className="text-slate-400 text-sm mt-1">116707</span>
-                    </div>
-                    <div className="bg-slate-800 p-8 rounded-2xl shadow hover:-translate-y-2 hover:shadow-lg transition-transform duration-300">
-                        <i className="fas fa-laptop-code text-blue-400 text-4xl mb-5 animate-rocking"></i>
-                        <h4 className="text-lg text-green-400 font-semibold">Lucas Santos Souza</h4>
-                        <span className="text-slate-400 text-sm mt-1">116852</span>
-                    </div>
-                    <div className="bg-slate-800 p-8 rounded-2xl shadow hover:-translate-y-2 hover:shadow-lg transition-transform duration-300">
-                        <i className="fas fa-network-wired text-blue-400 text-4xl mb-5 animate-pulseExpand"></i>
-                        <h4 className="text-lg text-green-400 font-semibold">Samuel Wilson Rufino</h4>
-                        <span className="text-slate-400 text-sm mt-1">117792</span>
-                    </div>
+                    <MemberCard icon="fa-code" name="Felipe Giacomini Cocco" id="116525" animation="animate-pulseGlow" />
+                    <MemberCard icon="fa-database" name="Fernando Gabriel Perinotto" id="115575" animation="animate-floatVertical" />
+                    <MemberCard icon="fa-bolt" name="Jhonatas Kévin de Oliveira Braga" id="116707" animation="animate-flicker" />
+                    <MemberCard icon="fa-laptop-code" name="Lucas Santos Souza" id="116852" animation="animate-rocking" />
+                    <MemberCard icon="fa-network-wired" name="Samuel Wilson Rufino" id="117792" animation="animate-pulseExpand" />
                 </div>
             </div>
         </section>
