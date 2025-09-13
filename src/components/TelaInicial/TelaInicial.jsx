@@ -11,7 +11,7 @@ const TelaInicial = () => {
     };
 
     return (
-        <section className="w-full min-h-screen text-white relative">
+        <section id="inicio" className="w-full min-h-screen text-white relative">
             <div className="absolute inset-0 z-10 pointer-events-none"></div>
 
             <div className="relative z-20 w-full">
