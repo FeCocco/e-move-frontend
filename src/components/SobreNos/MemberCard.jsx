@@ -2,7 +2,7 @@
 
 import { useRef, useEffect } from 'react';
 
-export default function MemberCard({ icon, name, id, animation }) {
+export default function MemberCard({ icon: IconComponent, name, id, animation }) {
     const cardRef = useRef(null);
 
     useEffect(() => {
@@ -42,8 +42,11 @@ export default function MemberCard({ icon, name, id, animation }) {
     }, []);
 
     return (
-        <div ref={cardRef} className="bg-slate-800 p-8 rounded-2xl shadow transition-transform duration-300">
-            <i className={`fas ${icon} text-blue-400 text-4xl mb-5 ${animation}`}></i>
+        <div
+            ref={cardRef}
+            className="bg-slate-800 p-8 rounded-2xl shadow-xl transition-all duration-300 flex flex-col items-center hover:shadow-2xl hover:shadow-blue-500/20 cursor-default"
+        >
+            <IconComponent className={`text-blue-400 h-10 w-10 mb-5 ${animation}`} strokeWidth={2} />
             <h4 className="text-lg text-green-400 font-semibold">{name}</h4>
             <span className="text-slate-400 text-sm mt-1">{id}</span>
         </div>
