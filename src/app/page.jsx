@@ -11,7 +11,6 @@ import Tecnologias from "@/components/Tecnologias/Tecnologias";
 export default function Home() {
   return (
       <>
-          <Header />
           <TelaInicial />
           <SobreNos />
           <Roadmap />

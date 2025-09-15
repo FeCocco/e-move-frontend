@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { ArrowUp } from 'lucide-react';
 import { cn } from "@/lib/utils";
 
 export default function BackToTopButton() {
@@ -38,7 +39,7 @@ export default function BackToTopButton() {
             )}
             aria-label="Voltar ao topo"
         >
-            <i className="fas fa-arrow-up"></i>
+            <ArrowUp />
         </button>
     );
 }
