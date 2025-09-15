@@ -19,7 +19,7 @@ export default function Suporte() {
     ];
 
     return (
-        <section id="suporte" className="w-full bg-slate-800 py-32 px-6">
+        <section id="suporte" className="w-full py-32 px-6">
             <div className="max-w-4xl mx-auto text-center">
 
                 <h2 className="text-5xl font-bold drop-shadow flex items-center justify-center gap-4 mb-8">
