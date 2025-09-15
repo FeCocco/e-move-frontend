@@ -34,7 +34,7 @@ const AnimatedCar = () => {
                     repeat: Infinity,
                     ease: 'easeInOut'
                 }}
-                style={{ y: '-50%' }}
+                style={{ y: '-75%' }}
             >
                 <Car className="h-6 w-6 text-azul-claro" />
             </motion.div>

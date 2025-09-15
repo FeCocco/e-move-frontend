@@ -48,7 +48,7 @@ export default function DashboardPage() {
     const router = useRouter();
 
     // Estados para controle da UI e dados
-    const [activeTab, setActiveTab] = useState('#AbaRelatorio');
+    const [activeTab, setActiveTab] = useState('#BemVindo');
     const [profileData, setProfileData] = useState(null);
     const [apiError, setApiError] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -186,32 +186,57 @@ export default function DashboardPage() {
                                             <p className="mb-2"><strong>Telefone:</strong> {profileData.telefone}</p>
                                             <p className="mb-2"><strong>CPF:</strong> {profileData.cpf}</p>
                                             <p><strong>Sexo:</strong> {profileData.sexo}</p>
-                                            <div className="pt-6 flex justify-center">
+                                            <div className="p-4 flex justify-center">
                                                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                                     <DialogTrigger asChild>
-                                                        <Button variant="outline">Editar Meus Dados</Button>
+                                                        <Button variant="outline"><i className="fas fa-user-edit"></i> Editar Meus Dados</Button>
                                                     </DialogTrigger>
                                                     <DialogContent className="sm:max-w-[425px]">
                                                         {formStatus === 'success' ? (
                                                             <div className="flex flex-col items-center justify-center p-8 h-48">
+                                                                <i className="fas fa-check-circle text-verde-claro text-5xl mb-4"></i>
                                                                 <DialogTitle className="text-xl">Perfil Atualizado!</DialogTitle>
-                                                                <DialogDescription>Seus dados foram salvos com sucesso.</DialogDescription>
+                                                                <DialogDescription>
+                                                                    Seus dados foram salvos com sucesso.
+                                                                </DialogDescription>
                                                             </div>
                                                         ) : (
                                                             <form onSubmit={handleSubmit(EditarUsuarioSubmit)}>
                                                                 <DialogHeader>
                                                                     <DialogTitle>Editar Perfil</DialogTitle>
-                                                                    <DialogDescription>Faça suas modificações aqui e salve.</DialogDescription>
+                                                                    <DialogDescription>
+                                                                        Faça suas modificações aqui e salve quando tiver finalizado.
+                                                                    </DialogDescription>
                                                                 </DialogHeader>
                                                                 <div className="grid gap-4 py-4">
-                                                                    <div className="grid gap-2"><Label htmlFor="nome">Nome</Label><Input id="nome" {...register("nome")} />{errors.nome && <p className="text-vermelho-status text-xs">{errors.nome.message}</p>}</div>
-                                                                    <div className="grid gap-2"><Label htmlFor="email">E-mail</Label><Input id="email" {...register("email")} />{errors.email && <p className="text-vermelho-status text-xs">{errors.email.message}</p>}</div>
-                                                                    <div className="grid gap-2"><Label htmlFor="telefone">Telefone</Label><Input id="telefone" {...register("telefone")} />{errors.telefone && <p className="text-vermelho-status text-xs">{errors.telefone.message}</p>}</div>
+                                                                    <div className="grid gap-2">
+                                                                        <Label htmlFor="edit_nome">Nome</Label>
+                                                                        <Input id="edit_nome" {...register("nome")} defaultValue={profileData.nome} />
+                                                                        {errors.nome && <p className="text-vermelho-status text-xs mt-1">{errors.nome.message}</p>}
+                                                                    </div>
+                                                                    <div className="grid gap-2">
+                                                                        <Label htmlFor="edit_email">E-mail</Label>
+                                                                        <Input id="edit_email" {...register("email")} defaultValue={profileData.email} />
+                                                                        {errors.email && <p className="text-vermelho-status text-xs mt-1">{errors.email.message}</p>}
+                                                                    </div>
+                                                                    <div className="grid gap-2">
+                                                                        <Label htmlFor="edit_telefone">Telefone</Label>
+                                                                        <Input id="edit_telefone" {...register("telefone")} defaultValue={profileData.telefone} />
+                                                                        {errors.telefone && <p className="text-vermelho-status text-xs mt-1">{errors.telefone.message}</p>}
+                                                                    </div>
                                                                 </div>
                                                                 {apiError && <p className="text-vermelho-status text-center text-sm mb-2">{apiError}</p>}
                                                                 <DialogFooter>
-                                                                    <DialogClose asChild><Button variant="outline" type="button">Cancelar</Button></DialogClose>
-                                                                    <Button type="submit" disabled={formStatus === 'submitting'}>{formStatus === 'submitting' ? 'Salvando...' : 'Salvar'}</Button>
+                                                                    <DialogClose asChild>
+                                                                        <Button variant="outline" type="button">Cancelar</Button>
+                                                                    </DialogClose>
+                                                                    <Button
+                                                                        type="submit"
+                                                                        className="underline hover:text-verde-claro"
+                                                                        disabled={formStatus === 'submitting'}
+                                                                    >
+                                                                        {formStatus === 'submitting' ? 'Salvando...' : 'Salvar'}
+                                                                    </Button>
                                                                 </DialogFooter>
                                                             </form>
                                                         )}
@@ -235,17 +260,21 @@ export default function DashboardPage() {
                                             <h3 className="text-lg font-semibold text-azul-claro mb-4 text-center">Veículos Mais Utilizados</h3>
                                             <VeiculoChart />
                                         </div>
-                                        <div className="bg-black/20 p-6 rounded-lg flex flex-col justify-between">
-                                            <div>
-                                                <h3 className="text-lg font-semibold text-azul-claro mb-4 text-center">Satisfação e Resumo</h3>
-                                                <div className="mb-6"><SatisfacaoChart /></div>
-                                                <div className="grid grid-cols-3 gap-4">
-                                                    <StatCard icon={Route} value="1.280" unit="km" label="Distância Percorrida" />
-                                                    <StatCard icon={Zap} value="256" unit="kWh" label="Energia Consumida" />
-                                                    <StatCard icon={Droplets} value="1.152" unit="kg" label="CO₂ Economizado" />
-                                                </div>
+
+                                        <div className="bg-black/20 p-6 rounded-lg flex flex-col">
+                                            <h3 className="text-lg font-semibold text-azul-claro mb-4 text-center">Satisfação e Resumo</h3>
+                                            <div className="flex-grow mb-6">
+                                                <SatisfacaoChart />
                                             </div>
-                                            <AnimatedCar />
+
+                                            <div className="grid grid-cols-3 gap-4 mb-6">
+                                                <StatCard icon={Route} value="1.280" unit="km" label="Distância Percorrida" />
+                                                <StatCard icon={Zap} value="256" unit="kWh" label="Energia Consumida" />
+                                                <StatCard icon={Droplets} value="1.152" unit="kg" label="CO₂ Economizado" />
+                                            </div>
+                                            <div className="mt-auto">
+                                                <AnimatedCar />
+                                            </div>
                                         </div>
                                         <div className="bg-black/20 p-6 rounded-lg">
                                             <h3 className="text-lg font-semibold text-azul-claro mb-4 text-center">Rotas Preferidas</h3>
