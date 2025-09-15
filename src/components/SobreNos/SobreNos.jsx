@@ -1,44 +1,44 @@
-import { AppCard } from "../AppCard/AppCard";
+"use client";
+import { Coffee, Code, Database, Laptop, Network, Rocket, Users } from 'lucide-react';
+import MemberCard from "./MemberCard";
 
 export default function SobreNos() {
-  return (
-    <section id="sobre-nos" className="py-32 px-6 max-w-6xl mx-auto">
-        <AppCard className="mb-56 p-8">
-            <h2 className="text-4xl font-bold bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent mb-6 drop-shadow">
-                🚀 Nossa Missão
-            </h2>
-            <p className="max-w-3xl mx-auto text-lg text-slate-300 leading-relaxed mb-12">
-                O <span className="bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent font-bold">e-Move</span> nasceu para eliminar a "ansiedade de autonomia" dos motoristas de veículos elétricos. Nossa missão é transformar a mobilidade elétrica no Brasil em algo <strong>simples, confiável e acessível</strong>, facilitando a transição para um futuro mais sustentável.
-            </p>
-        </AppCard>
-      <h3 className="text-2xl font-semibold text-white mb-8">👥 A Equipe</h3>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
-        <div className="bg-slate-800 p-6 rounded-2xl shadow hover:-translate-y-2 hover:shadow-lg transition">
-          <i className="fas fa-code text-blue-400 text-3xl"></i>
-          <h4 className="mt-4 text-green-400 font-semibold">Felipe Giacomini Cocco</h4>
-          <span className="text-slate-400">116525</span>
-        </div>
-        <div className="bg-slate-800 p-6 rounded-2xl shadow hover:-translate-y-2 hover:shadow-lg transition">
-          <i className="fas fa-database text-blue-400 text-3xl"></i>
-          <h4 className="mt-4 text-green-400 font-semibold">Fernando Gabriel Perinotto</h4>
-          <span className="text-slate-400">115575</span>
-        </div>
-        <div className="bg-slate-800 p-6 rounded-2xl shadow hover:-translate-y-2 hover:shadow-lg transition">
-          <i className="fas fa-bolt text-blue-400 text-3xl"></i>
-          <h4 className="mt-4 text-green-400 font-semibold">Jhonatas Kévin de Oliveira Braga</h4>
-          <span className="text-slate-400">116707</span>
-        </div>
-        <div className="bg-slate-800 p-6 rounded-2xl shadow hover:-translate-y-2 hover:shadow-lg transition">
-          <i className="fas fa-laptop-code text-blue-400 text-3xl"></i>
-          <h4 className="mt-4 text-green-400 font-semibold">Lucas Santos Souza</h4>
-          <span className="text-slate-400">116852</span>
-        </div>
-        <div className="bg-slate-800 p-6 rounded-2xl shadow hover:-translate-y-2 hover:shadow-lg transition">
-          <i className="fas fa-network-wired text-blue-400 text-3xl"></i>
-          <h4 className="mt-4 text-green-400 font-semibold">Samuel Wilson Rufino</h4>
-          <span className="text-slate-400">117792</span>
-        </div>
-      </div>
-    </section>
-  );
+    return (
+        <section id="sobre-nos" className="w-full py-32 px-6 text-center">
+            <div className="max-w-7xl mx-auto">
+                <h2 className="text-5xl font-bold drop-shadow flex items-center justify-center gap-4 mb-8">
+                    <Rocket size={48} strokeWidth={2.5} className="text-green-400" />
+                    <span className="bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">Nossa Missão</span>
+                </h2>
+                <p className="max-w-4xl mx-auto text-xl text-slate-300 leading-relaxed mb-20">
+                    A transição para a mobilidade elétrica é uma realidade...
+                </p>
+                <h3 className="text-3xl font-semibold text-white mb-12 flex items-center justify-center gap-3">
+                    <Users size={32} /> A Equipe
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+                    <MemberCard icon={Coffee} animation="animate-pulseGlow">
+                        <h4 className="text-lg text-green-400 font-semibold">Felipe Giacomini Cocco</h4>
+                        <span className="text-slate-400 text-sm mt-1">116525</span>
+                    </MemberCard>
+                    <MemberCard icon={Database} animation="animate-floatVertical">
+                        <h4 className="text-lg text-green-400 font-semibold">Fernando Gabriel Perinotto</h4>
+                        <span className="text-slate-400 text-sm mt-1">115575</span>
+                    </MemberCard>
+                    <MemberCard icon={Network} animation="animate-flicker">
+                        <h4 className="text-lg text-green-400 font-semibold">Jhonatas Kévin de Oliveira Braga</h4>
+                        <span className="text-slate-400 text-sm mt-1">116707</span>
+                    </MemberCard>
+                    <MemberCard icon={Code} animation="animate-rocking">
+                        <h4 className="text-lg text-green-400 font-semibold">Lucas Santos Souza</h4>
+                        <span className="text-slate-400 text-sm mt-1">116852</span>
+                    </MemberCard>
+                    <MemberCard icon={Laptop} animation="animate-pulseExpand">
+                        <h4 className="text-lg text-green-400 font-semibold">Samuel Wilson Rufino</h4>
+                        <span className="text-slate-400 text-sm mt-1">117792</span>
+                    </MemberCard>
+                </div>
+            </div>
+        </section>
+    );
 }
