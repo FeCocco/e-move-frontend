@@ -172,7 +172,6 @@ export default function DashboardPage() {
                                     <p>Conteúdo da aba de rotas aqui...</p>
                                 </div>
                             )}
-
                             {activeTab === '#AbaEstacoes' && <p>Conteúdo de Estações...</p>}
                             {activeTab === '#AbaMapa' && <p>Conteúdo de Planejar Rota...</p>}
 
@@ -180,6 +179,7 @@ export default function DashboardPage() {
                                 <div>
                                     <h2 className="text-2xl font-orbitron text-verde-claro mb-4">Minha Conta</h2>
                                     <div className="flex justify-center">
+
                                         <AppCard className="bg-black/20 p-6 rounded-lg w-full max-w-md text-left">
                                             <p className="mb-2"><strong>Nome:</strong> {profileData.nome}</p>
                                             <p className="mb-2"><strong>Email:</strong> {profileData.email}</p>
@@ -189,6 +189,7 @@ export default function DashboardPage() {
                                             <div className="p-4 flex justify-center">
                                                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                                     <DialogTrigger asChild>
+
                                                         <Button variant="outline"><UserRoundPen /> Editar Meus Dados</Button>
                                                     </DialogTrigger>
                                                     <DialogContent className="sm:max-w-[425px]">
@@ -245,6 +246,7 @@ export default function DashboardPage() {
                                             </div>
                                         </AppCard>
                                     </div>
+
                                     <div className="text-center mt-6">
                                          <button onClick={handleLogout} className="inline-flex itens-center gap-2 text-azul-claro/80 hover:text-azul-claro hover:underline transition-colors"><LogOut   />Sair da Conta</button>
                                     </div>
