@@ -26,7 +26,7 @@ import RotasChart from '@/components/Charts/RotasChart';
 import SatisfacaoChart from '@/components/Charts/SatisfacaoChart';
 import StatCard from '@/components/Charts/StatCard';
 import AnimatedCar from '@/components/Charts/AnimatedCar';
-import { Route, Zap, Droplets } from 'lucide-react';
+import { Route, Zap, Droplets, UserRoundPen, LogOut, Check } from 'lucide-react';
 
 // ============================================================================
 // SCHEMA DE VALIDAÇÃO (ZOD)
@@ -189,12 +189,12 @@ export default function DashboardPage() {
                                             <div className="p-4 flex justify-center">
                                                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                                     <DialogTrigger asChild>
-                                                        <Button variant="outline"><i className="fas fa-user-edit"></i> Editar Meus Dados</Button>
+                                                        <Button variant="outline"><UserRoundPen /> Editar Meus Dados</Button>
                                                     </DialogTrigger>
                                                     <DialogContent className="sm:max-w-[425px]">
                                                         {formStatus === 'success' ? (
                                                             <div className="flex flex-col items-center justify-center p-8 h-48">
-                                                                <i className="fas fa-check-circle text-verde-claro text-5xl mb-4"></i>
+                                                                <Check size={48} className="text-verde-claro mb-4"/>
                                                                 <DialogTitle className="text-xl">Perfil Atualizado!</DialogTitle>
                                                                 <DialogDescription>
                                                                     Seus dados foram salvos com sucesso.
@@ -246,7 +246,7 @@ export default function DashboardPage() {
                                         </AppCard>
                                     </div>
                                     <div className="text-center mt-6">
-                                        <button onClick={handleLogout} className="text-azul-claro/80 hover:text-azul-claro hover:underline transition-colors">Sair da Conta</button>
+                                         <button onClick={handleLogout} className="inline-flex itens-center gap-2 text-azul-claro/80 hover:text-azul-claro hover:underline transition-colors"><LogOut   />Sair da Conta</button>
                                     </div>
                                 </div>
                             )}
