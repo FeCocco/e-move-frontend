@@ -1,27 +1,32 @@
 'use client';
 
+// ============================================================================
+// IMPORTS
+// ============================================================================
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import DashboardNav from '@/components/DashboardNav/DashboardNav';
 import { AnimatePresence, motion } from 'framer-motion';
-import { Button } from "@/components/ui/button"
-import {
-    Dialog,
-    DialogClose,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { z } from 'zod';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+// Componentes da Interface (UI)
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { AppCard } from "@/components/AppCard/AppCard";
+import DashboardNav from '@/components/DashboardNav/DashboardNav';
+
+// Utilitários e Gráficos
 import { getApiErrorMessage } from '@/lib/errorHandler';
-import {AppCard} from "@/components/AppCard/AppCard";
+import VeiculoChart from '@/components/Charts/VeiculoChart';
+import PostoChart from '@/components/Charts/PostoChart';
+import RotasChart from '@/components/Charts/RotasChart';
+import SatisfacaoChart from '@/components/Charts/SatisfacaoChart';
+import StatCard from '@/components/Charts/StatCard';
+import AnimatedCar from '@/components/Charts/AnimatedCar';
+import { Route, Zap, Droplets, UserRoundPen, LogOut, Check } from 'lucide-react';
 
 // ============================================================================
 // SCHEMA DE VALIDAÇÃO (ZOD)
@@ -35,25 +40,30 @@ const EditarUsuarioSchema = z.object({
         .max(11, { message: "O telefone não pode ter mais de 11 dígitos." }),
 });
 
+// ============================================================================
+// COMPONENTE DA PÁGINA DE DASHBOARD
+// ============================================================================
 export default function DashboardPage() {
     const API_URL = 'http://localhost:8080/api';
-    const [activeTab, setActiveTab] = useState('#BemVindo');
     const router = useRouter();
+
+    // Estados para controle da UI e dados
+    const [activeTab, setActiveTab] = useState('#BemVindo');
     const [profileData, setProfileData] = useState(null);
     const [apiError, setApiError] = useState('');
-
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-    const [formStatus, setFormStatus] = useState('idle'); // 'idle', 'submitting', 'success'
+    const [formStatus, setFormStatus] = useState('idle');
 
-    const { register, handleSubmit, formState: { errors } } = useForm({
+    // Hooks para gerenciamento de formulário
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm({
         resolver: zodResolver(EditarUsuarioSchema),
         mode: "onBlur",
     });
 
+    // Função para submeter a edição de dados do usuário
     const EditarUsuarioSubmit = async (data) => {
         setApiError('');
         setFormStatus('submitting');
-
         try {
             const response = await fetch(`${API_URL}/usuario/me`, {
                 method: 'PUT',
@@ -62,73 +72,63 @@ export default function DashboardPage() {
                 cache: 'no-store',
                 body: JSON.stringify(data),
             });
-
             if (!response.ok) {
                 const errorText = await response.text();
                 throw new Error(errorText || 'Falha ao atualizar.');
             }
-
             const updatedProfile = await response.json();
             setProfileData(updatedProfile);
             setFormStatus('success');
-
             setTimeout(() => {
                 setIsDialogOpen(false);
                 setFormStatus('idle');
-                router.refresh();
             }, 2000);
-
         } catch (error) {
             setApiError(getApiErrorMessage(error.message));
             setFormStatus('idle');
         }
-    }
+    };
 
+    // Função para realizar o logout do usuário
     const handleLogout = async () => {
         try {
-            await fetch('http://localhost:8080/api/logout', {
+            await fetch(`${API_URL}/logout`, {
                 method: 'POST',
-                credentials: 'include', // Necessário para que o navegador envie o cookie para o backend
+                credentials: 'include',
             });
         } catch (error) {
-            // Mesmo que a chamada falhe, o redirecionamento deve acontecer
             console.error("Erro ao fazer logout no servidor:", error);
         } finally {
-            // Redireciona o usuário para a página inicial após a tentativa de logout
             router.push('/');
         }
     };
 
-
+    // Efeito para buscar os dados do perfil ao carregar a página
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const response = await fetch('http://localhost:8080/api/usuario/me', {
+                const response = await fetch(`${API_URL}/usuario/me`, {
                     method: 'GET',
                     credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
+                    headers: { 'Content-Type': 'application/json' },
                     cache: 'no-store'
                 });
-
-                if (!response.ok) {
-                    throw new Error('Sessão inválida ou expirada.');
-                }
-
+                if (!response.ok) throw new Error('Sessão inválida ou expirada.');
                 const data = await response.json();
                 setProfileData(data);
-
+                // Preenche o formulário de edição com os dados buscados
+                setValue('nome', data.nome);
+                setValue('email', data.email);
+                setValue('telefone', data.telefone);
             } catch (error) {
                 console.error(error);
                 router.push('/');
             }
         };
-
         fetchProfile();
+    }, [router, setValue]);
 
-    }, [router]);
-
+    // Renderiza uma tela de carregamento enquanto os dados do perfil são buscados
     if (!profileData) {
         return (
             <div className="flex justify-center items-center h-screen">
@@ -150,29 +150,22 @@ export default function DashboardPage() {
 
                 <div className="flex-grow overflow-y-auto p-4">
                     <AnimatePresence mode="wait">
-                        <motion.div
-                            key={activeTab}
-                            initial={{ opacity: 0, y: 10 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -10 }}
-                            transition={{ duration: 0.2 }}
-                        >
+                        <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
+
                             {activeTab === '#BemVindo' && (
                                 <div className="text-center">
-                                    <h1 className="text-3xl font-bold font-orbitron mb-4">
-                                        Bem-vindo(a), {profileData.nome}!
-                                    </h1>
-                                    <p className="text-texto-claro/80">
-                                        Esse é o seu menu do aplicativo, sinta-se a vontade para se familiarizar com as abas.
-                                    </p>
+                                    <h1 className="text-3xl font-bold font-orbitron mb-4">Bem-vindo(a), {profileData.nome}!</h1>
+                                    <p className="text-texto-claro/80">Esse é o seu menu do aplicativo, sinta-se a vontade para se familiarizar com as abas.</p>
                                 </div>
                             )}
+
                             {activeTab === '#AbaVeiculos' && (
                                 <div>
                                     <h2 className="text-2xl font-orbitron text-verde-claro mb-4">Meus Veículos</h2>
                                     <p>Conteúdo da aba de veículos aqui...</p>
                                 </div>
                             )}
+
                             {activeTab === '#AbaRotas' && (
                                 <div>
                                     <h2 className="text-2xl font-orbitron text-verde-claro mb-4">Minhas Rotas</h2>
@@ -186,21 +179,23 @@ export default function DashboardPage() {
                                 <div>
                                     <h2 className="text-2xl font-orbitron text-verde-claro mb-4">Minha Conta</h2>
                                     <div className="flex justify-center">
-                                        <AppCard className="bg-black/20 p-4 rounded-lg w-fill">
-                                            <p><strong>Nome:</strong> {profileData.nome}</p>
-                                            <p><strong>Email:</strong> {profileData.email}</p>
-                                            <p><strong>Telefone:</strong> {profileData.telefone}</p>
-                                            <p><strong>CPF:</strong> {profileData.cpf}</p>
+
+                                        <AppCard className="bg-black/20 p-6 rounded-lg w-full max-w-md text-left">
+                                            <p className="mb-2"><strong>Nome:</strong> {profileData.nome}</p>
+                                            <p className="mb-2"><strong>Email:</strong> {profileData.email}</p>
+                                            <p className="mb-2"><strong>Telefone:</strong> {profileData.telefone}</p>
+                                            <p className="mb-2"><strong>CPF:</strong> {profileData.cpf}</p>
                                             <p><strong>Sexo:</strong> {profileData.sexo}</p>
                                             <div className="p-4 flex justify-center">
                                                 <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                                                     <DialogTrigger asChild>
-                                                        <Button variant="outline"><i className="fas fa-user-edit"></i> Editar Meus Dados</Button>
+
+                                                        <Button variant="outline"><UserRoundPen /> Editar Meus Dados</Button>
                                                     </DialogTrigger>
                                                     <DialogContent className="sm:max-w-[425px]">
                                                         {formStatus === 'success' ? (
                                                             <div className="flex flex-col items-center justify-center p-8 h-48">
-                                                                <i className="fas fa-check-circle text-verde-claro text-5xl mb-4"></i>
+                                                                <Check size={48} className="text-verde-claro mb-4"/>
                                                                 <DialogTitle className="text-xl">Perfil Atualizado!</DialogTitle>
                                                                 <DialogDescription>
                                                                     Seus dados foram salvos com sucesso.
@@ -251,19 +246,47 @@ export default function DashboardPage() {
                                             </div>
                                         </AppCard>
                                     </div>
-                                    <div className="text-center mt-4">
-                                        <button
-                                            onClick={handleLogout}
-                                            className="text-azul-claro/80 hover:text-azul-claro hover:underline transition-colors">
-                                            <i className="fas fa-sign-out-alt"></i> Sair da Conta
-                                        </button>
+
+                                    <div className="text-center mt-6">
+                                         <button onClick={handleLogout} className="inline-flex itens-center gap-2 text-azul-claro/80 hover:text-azul-claro hover:underline transition-colors"><LogOut   />Sair da Conta</button>
                                     </div>
                                 </div>
                             )}
+
                             {activeTab === '#AbaRelatorio' && (
                                 <div>
-                                    <h2 className="text-2xl font-orbitron text-verde-claro mb-4">Meus Relatório</h2>
-                                    <p>Conteúdo do relatório de veículos aqui...</p>
+                                    <h2 className="text-2xl font-orbitron text-verde-claro mb-2 text-center">Meus Relatórios</h2>
+                                    <p className="text-texto-claro/80 mb-8 text-center">Visualize os dados e métricas de uso do seu aplicativo e-Move.</p>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                        <div className="bg-black/20 p-6 rounded-lg">
+                                            <h3 className="text-lg font-semibold text-azul-claro mb-4 text-center">Veículos Mais Utilizados</h3>
+                                            <VeiculoChart />
+                                        </div>
+
+                                        <div className="bg-black/20 p-6 rounded-lg flex flex-col">
+                                            <h3 className="text-lg font-semibold text-azul-claro mb-4 text-center">Satisfação e Resumo</h3>
+                                            <div className="flex-grow mb-6">
+                                                <SatisfacaoChart />
+                                            </div>
+
+                                            <div className="grid grid-cols-3 gap-4 mb-6">
+                                                <StatCard icon={Route} value="1.280" unit="km" label="Distância Percorrida" />
+                                                <StatCard icon={Zap} value="256" unit="kWh" label="Energia Consumida" />
+                                                <StatCard icon={Droplets} value="1.152" unit="kg" label="CO₂ Economizado" />
+                                            </div>
+                                            <div className="mt-auto">
+                                                <AnimatedCar />
+                                            </div>
+                                        </div>
+                                        <div className="bg-black/20 p-6 rounded-lg">
+                                            <h3 className="text-lg font-semibold text-azul-claro mb-4 text-center">Rotas Preferidas</h3>
+                                            <RotasChart />
+                                        </div>
+                                        <div className="bg-black/20 p-6 rounded-lg">
+                                            <h3 className="text-lg font-semibold text-azul-claro mb-4 text-center">Postos de Recarga Frequentes</h3>
+                                            <PostoChart />
+                                        </div>
+                                    </div>
                                 </div>
                             )}
                         </motion.div>

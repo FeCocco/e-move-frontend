@@ -1,14 +1,15 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
+import { UserRoundCog, Gauge, MapPinned, EvCharger, Route, Car} from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const navItems = [
-    { id: '#AbaVeiculos', icon: 'fas fa-car', label: 'Meus Veículos' },
-    { id: '#AbaRotas', icon: 'fas fa-route', label: 'Minhas Rotas' },
-    { id: '#AbaEstacoes', icon: 'fas fa-charging-station', label: 'Estações' },
-    { id: '#AbaMapa', icon: 'fas fa-map-marked-alt', label: 'Planejar Rota' },
-    { id: '#AbaUsuarios', icon: 'fas fa-user-cog', label: 'Conta' },
-    { id: '#AbaRelatorio', icon: 'fas fa-user-cog', label: 'Relatorio' },
+    { id: '#AbaVeiculos', icon: () => <Car size={18} />, label: 'Meus Veículos' },
+    { id: '#AbaRotas', icon: () => <Route size={18} />, label: 'Minhas Rotas' },
+    { id: '#AbaEstacoes', icon: () => <EvCharger  size={18} />, label: 'Estações' },
+    { id: '#AbaMapa', icon: () => <MapPinned size={18} />, label: 'Planejar Rota' },
+    { id: '#AbaRelatorio',icon: () => <Gauge size={18} />, label: 'Relatório' },
+    { id: '#AbaUsuarios', icon: () => <UserRoundCog size={18} />, label: 'Conta' },
 ];
 
 const DashboardNav = ({ activeTab, setActiveTab }) => {
@@ -41,7 +42,8 @@ const DashboardNav = ({ activeTab, setActiveTab }) => {
                         ${activeTab === item.id ? 'text-black' : 'text-gray-300 hover:text-white'}`
                     }
                 >
-                    <i className={item.icon}></i>
+                    {/* Se for uma função (componente React), chama ela. Senão, usa FontAwesome */}
+                    {typeof item.icon === 'function' ? item.icon() : <i className={item.icon}></i>}
                     <span className="hidden md:inline">{item.label}</span>
                 </button>
             ))}
@@ -57,4 +59,6 @@ const DashboardNav = ({ activeTab, setActiveTab }) => {
             />
         </nav>
     );
-}; export default DashboardNav;
+};
+
+export default DashboardNav;
