@@ -22,8 +22,10 @@ import AbaVeiculos from '@/components/AbasDashboard/AbaVeiculos';
 import AbaRotas from '@/components/AbasDashboard/AbaRotas';
 import AbaEstacoes from '@/components/AbasDashboard/AbaEstacoes';
 import AbaMapa from '@/components/AbasDashboard/AbaMapa';
-/*import AbaUsuarios from '@/components/AbasDashboard/AbaUsuarios';
-import AbaRelatorio from '@/components/AbasDashboard/AbaRelatorio';*/
+import AbaRelatorio from '@/components/AbasDashboard/AbaRelatorio';
+import AbaUsuarios from '@/components/AbasDashboard/AbaUsuarios';
+import {AppCard} from "@/components/AppCard/AppCard";
+
 
 
 // ============================================================================
@@ -168,24 +170,22 @@ export default function DashboardPage() {
     }
 
     return (
-        <div className="flex items-center justify-center w-full min-h-screen p-4 md:p-6">
-            <div className="w-full max-w-6xl h-[calc(100vh-80px)] p-6 bg-white/[.08] backdrop-blur-md border-white/20 shadow-lg rounded-2xl text-texto-claro overflow-hidden flex flex-col">
-                <h1 className="text-3xl font-bold font-orbitron text-azul-claro text-center mb-7">
-                    Painel de Controle e-Move
-                </h1>
+        <AppCard className="h-[90vh] w-[70vw] p-4 ">
+            <h1 className="text-3xl font-bold font-orbitron text-azul-claro text-center mb-7">
+                Painel de Controle e-Move
+            </h1>
 
-                <div className="flex justify-center mb-8">
-                    <DashboardNav activeTab={activeTab} setActiveTab={setActiveTab} />
-                </div>
-
-                <div className="flex-grow overflow-y-auto p-4">
-                    <AnimatePresence mode="wait">
-                        <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
-                            {renderContent()}
-                        </motion.div>
-                    </AnimatePresence>
-                </div>
+            <div className="flex justify-center mb-8">
+                <DashboardNav activeTab={activeTab} setActiveTab={setActiveTab} />
             </div>
-        </div>
+
+            <div className="flex-grow overflow-y-auto p-4">
+                <AnimatePresence mode="wait">
+                    <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
+                        {renderContent()}
+                    </motion.div>
+                </AnimatePresence>
+            </div>
+        </AppCard>
     );
 }
