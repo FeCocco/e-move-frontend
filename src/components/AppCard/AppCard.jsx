@@ -6,7 +6,6 @@ const AppCard = ({ className, children }) => {
         <Card className={cn(
             "w-full flex flex-col",
             "bg-white/[.08] backdrop-blur-md border-white/20 shadow-lg text-texto-claro overflow-hidden",
-            // "max-h-[90vh]", // REMOVA OU COMENTE ESTA LINHA
             className
         )}>
             {children}
@@ -28,4 +27,4 @@ const AppCardContent = ({ className, children }) => {
             {children}
         </CardContent>
     );
-}; export { AppCard, AppCardHeader, AppCardContent }; // Exporte todos
+}; export { AppCard, AppCardHeader, AppCardContent };
