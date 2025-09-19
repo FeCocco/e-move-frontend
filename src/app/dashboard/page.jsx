@@ -36,8 +36,7 @@ const EditarUsuarioSchema = z.object({
     email: z.email({ message: "Formato de e-mail inválido." }),
     telefone: z.string()
         .regex(/^\d+$/, { message: "O telefone deve conter apenas números." })
-        .min(10, { message: "O telefone deve ter no mínimo 10 dígitos." })
-        .max(11, { message: "O telefone não pode ter mais de 11 dígitos." }),
+        .min(10, { message: "O telefone não pode ter mais de 11 dígitos." }),
 });
 
 // ============================================================================
@@ -170,22 +169,24 @@ export default function DashboardPage() {
     }
 
     return (
-        <AppCard className="h-[90vh] w-[70vw] p-4 ">
-            <h1 className="text-3xl font-bold font-orbitron text-azul-claro text-center mb-7">
-                Painel de Controle e-Move
-            </h1>
+        <main className="flex flex-grow items-center justify-center p-4">
+            <AppCard className="h-[90vh] w-[70vw] p-4">
+                <h1 className="text-3xl font-bold font-orbitron text-azul-claro text-center mb-7">
+                    Painel de Controle e-Move
+                </h1>
 
-            <div className="flex justify-center mb-8">
-                <DashboardNav activeTab={activeTab} setActiveTab={setActiveTab} />
-            </div>
+                <div className="flex justify-center mb-8">
+                    <DashboardNav activeTab={activeTab} setActiveTab={setActiveTab} />
+                </div>
 
-            <div className="flex-grow overflow-y-auto p-4">
-                <AnimatePresence mode="wait">
-                    <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
-                        {renderContent()}
-                    </motion.div>
-                </AnimatePresence>
-            </div>
-        </AppCard>
+                <div className="flex-grow overflow-y-auto p-4">
+                    <AnimatePresence mode="wait">
+                        <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
+                            {renderContent()}
+                        </motion.div>
+                    </AnimatePresence>
+                </div>
+            </AppCard>
+        </main>
     );
 }
