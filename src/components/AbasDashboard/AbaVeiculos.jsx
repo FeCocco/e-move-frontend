@@ -4,8 +4,7 @@ import AdicionarVeiculoCard from "@/components/AppCard/AdicionarVeiculoCard";
 import { useVeiculos } from "@/hooks/useVeiculos";
 
 import {
-    Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter, DialogClose
-} from "@/components/ui/dialog";
+    Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import {
     AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
 } from "@/components/ui/alert-dialog";
@@ -14,7 +13,7 @@ import { Button } from "@/components/ui/button";
 export default function AbaVeiculos() {
     const [addModalOpen, setAddModalOpen] = useState(false);
     const [editVehicle, setEditVehicle] = useState(null);
-    const [vehicleToDelete, setVehicleToDelete] = useState(null); // <-- NOVO ESTADO para o alerta de exclusão
+    const [vehicleToDelete, setVehicleToDelete] = useState(null);
 
     const { meusVeiculos, todosVeiculos, loading, error, adicionarVeiculo, removerVeiculo } = useVeiculos();
 
@@ -74,7 +73,7 @@ export default function AbaVeiculos() {
                                 {veiculosDisponiveis.map(veiculo => (
                                     <div key={veiculo.id} className="flex justify-between items-center p-3 bg-slate-800 rounded-lg">
                                         <span>{veiculo.marca} {veiculo.modelo} ({veiculo.autonomia}km)</span>
-                                        <Button onClick={() => handleAdicionarVeiculo(veiculo.id)} variant="outline" size="sm">
+                                        <Button onClick={() => handleAdicionarVeiculo(veiculo.id)} variant="botaoazul" size="sm">
                                             Adicionar
                                         </Button>
                                     </div>
