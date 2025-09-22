@@ -1,6 +1,6 @@
 "use client";
 import { motion } from 'framer-motion';
-import { Car } from 'lucide-react';
+import { TruckElectric } from 'lucide-react';
 
 const AnimatedCar = () => {
     return (
@@ -36,7 +36,7 @@ const AnimatedCar = () => {
                 }}
                 style={{ y: '-75%' }}
             >
-                <Car className="h-6 w-6 text-azul-claro" />
+                <TruckElectric className="h-6 w-6 text-azul-claro" />
             </motion.div>
         </div>
     );
