@@ -1,13 +1,15 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
-const AppCard = ({ className, children }) => {
+const AppCard = ({ className, children, ...props }) => {
     return (
         <Card className={cn(
             "w-full flex flex-col",
             "bg-white/[.08] backdrop-blur-md border-white/20 shadow-lg text-texto-claro overflow-hidden",
             className
-        )}>
+        )}
+              {...props}
+        >
             {children}
         </Card>
     );
@@ -27,4 +29,5 @@ const AppCardContent = ({ className, children }) => {
             {children}
         </CardContent>
     );
-}; export { AppCard, AppCardHeader, AppCardContent };
+};
+export { AppCard, AppCardHeader, AppCardContent };

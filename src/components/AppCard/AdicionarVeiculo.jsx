@@ -1,4 +1,5 @@
 import React from 'react';
+import BotaoAzul from "@/components/Botoes/BotaoAzul";
 
 const AdicionarVeiculo = ({ isOpen, onClose, veiculosDisponiveis, onAdicionar }) => {
     if (!isOpen) return null;
@@ -20,15 +21,14 @@ const AdicionarVeiculo = ({ isOpen, onClose, veiculosDisponiveis, onAdicionar })
                         veiculosDisponiveis.map(veiculo => (
                             <div key={veiculo.id} className="flex justify-between items-center p-3 bg-black/30 rounded-lg">
                                 <span>{veiculo.marca} {veiculo.modelo} ({veiculo.autonomia}km)</span>
-                                <button
+                                <BotaoAzul
                                     onClick={() => {
                                         onAdicionar(veiculo.id);
                                         onClose();
                                     }}
-                                    className="bg-azul-botao text-white px-3 py-1 rounded-md text-sm"
                                 >
                                     Adicionar
-                                </button>
+                                </BotaoAzul>
                             </div>
                         ))
                     ) : (
