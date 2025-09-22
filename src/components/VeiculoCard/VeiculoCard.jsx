@@ -16,7 +16,9 @@ const VeiculoCard = ({ nome, status, bateria, autonomiaTotal, autonomiaEstimada,
             </div>
 
             <div className="text-center pt-4 flex justify-between items-center">
+
                 <BotaoAzul onClick={onEditar}><Pencil size={18}/> Editar</BotaoAzul>
+
                 <BotaoVermelho onClick={onExcluir}><Trash2 size={18}/> Excluir</BotaoVermelho>
             </div>
         </AppCard>
