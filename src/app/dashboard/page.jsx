@@ -25,6 +25,7 @@ import AbaMapa from '@/components/AbasDashboard/AbaMapa';
 import AbaRelatorio from '@/components/AbasDashboard/AbaRelatorio';
 import AbaUsuarios from '@/components/AbasDashboard/AbaUsuarios';
 import {AppCard} from "@/components/AppCard/AppCard";
+import Logo from "@/components/Logo/Logo";
 
 
 
@@ -169,17 +170,20 @@ export default function DashboardPage() {
     }
 
     return (
-        <main className="flex flex-grow items-center justify-center p-4">
-            <AppCard className="h-[90vh] w-[70vw] p-4">
-                <h1 className="text-3xl font-bold font-orbitron text-azul-claro text-center mb-7">
+        <main className="flex flex-grow items-start sm:items-center justify-center p-0 sm:p-4">
+            <AppCard className="h-screen sm:h-[90vh] w-full max-w-6xl p-2 sm:p-4 rounded-none sm:rounded-xl border-0 sm:border">
+                <div className="sm:hidden text-center mb-4 pt-8">
+                    <Logo className="text-4xl inline-block" />
+                </div>
+                <h1 className="hidden sm:block text-2xl sm:text-3xl font-bold font-orbitron text-azul-claro text-center mb-4 sm:mb-7">
                     Painel de Controle e-Move
                 </h1>
 
-                <div className="flex justify-center mb-8">
+                <div className="flex justify-center mb-6 sm:mb-8">
                     <DashboardNav activeTab={activeTab} setActiveTab={setActiveTab} />
                 </div>
 
-                <div className="flex-grow overflow-y-auto p-4">
+                <div className="flex-grow overflow-y-auto px-1 py-4 sm:p-4">
                     <AnimatePresence mode="wait">
                         <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
                             {renderContent()}

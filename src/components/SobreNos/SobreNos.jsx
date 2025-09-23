@@ -6,7 +6,7 @@ export default function SobreNos() {
     return (
         <section id="sobre-nos" className="w-full py-32 px-6 text-center">
             <div className="max-w-7xl mx-auto">
-                <h2 className="text-5xl font-bold drop-shadow flex items-center justify-center gap-4 mb-8">
+                <h2 className="text-4xl md:text-5xl font-bold drop-shadow flex items-center justify-center gap-4 mb-8">
                     <Rocket size={48} strokeWidth={2.5} className="text-green-400" />
                     <span className="bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent">Nossa Missão</span>
                 </h2>
