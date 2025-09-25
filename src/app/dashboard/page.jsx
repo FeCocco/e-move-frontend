@@ -26,6 +26,7 @@ import AbaRelatorio from '@/components/AbasDashboard/AbaRelatorio';
 import AbaUsuarios from '@/components/AbasDashboard/AbaUsuarios';
 import {AppCard} from "@/components/AppCard/AppCard";
 import Logo from "@/components/Logo/Logo";
+import Link from "next/link";
 
 
 
@@ -173,7 +174,9 @@ export default function DashboardPage() {
         <main className="flex flex-grow items-start sm:items-center justify-center p-0 sm:p-4">
             <AppCard className="h-screen sm:h-[90vh] w-full max-w-6xl p-2 sm:p-4 rounded-none sm:rounded-xl border-0 sm:border bg-transparent sm:bg-white/[0.08]" >
             <div className="sm:hidden text-center mb-4 pt-8">
-                    <Logo className="text-4xl inline-block" />
+                <Link href="/">
+                    <Logo className="text-4xl inline-block text-azul-claro/70 drop-shadow-[0_0_8px_rgba(0,255,255,0.4)]" />
+                </Link>
                 </div>
                 <h1 className="hidden sm:block text-2xl sm:text-3xl font-bold font-orbitron text-azul-claro text-center mb-4 sm:mb-7">
                     Painel de Controle e-Move
