@@ -1,11 +1,11 @@
 import { Plus } from "lucide-react";
 import { AppCard } from "@/components/AppCard/AppCard";
 
-const AdicionarVeiculoCard = ({ onClick }) => {
+const AdicionarVeiculoCard = (props) => {
     return (
         <AppCard
-            className="p-4 bg-black/20 flex items-center justify-center cursor-pointer hover:bg-black/30 transition"
-            onClick={onClick}
+            className="p-4 min-h-64 bg-black/40 flex items-center justify-center cursor-pointer hover:bg-black/30 transition"
+            {...props}
         >
             <Plus size={32} className="text-verde-claro" />
         </AppCard>

@@ -8,7 +8,7 @@ import { UserRoundPen, LogOut, Check } from 'lucide-react';
 export default function AbaUsuarios({ profileData, isDialogOpen, setIsDialogOpen, formStatus, handleLogout, handleSubmit, EditarUsuarioSubmit, register, errors, apiError }) {
     return (
         <div>
-            <h2 className="text-2xl font-orbitron text-verde-claro mb-4">Minha Conta</h2>
+            <h2 className="flex justify-center text-2xl font-orbitron text-verde-claro mb-4">Minha Conta</h2>
             <div className="flex justify-center">
                 <AppCard className="bg-black/20 p-6 rounded-lg w-full max-w-md text-left">
                     <p className="mb-2"><strong>Nome:</strong> {profileData.nome}</p>
@@ -19,7 +19,7 @@ export default function AbaUsuarios({ profileData, isDialogOpen, setIsDialogOpen
                     <div className="p-4 flex justify-center">
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
-                                <Button variant="outline"><UserRoundPen /> Editar Meus Dados</Button>
+                                <Button variant="botaoazul"><UserRoundPen /> Editar Meus Dados</Button>
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-[425px]">
                                 {formStatus === 'success' ? (
@@ -58,11 +58,11 @@ export default function AbaUsuarios({ profileData, isDialogOpen, setIsDialogOpen
                                         {apiError && <p className="text-vermelho-status text-center text-sm mb-2">{apiError}</p>}
                                         <DialogFooter>
                                             <DialogClose asChild>
-                                                <Button variant="outline" type="button">Cancelar</Button>
+                                                <Button type="botaoazul">Cancelar</Button>
                                             </DialogClose>
                                             <Button
                                                 type="submit"
-                                                className="underline hover:text-verde-claro"
+                                                className="underline hover:text-vermelho-status"
                                                 disabled={formStatus === 'submitting'}
                                             >
                                                 {formStatus === 'submitting' ? 'Salvando...' : 'Salvar'}
