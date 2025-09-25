@@ -171,8 +171,8 @@ export default function DashboardPage() {
 
     return (
         <main className="flex flex-grow items-start sm:items-center justify-center p-0 sm:p-4">
-            <AppCard className="h-screen sm:h-[90vh] w-full max-w-6xl p-2 sm:p-4 rounded-none sm:rounded-xl border-0 sm:border">
-                <div className="sm:hidden text-center mb-4 pt-8">
+            <AppCard className="h-screen sm:h-[90vh] w-full max-w-6xl p-2 sm:p-4 rounded-none sm:rounded-xl border-0 sm:border bg-transparent sm:bg-white/[0.08]" >
+            <div className="sm:hidden text-center mb-4 pt-8">
                     <Logo className="text-4xl inline-block" />
                 </div>
                 <h1 className="hidden sm:block text-2xl sm:text-3xl font-bold font-orbitron text-azul-claro text-center mb-4 sm:mb-7">

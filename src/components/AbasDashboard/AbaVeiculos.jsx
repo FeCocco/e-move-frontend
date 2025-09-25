@@ -39,9 +39,10 @@ export default function AbaVeiculos() {
 
     return (
         <div>
-            <h2 className="text-2xl font-orbitron text-verde-claro mb-4">Meus Veículos</h2>
-            <p>Gerencie os veículos elétricos da sua garagem.</p>
-
+            <div className="flex justify-center flex-col">
+                <h2 className="flex justify-center text-2xl font-orbitron text-verde-claro mb-4">Meus Veículos</h2>
+                <p>Gerencie os veículos elétricos da sua garagem.</p>
+            </div>
             <div className="p-4 sm:p-5 md:p-6 rounded-lg">
                 <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-6" id="vehicleGrid">
                     {meusVeiculos.map((v) => (

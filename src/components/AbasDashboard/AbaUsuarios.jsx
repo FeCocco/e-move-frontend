@@ -8,7 +8,7 @@ import { UserRoundPen, LogOut, Check } from 'lucide-react';
 export default function AbaUsuarios({ profileData, isDialogOpen, setIsDialogOpen, formStatus, handleLogout, handleSubmit, EditarUsuarioSubmit, register, errors, apiError }) {
     return (
         <div>
-            <h2 className="text-2xl font-orbitron text-verde-claro mb-4">Minha Conta</h2>
+            <h2 className="flex justify-center text-2xl font-orbitron text-verde-claro mb-4">Minha Conta</h2>
             <div className="flex justify-center">
                 <AppCard className="bg-black/20 p-6 rounded-lg w-full max-w-md text-left">
                     <p className="mb-2"><strong>Nome:</strong> {profileData.nome}</p>
