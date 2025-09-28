@@ -1,4 +1,3 @@
-// src/app/layout.jsx
 'use client';
 
 import { Orbitron, Poppins, Josefin_Sans } from "next/font/google";
@@ -7,6 +6,7 @@ import Logo from "../components/Logo/Logo";
 import Link from "next/link";
 import Header from "@/components/Header/Header";
 import { usePathname } from 'next/navigation';
+import {Toaster} from "sonner";
 
 const orbitron = Orbitron({ subsets: ["latin"], weight: ["500", "700"], variable: "--font-orbitron" });
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"], variable: "--font-poppins" });
@@ -33,6 +33,7 @@ export default function RootLayout({ children }) {
 
         <main className="min-h-screen w-full bg-gradient-body flex flex-col">
             {children}
+            <Toaster richColors position="top-right" />
         </main>
         </body>
         </html>

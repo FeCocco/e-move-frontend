@@ -25,6 +25,28 @@
         --border: 222.2 47.4% 11.2%;
         --ring: 215 27.9% 53.1%;
         --radius: 0.5rem;
+
+
+        /* ***********PROPRIEDADE DO SHADCN*********** */
+        --popover: 222.2 84% 4.9%;
+        --popover-foreground: 210 40% 98%;
+
+        --primary: 180 100% 50%;
+        --primary-foreground: 222.2 47.4% 11.2%;
+
+        --secondary: 145 100% 50%;
+        --secondary-foreground: 210 40% 98%;
+
+        --muted: 217.2 32.6% 17.5%;
+        --muted-foreground: 215.4 16.3% 46.9%;
+
+        --accent: 217.2 32.6% 17.5%;
+        --accent-foreground: 210 40% 98%;
+
+        --destructive: 0 62.8% 30.6%;
+        --destructive-foreground: 210 40% 98%;
+
+        --input: 217.2 32.6% 17.5%;
     }
 }
 
