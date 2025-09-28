@@ -11,17 +11,15 @@ const buttonVariants = cva(
       variant: {
         default:
           "bg-primary text-primary-foreground shadow hover:bg-primary/90",
-        destructive:
-          "bg-destructive text-destructive-foreground shadow-sm hover:bg-destructive/90",
         outline:
           "border border-input bg-azul-botao text-black transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-azul-claro/50",
-        botaoazul:
+          botaoazul:
             "bg-azul-botao text-white text-sm px-4 py-2 rounded-xl flex items-center justify-center gap-2 hover:shadow-xl hover:-translate-y-1 transition shadow duration-300",
           botaovermelho:
               "bg-red-500 text-white text-sm px-4 py-2 rounded-xl flex items-center justify-center gap-2 hover:shadow-xl hover:-translate-y-1 transition shadow duration-300",
           secondary:
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
+        ghost: "bg-transparent hover:underline transition duration-300",
         link: "text-primary underline-offset-4 hover:underline",
       },
       size: {

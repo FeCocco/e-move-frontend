@@ -43,14 +43,12 @@ export default function AbaVeiculos() {
     if (loading) return <p>Carregando seus veículos...</p>;
     if (error) return <p className="text-vermelho-status">{error}</p>;
 
-    // 👇 [CORREÇÃO AQUI]
     const handleAdicionarVeiculo = async (veiculoId) => {
         await adicionarVeiculo(veiculoId); // Espera a função terminar
         setAddModalOpen(false);
         setSearchTerm("");
     };
 
-    // 👇 [CORREÇÃO AQUI]
     const handleConfirmarExclusao = async () => {
         if (vehicleToDelete) {
             await removerVeiculo(vehicleToDelete.id); // Espera a função terminar

@@ -8,10 +8,13 @@ import { Label } from "@/components/ui/label";
 
 export default function EditarBateriaModal({ veiculo, isOpen, onClose, onSave }) {
     const [nivelBateria, setNivelBateria] = useState(0);
+    const [initialBateria, setInitialBateria] = useState(0); // Para saber o valor inicial
 
     useEffect(() => {
         if (veiculo) {
-            setNivelBateria(veiculo.nivelBateria || 0);
+            const initialValue = veiculo.nivelBateria || 0;
+            setNivelBateria(initialValue);
+            setInitialBateria(initialValue);
         }
     }, [veiculo]);
 
@@ -21,6 +24,9 @@ export default function EditarBateriaModal({ veiculo, isOpen, onClose, onSave })
         onSave(veiculo.id, nivelBateria);
         onClose();
     };
+
+    // Verifica se o valor foi alterado para habilitar o botão de salvar
+    const hasChanges = nivelBateria !== initialBateria;
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
@@ -46,8 +52,18 @@ export default function EditarBateriaModal({ veiculo, isOpen, onClose, onSave })
                     />
                 </div>
                 <DialogFooter>
-                    <Button variant="outline" onClick={onClose}>Cancelar</Button>
-                    <Button variant="botaoazul" onClick={handleSave}>Salvar Alterações</Button>
+                    {/* Botão de Cancelar continua o mesmo */}
+                    <Button variant="botaoazul" onClick={onClose}>Cancelar</Button>
+
+                    {/* [A CORREÇÃO] Botão de Salvar agora segue o padrão do perfil */}
+                    <Button
+                        variant="ghost"
+                        className="text-white"
+                        onClick={handleSave}
+
+                    >
+                        Salvar Alterações
+                    </Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
