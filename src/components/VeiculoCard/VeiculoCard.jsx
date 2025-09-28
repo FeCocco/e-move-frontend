@@ -9,10 +9,10 @@ const VeiculoCard = ({ nome, status, bateria, autonomiaTotal, autonomiaEstimada,
                 <h4 className="text-xl text-verde-claro">{nome}</h4>
 
                 <div className="p-2 flex flex-col gap-2 mt-2">
+                    <p className="text-gray-400/50">Status: <span>{status}</span> (em breve)</p>
+                    <p>Autonomia total: <span>{autonomiaTotal} km</span></p>
                     <p>Bateria: <span className="text-white">{bateria}%</span></p>
                     <p>Autonomia Estimada: <span className="text-white">{autonomiaEstimada.toFixed(0)} km</span></p>
-                    <p>Autonomia total: <span>{autonomiaTotal} km</span></p>
-                    <p className="text-gray-400/50">Status: <span>{status}</span> (em breve)</p>
                     <p className="text-gray-400/50">KM Rodados: <span>{KmRodados} km</span> (em breve)</p>
                 </div>
             </div>

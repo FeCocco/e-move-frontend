@@ -71,8 +71,8 @@ export default function AbaVeiculos() {
                             key={v.id}
                             nome={`${v.marca} ${v.modelo}`}
                             status="Disponível" // A ser implementado
+                            autonomiaTotal={v.autonomiaTotal}
                             bateria={v.nivelBateria}
-                            autonomiaTotal={v.autonomia}
                             autonomiaEstimada={v.autonomiaEstimada}
                             KmRodados={2000} // A ser implementado
                             onEditar={() => setVehicleToEdit(v)}
