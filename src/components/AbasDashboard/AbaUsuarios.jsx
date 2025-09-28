@@ -58,11 +58,11 @@ export default function AbaUsuarios({ profileData, isDialogOpen, setIsDialogOpen
                                         {apiError && <p className="text-vermelho-status text-center text-sm mb-2">{apiError}</p>}
                                         <DialogFooter>
                                             <DialogClose asChild>
-                                                <Button type="botaoazul">Cancelar</Button>
+                                                <Button variant="botaoazul">Cancelar</Button>
                                             </DialogClose>
                                             <Button
-                                                type="submit"
-                                                className="underline hover:text-vermelho-status"
+                                                variant="ghost"
+                                                className="text-white"
                                                 disabled={formStatus === 'submitting'}
                                             >
                                                 {formStatus === 'submitting' ? 'Salvando...' : 'Salvar'}
@@ -76,7 +76,7 @@ export default function AbaUsuarios({ profileData, isDialogOpen, setIsDialogOpen
                 </AppCard>
             </div>
             <div className="text-center mt-6">
-                <button onClick={handleLogout} className="inline-flex itens-center gap-2 text-azul-claro/80 hover:text-azul-claro hover:underline transition-colors"><LogOut   />Sair da Conta</button>
+                <Button variant="link" onClick={handleLogout} className="text-xl text-azul-botao"> <LogOut size={48}/>Sair da Conta</Button>
             </div>
         </div>
     );
