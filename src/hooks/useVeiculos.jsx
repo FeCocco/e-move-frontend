@@ -10,6 +10,7 @@ export function useVeiculos() {
     const [error, setError] = useState('');
 
     const fetchMeusVeiculos = useCallback(async () => {
+        setLoading(true);
         try {
             const response = await fetch(`${API_URL}/meus-veiculos`, {
                 credentials: 'include',
@@ -68,5 +69,24 @@ export function useVeiculos() {
         }
     };
 
-    return { meusVeiculos, todosVeiculos, loading, error, adicionarVeiculo, removerVeiculo };
+    const atualizarNivelBateria = async (veiculoId, nivelBateria) => {
+        try {
+            const response = await fetch(`${API_URL}/${veiculoId}/bateria`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                credentials: 'include',
+                body: JSON.stringify({ nivelBateria }),
+            });
+            if (!response.ok) throw new Error(await response.text());
+            // Atualiza a lista de veículos para refletir a mudança
+            await fetchMeusVeiculos();
+        } catch (err) {
+            setError(getApiErrorMessage(err.message));
+            throw err; // Lança o erro para que o componente possa tratá-lo
+        }
+    };
+
+    return { meusVeiculos, todosVeiculos, loading, error, adicionarVeiculo, removerVeiculo, atualizarNivelBateria };
 }

@@ -1,148 +1,94 @@
-import { useState, useMemo } from "react";
-import VeiculoCard from "@/components/VeiculoCard/VeiculoCard";
+// src/components/AbasDashboard/AbaVeiculos.jsx
+import { useState } from 'react';
+import { useVeiculos } from '@/hooks/useVeiculos';
+import VeiculoCard from '@/components/VeiculoCard/VeiculoCard';
 import AdicionarVeiculoCard from "@/components/AppCard/AdicionarVeiculoCard";
-import { useVeiculos } from "@/hooks/useVeiculos";
-
+import { EditarBateriaModal } from '@/components/EditarBateriaModal/EditarBateriaModal';
 import {
-    Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger
+    Dialog,
+    DialogContent,
+    DialogHeader,
+    DialogTitle,
+    DialogDescription
 } from "@/components/ui/dialog";
-import {
-    AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 
-export default function AbaVeiculos() {
-    const [addModalOpen, setAddModalOpen] = useState(false);
-    const [editVehicle, setEditVehicle] = useState(null);
-    const [vehicleToDelete, setVehicleToDelete] = useState(null);
-    const [searchTerm, setSearchTerm] = useState("");
+const AbaVeiculos = () => {
+    const { meusVeiculos, todosVeiculos, loading, error, adicionarVeiculo, removerVeiculo, atualizarNivelBateria } = useVeiculos();
+    const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const [veiculoSelecionado, setVeiculoSelecionado] = useState(null);
 
-    const { meusVeiculos, todosVeiculos, loading, error, adicionarVeiculo, removerVeiculo } = useVeiculos();
-
-    const veiculosDisponiveis = useMemo(() => {
-        const meusVeiculosIds = new Set(meusVeiculos.map(v => v.id));
-        if (!searchTerm) {
-            return todosVeiculos.filter(v => !meusVeiculosIds.has(v.id));
-        }
-        return todosVeiculos.filter(v =>
-            !meusVeiculosIds.has(v.id) &&
-            `${v.marca} ${v.modelo}`.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-    }, [meusVeiculos, todosVeiculos, searchTerm]);
-
-    if (loading) return <p>Carregando seus veículos...</p>;
-    if (error) return <p className="text-vermelho-status">{error}</p>;
-
-    const handleAdicionarVeiculo = (veiculoId) => {
-        adicionarVeiculo(veiculoId);
-        setAddModalOpen(false);
-        setSearchTerm("");
+    const handleOpenEditModal = (veiculo) => {
+        setVeiculoSelecionado(veiculo);
+        setIsEditModalOpen(true);
     };
 
-    const handleConfirmarExclusao = () => {
-        if (vehicleToDelete) {
-            removerVeiculo(vehicleToDelete.id);
-            setVehicleToDelete(null);
-        }
+    const handleCloseEditModal = () => {
+        setVeiculoSelecionado(null);
+        setIsEditModalOpen(false);
     };
 
-    const mailtoLink = `mailto:emovesuporte@gmail.com?subject=Solicitação de Novo Veículo&body=Olá, equipe e-Move!%0D%0A%0D%0AGostaria de solicitar a adição do seguinte veículo à plataforma:%0D%0A%0D%0A- Marca / Modelo: ${searchTerm}%0D%0A%0D%0A[Por favor, adicione mais detalhes que você conheça, como ano e autonomia em km, se possível.]`;
+    const veiculosDisponiveis = todosVeiculos.filter(
+        (v) => !meusVeiculos.some((meuV) => meuV.id === v.id)
+    );
 
+    if (loading) return <p className="text-center">Carregando seus veículos...</p>;
+    if (error) return <p className="text-center text-red-500">{error}</p>;
 
     return (
         <div>
-            <h2 className="text-2xl font-orbitron text-verde-claro mb-4">Meus Veículos</h2>
-            <p>Gerencie os veículos elétricos da sua garagem.</p>
-
-            <div className="p-4 sm:p-5 md:p-6 rounded-lg">
-                <div className="grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-6" id="vehicleGrid">
-                    {meusVeiculos.map((v) => (
-                        <VeiculoCard
-                            key={v.id}
-                            nome={`${v.marca} ${v.modelo}`}
-                            status="Disponível"
-                            bateria={100}
-                            autonomiaTotal={v.autonomia}
-                            autonomiaEstimada={v.autonomia}
-                            KmRodados={2000}
-                            onEditar={() => setEditVehicle(v)}
-                            onExcluir={() => setVehicleToDelete(v)}
-                        />
-                    ))}
-
-                    <Dialog open={addModalOpen} onOpenChange={setAddModalOpen}>
-                        <DialogTrigger asChild>
-                            <AdicionarVeiculoCard />
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Adicionar Veículo à Garagem</DialogTitle>
-                                <DialogDescription>
-                                    Selecione um veículo da lista para adicioná-lo ao seu perfil.
-                                </DialogDescription>
-                            </DialogHeader>
-
-                            <Input
-                                placeholder="Pesquisar por marca ou modelo..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro"
-                            />
-
-                            <div className="flex flex-col gap-2 max-h-80 overflow-y-auto py-4">
-                                {veiculosDisponiveis.length > 0 ? (
-                                    veiculosDisponiveis.map(veiculo => (
-                                        <div key={veiculo.id} className="flex justify-between items-center p-3 bg-slate-800 rounded-lg">
-                                            <span>{veiculo.marca} {veiculo.modelo} ({veiculo.autonomia}km)</span>
-                                            <Button onClick={() => handleAdicionarVeiculo(veiculo.id)} variant="botaoazul" size="sm">
-                                                Adicionar
-                                            </Button>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <div className="text-center text-slate-400 p-4">
-                                        <p>Nenhum veículo encontrado.</p>
-                                        {searchTerm && (
-                                            <p className="mt-4 text-sm">
-                                                Não achou seu veículo elétrico? <a href={mailtoLink} className="text-azul-claro underline hover:text-azul-botao">Solicite a adição</a> ao time de desenvolvimento.
-                                            </p>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                        </DialogContent>
-                    </Dialog>
-                </div>
+            <h3 className="text-2xl font-semibold mb-4 text-azul-claro">Meus Veículos</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {meusVeiculos.map((veiculo) => (
+                    <VeiculoCard
+                        key={veiculo.id}
+                        veiculo={veiculo}
+                        onEditar={handleOpenEditModal}
+                        onExcluir={removerVeiculo}
+                    />
+                ))}
+                <AdicionarVeiculoCard onClick={() => setIsAddModalOpen(true)} />
             </div>
 
-            <Dialog open={!!editVehicle} onOpenChange={(isOpen) => !isOpen && setEditVehicle(null)}>
-                <DialogContent>
+            {/* Modal para Adicionar Veículo */}
+            <Dialog open={isAddModalOpen} onOpenChange={setIsAddModalOpen}>
+                <DialogContent className="bg-gray-800 text-white border-gray-700">
                     <DialogHeader>
-                        <DialogTitle>Editar Veículo</DialogTitle>
+                        <DialogTitle>Adicionar Novo Veículo</DialogTitle>
                         <DialogDescription>
-                            Aqui você poderá dar um apelido ou alterar outras informações do seu veículo no futuro.
+                            Selecione um veículo da lista para adicionar à sua garagem.
                         </DialogDescription>
                     </DialogHeader>
+                    <div className="mt-4 max-h-80 overflow-y-auto">
+                        {veiculosDisponiveis.length > 0 ? (
+                            veiculosDisponiveis.map((veiculo) => (
+                                <div key={veiculo.id} className="flex justify-between items-center p-2 hover:bg-gray-700 rounded">
+                                    <span>{veiculo.marca} {veiculo.modelo}</span>
+                                    <Button onClick={() => {
+                                        adicionarVeiculo(veiculo.id);
+                                        setIsAddModalOpen(false);
+                                    }}>Adicionar</Button>
+                                </div>
+                            ))
+                        ) : (
+                            <p>Nenhum veículo novo para adicionar.</p>
+                        )}
+                    </div>
                 </DialogContent>
             </Dialog>
 
-            <AlertDialog open={!!vehicleToDelete} onOpenChange={(isOpen) => !isOpen && setVehicleToDelete(null)}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Tem a certeza?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            Esta ação não pode ser desfeita. Isto irá remover permanentemente o veículo
-                            <strong> {vehicleToDelete?.marca} {vehicleToDelete?.modelo} </strong>
-                            da sua garagem.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                        <AlertDialogAction onClick={handleConfirmarExclusao}>Continuar</AlertDialogAction>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+            {/* Modal para Editar Bateria */}
+            {veiculoSelecionado && (
+                <EditarBateriaModal
+                    veiculo={veiculoSelecionado}
+                    isOpen={isEditModalOpen}
+                    onClose={handleCloseEditModal}
+                    onSave={atualizarNivelBateria}
+                />
+            )}
         </div>
     );
-}
+};
+
+export default AbaVeiculos;
