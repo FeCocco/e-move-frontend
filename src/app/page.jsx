@@ -8,16 +8,16 @@ import BackToTopButton from "@/components/BackToTopButton/BackToTopButton";
 import Tecnologias from "@/components/Tecnologias/Tecnologias";
 
 export default function Home() {
-  return (
-      <>
-          <TelaInicial />
-          <SobreNos />
-          <Roadmap />
-          <Inovacao />
-          <Suporte />
-          <Tecnologias />
-          <Footer />
-          <BackToTopButton />
-      </>
-  );
+    return (
+        <>
+            <TelaInicial />
+            <SobreNos />
+            <Roadmap />
+            <Inovacao />
+            <Suporte />
+            <Tecnologias />
+            <Footer />
+            <BackToTopButton />
+        </>
+    );
 }
