@@ -1,42 +1,91 @@
 "use client";
 import AnimatedStat from './AnimatedStat';
-import MemberCard from '../SobreNos/MemberCard'; // Reutilize o MemberCard
-import { Leaf, Zap, Users, MapPin, BatteryCharging, Network, Lightbulb } from 'lucide-react';
+import { Car, Zap, Users, MapPin, BatteryCharging, Network, TrendingUp, Shield } from 'lucide-react';
 
 export default function Inovacao() {
     const features = [
-        { icon: MapPin, title: "Planejamento de Rota Inteligente", description: "Combata a ansiedade de autonomia. Nosso algoritmo calcula a rota e, se necessário, adiciona as paradas de recarga ideais." },
-        { icon: BatteryCharging, title: "Gestão de Veículos", description: "Cadastre múltiplos veículos e suas autonomias. Nossos cálculos são feitos sob medida para o seu carro, garantindo precisão." },
-        { icon: Zap, title: "Base de Estações Unificada", description: "Encontre milhares de pontos de recarga com detalhes e comentários de usuários em um só lugar, acabando com a fragmentação." },
-        { icon: Network, title: "Otimização para Frotas", description: "Planeje rotas para múltiplos veículos, monitore o consumo e reduza custos com relatórios inteligentes." }
+        {
+            icon: MapPin,
+            title: "Rotas Inteligentes",
+            description: "Algoritmo avançado que calcula a melhor rota considerando autonomia, tráfego e pontos de recarga.",
+            highlight: "IA Preditiva"
+        },
+        {
+            icon: BatteryCharging,
+            title: "Gestão de Bateria",
+            description: "Monitore o consumo em tempo real e receba alertas inteligentes sobre o melhor momento para recarregar.",
+            highlight: "Real-time"
+        },
+        {
+            icon: Network,
+            title: "Rede Unificada",
+            description: "Acesso a mais de 4.300 pontos de recarga com informações atualizadas de disponibilidade e preços.",
+            highlight: "4.300+ Pontos"
+        },
+        {
+            icon: Shield,
+            title: "Para Empresas",
+            description: "Dashboard completo para gestão de frotas com relatórios de economia e impacto ambiental.",
+            highlight: "B2B Ready"
+        }
     ];
 
     return (
-        <section id="inovacao" className="w-full py-32 px-6">
-            <div className="max-w-7xl mx-auto text-center">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
-                    <AnimatedStat icon={Leaf} finalValue={180000} label="Veículos Elétricos Leves em Circulação no Brasil" />
-                    <AnimatedStat icon={Zap} finalValue={4300} label="Eletropostos Públicos e Semipúblicos no País" />
-                    <AnimatedStat icon={Users} finalValue={1500} label="Usuários na Nossa Lista de Espera" />
+        <section id="inovacao" className="w-full py-24 px-6">
+            <div className="max-w-7xl mx-auto">
+                {/* Stats Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+                    <AnimatedStat
+                        icon={Car}
+                        finalValue={180000}
+                        label="Veículos Elétricos no Brasil"
+                    />
+                    <AnimatedStat
+                        icon={Zap}
+                        finalValue={4300}
+                        label="Pontos de Recarga Mapeados"
+                    />
+                    <AnimatedStat
+                        icon={Users}
+                        finalValue={1500}
+                        label="Usuários na Lista de Espera"
+                    />
                 </div>
-                <h2 className="text-5xl font-bold drop-shadow flex items-center justify-center gap-4 mb-8">
-                    <Lightbulb size={48} className="text-green-400" />
-                    <span className="bg-gradient-to-r from-green-400 to-blue-500 bg-clip-text text-transparent leading-snug">Como o e-Move Resolve Isso</span>
-                </h2>
-                <p className="max-w-4xl mx-auto text-xl text-slate-300 leading-relaxed mb-16">
-                    Nossa plataforma ataca diretamente os principais desafios da mobilidade elétrica, oferecendo ferramentas inteligentes para motoristas e empresas.
-                </p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {features.map((feature) => (
-                        <MemberCard
-                            key={feature.title}
-                            icon={feature.icon}
-                            contentClassName="text-left"
-                        >
 
-                            <h4 className="text-lg font-semibold text-white mb-2">{feature.title}</h4>
-                            <p className="text-slate-400 text-sm leading-relaxed">{feature.description}</p>
-                        </MemberCard>
+                {/* Features Section */}
+                <div className="text-center mb-16">
+                    <div className="inline-flex items-center gap-2 px-4 py-2 bg-azul-claro/10 border border-azul-claro/20 rounded-full mb-6">
+                        <TrendingUp className="w-4 h-4 text-azul-claro" />
+                        <span className="text-sm text-azul-claro font-medium">Soluções Inovadoras</span>
+                    </div>
+
+                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                        Tecnologia que Resolve
+                        <span className="block text-transparent bg-clip-text bg-gradient-to-r from-verde-claro to-azul-claro">
+                            Problemas Reais
+                        </span>
+                    </h2>
+
+                    <p className="max-w-3xl mx-auto text-lg text-texto-claro/70 leading-relaxed">
+                        Combinamos inteligência artificial, dados em tempo real e uma interface intuitiva
+                        para eliminar as principais barreiras da mobilidade elétrica.
+                    </p>
+                </div>
+
+                {/* Features Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {features.map((feature) => (
+                        <div key={feature.title} className="group relative">
+                            <div className="absolute inset-0 bg-gradient-to-br from-verde-claro/20 to-azul-claro/20 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                            <div className="relative p-8 bg-slate-800/50 backdrop-blur rounded-2xl border border-white/10 h-full transition-all duration-300 group-hover:border-verde-claro/30">
+                                <div className="absolute -top-3 -right-3 px-3 py-1 bg-verde-claro/90 text-slate-900 text-xs font-bold rounded-full">
+                                    {feature.highlight}
+                                </div>
+                                <feature.icon className="w-10 h-10 text-azul-claro mb-4" />
+                                <h3 className="text-lg font-semibold text-white mb-3">{feature.title}</h3>
+                                <p className="text-sm text-texto-claro/60 leading-relaxed">{feature.description}</p>
+                            </div>
+                        </div>
                     ))}
                 </div>
             </div>
