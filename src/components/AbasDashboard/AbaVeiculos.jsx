@@ -61,7 +61,7 @@ export default function AbaVeiculos() {
 
     return (
         <div>
-            <div className="flex justify-center flex-col">
+            <div className="flex justify-center text-center flex-col">
                 <h2 className="flex justify-center text-2xl font-orbitron text-verde-claro mb-4">Meus Veículos</h2>
                 <p>Gerencie os veículos elétricos da sua garagem.</p>
             </div>
