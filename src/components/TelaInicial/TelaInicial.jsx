@@ -74,6 +74,17 @@ const TelaInicial = () => {
                                 </div>
                             ))}
                         </div>
+                        {/* Scroll Indicator */}
+                        <ScrollLink
+                            to="sobre-nos"
+                            spy={true}
+                            smooth={true}
+                            offset={-90}
+                            duration={500}
+                            className="animate-bounce cursor-pointer pt-16"
+                        >
+                            <ChevronDown className="w-8 h-8 text-azul-claro/50" />
+                        </ScrollLink>
                     </div>
                 </div>
             </div>
