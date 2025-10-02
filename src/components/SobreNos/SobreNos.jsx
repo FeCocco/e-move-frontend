@@ -3,11 +3,11 @@ import { Target, Users, Sparkles } from 'lucide-react';
 
 export default function SobreNos() {
     const team = [
-        { name: "Felipe Giacomini Cocco", id: "116525", role: "Desenvolvimento" },
+        { name: "Felipe Giacomini Cocco", id: "116525", role: "FullStack" },
         { name: "Fernando Gabriel Perinotto", id: "115575", role: "Banco de Dados" },
-        { name: "Jhonatas K. de Oliveira Braga", id: "116707", role: "Infraestrutura" },
-        { name: "Lucas Santos Souza", id: "116852", role: "Backend" },
-        { name: "Samuel Wilson Rufino", id: "117792", role: "Frontend" }
+        { name: "Jhonatas K. de Oliveira Braga", id: "116707", role: "QA" },
+        { name: "Lucas Santos Souza", id: "116852", role: "Frontend" },
+        { name: "Samuel Wilson Rufino", id: "117792", role: "Infraestrutura" }
     ];
 
     return (

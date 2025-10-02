@@ -14,7 +14,7 @@ export default function Roadmap() {
         {
             phase: "Fase 2",
             title: "Desenvolvimento MVP",
-            description: "Construção das funcionalidades core e testes com usuários beta",
+            description: "Construção das funcionalidades cores e testes internos",
             status: "active",
             date: "Q2 2025",
             icon: Clock

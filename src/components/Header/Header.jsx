@@ -12,7 +12,7 @@ const menuItems = [
 ];
 
 const socialItems = [
-    { label: 'GitHub', link: 'https://github.com/JhonaBraga/e-move' },
+    { label: 'GitHub', link: 'https://github.com/FeCocco/e-move-frontend.git' },
 ];
 
 const CustomMenuItem = ({ children, href, ...props }) => (
