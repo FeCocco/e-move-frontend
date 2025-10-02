@@ -8,7 +8,7 @@ export default function Inovacao() {
             icon: MapPin,
             title: "Rotas Inteligentes",
             description: "Algoritmo avançado que calcula a melhor rota considerando autonomia, tráfego e pontos de recarga.",
-            highlight: "IA Preditiva"
+            highlight: "Algoritmo OSRM"
         },
         {
             icon: BatteryCharging,
@@ -20,7 +20,7 @@ export default function Inovacao() {
             icon: Network,
             title: "Rede Unificada",
             description: "Acesso a mais de 4.300 pontos de recarga com informações atualizadas de disponibilidade e preços.",
-            highlight: "4.300+ Pontos"
+            highlight: "OpenChargeMap"
         },
         {
             icon: Shield,
@@ -67,7 +67,7 @@ export default function Inovacao() {
                     </h2>
 
                     <p className="max-w-3xl mx-auto text-lg text-texto-claro/70 leading-relaxed">
-                        Combinamos inteligência artificial, dados em tempo real e uma interface intuitiva
+                        Combinamos dados em tempo real e uma interface intuitiva
                         para eliminar as principais barreiras da mobilidade elétrica.
                     </p>
                 </div>
