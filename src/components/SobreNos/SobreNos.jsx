@@ -11,31 +11,29 @@ export default function SobreNos() {
     ];
 
     return (
-        <section id="sobre-nos" className="w-full py-24 px-6">
+        <section id="sobre-nos" className="w-full py-20 sm:py-24 px-6">
             <div className="max-w-7xl mx-auto">
-                {/* Mission Section */}
-                <div className="text-center mb-20">
+                <div className="text-center mb-16 sm:mb-20">
                     <div className="inline-flex items-center gap-2 px-4 py-2 bg-verde-claro/10 border border-verde-claro/20 rounded-full mb-6">
                         <Target className="w-4 h-4 text-verde-claro" />
                         <span className="text-sm text-verde-claro font-medium">Nossa Missão</span>
                     </div>
 
-                    <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
+                    <h2 className="text-4xl sm:text-5xl font-bold text-white mb-6">
                         Simplificando a Transição para a
                         <span className="block text-transparent bg-clip-text bg-gradient-to-r from-verde-claro to-azul-claro">
                             Mobilidade Elétrica
                         </span>
                     </h2>
 
-                    <p className="max-w-3xl mx-auto text-lg text-texto-claro/70 leading-relaxed">
+                    <p className="max-w-3xl mx-auto text-base sm:text-lg text-texto-claro/70 leading-relaxed">
                         A adoção de veículos elétricos cresce exponencialmente, mas a infraestrutura
                         e as ferramentas de suporte ainda estão fragmentadas. O e-Move une tudo
                         em uma plataforma intuitiva, eliminando barreiras e acelerando a mobilidade sustentável no Brasil.
                     </p>
                 </div>
 
-                {/* Values Grid */}
-                <div className="grid md:grid-cols-3 gap-8 mb-20">
+                <div className="grid md:grid-cols-3 gap-6 sm:gap-8 mb-16 sm:mb-20">
                     <div className="text-center p-8 bg-white/5 backdrop-blur rounded-2xl border border-white/10">
                         <div className="w-16 h-16 mx-auto mb-4 bg-verde-claro/10 rounded-xl flex items-center justify-center">
                             <Sparkles className="w-8 h-8 text-verde-claro" />
@@ -61,9 +59,8 @@ export default function SobreNos() {
                     </div>
                 </div>
 
-                {/* Team Section */}
                 <div className="text-center">
-                    <h3 className="text-2xl font-semibold text-white mb-8">Conheça Nossa Equipe</h3>
+                    <h3 className="text-2xl sm:text-3xl font-semibold text-white mb-8">Conheça Nossa Equipe</h3>
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
                         {team.map((member, index) => (
                             <div key={index} className="group relative ">

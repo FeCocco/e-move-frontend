@@ -21,12 +21,9 @@ const TelaInicial = () => {
 
     return (
         <section id="inicio" className="w-full min-h-screen relative overflow-hidden">
-
             <div className="relative z-20 w-full">
-                <div className="min-h-screen flex flex-col justify-center items-center p-4">
-
-                    {/* Hero Section */}
-                    <div className="flex flex-col items-center text-center max-w-5xl mx-auto pt-20">
+                <div className="min-h-screen flex flex-col justify-center items-center p-4 sm:p-6">
+                    <div className="flex flex-col items-center text-center max-w-5xl mx-auto pt-16 sm:pt-20">
                         <div className="inline-flex items-center gap-2 px-4 py-2 bg-verde-claro/10 border border-verde-claro/20 rounded-full mb-8">
                             <Leaf className="w-4 h-4 text-verde-claro" />
                             <span className="text-sm text-verde-claro font-medium">Mobilidade Sustentável</span>
@@ -41,12 +38,11 @@ const TelaInicial = () => {
                             </span>
                         </h1>
 
-                        <p className="text-lg sm:text-xl text-texto-claro/70 mb-8 max-w-3xl leading-relaxed">
+                        <p className="text-base sm:text-lg lg:text-xl text-texto-claro/70 mb-8 max-w-3xl leading-relaxed">
                             Planeje rotas inteligentes, encontre pontos de recarga e gerencie sua frota elétrica
                             em uma única plataforma. Transforme a ansiedade de autonomia em confiança total.
                         </p>
 
-                        {/* CTAs */}
                         <div className="flex flex-col sm:flex-row gap-4 mb-12">
                             <button
                                 className="group relative px-8 py-4 bg-gradient-to-r from-verde-claro to-azul-claro text-slate-900 font-bold rounded-xl text-lg transition-all duration-300 hover:shadow-lg hover:shadow-verde-claro/25 hover:-translate-y-0.5"
@@ -67,7 +63,6 @@ const TelaInicial = () => {
                             </ScrollLink>
                         </div>
 
-                        {/* Feature Pills */}
                         <div className="flex flex-wrap justify-center gap-4 mb-16">
                             {features.map((feature, index) => (
                                 <div
@@ -79,18 +74,6 @@ const TelaInicial = () => {
                                 </div>
                             ))}
                         </div>
-
-                        {/* Scroll Indicator }
-                        <ScrollLink
-                            to="sobre-nos"
-                            spy={true}
-                            smooth={true}
-                            offset={-90}
-                            duration={500}
-                            className="animate-bounce cursor-pointer"
-                        >
-                            <ChevronDown className="w-8 h-8 text-azul-claro/50" />
-                        </ScrollLink>*/}
                     </div>
                 </div>
             </div>
