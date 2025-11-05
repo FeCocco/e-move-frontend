@@ -26,9 +26,6 @@ import MedidorForcaSenha from "@/components/ui/MedidorForcaSenha";
 const cadastroSchema = z.object({
     nome: z.string().min(3, { message: "O nome deve ter no mínimo 3 caracteres." }),
     email: z.email({ message: "Formato de e-mail inválido." }),
-    cpf: z.string()
-        .min(11, { message: "O CPF deve ter 11 dígitos." })
-        .max(11, {message: "O CPF deve ter 11 dígitos."}),
     telefone: z.string()
         .regex(/^\d+$/, { message: "O telefone deve conter apenas números." })
         .min(10, { message: "O telefone deve ter no mínimo 10 dígitos." })
@@ -62,7 +59,6 @@ export default function CadastroPage() {
         defaultValues: {
             nome: "",
             email: "",
-            cpf: "",
             telefone: "",
             sexo: "",
             dataNascimento: null,
@@ -129,10 +125,6 @@ export default function CadastroPage() {
                         <Label htmlFor="email" className="mt-3">Email</Label>
                         <Input id="email" {...register("email")} placeholder="seu@email.com" className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro h-11" />
                         {errors.email && <p className="text-vermelho-status text-xs mt-1">{errors.email.message}</p>}
-
-                        <Label htmlFor="cpf" className="mt-3">CPF</Label>
-                        <Input id="cpf" {...register("cpf")} placeholder="000.000.000-00" className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro h-11" />
-                        {errors.cpf && <p className="text-vermelho-status text-xs mt-1">{errors.cpf.message}</p>}
 
                         <Label htmlFor="telefone" className="mt-3">Telefone</Label>
                         <Input id="telefone" {...register("telefone")} type="phone" placeholder="(xx) xxxxx-xxxx" className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro h-11" />
