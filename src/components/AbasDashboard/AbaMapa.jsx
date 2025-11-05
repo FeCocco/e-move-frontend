@@ -153,8 +153,7 @@ export default function AbaMapa() {
 
     return (
         <>
-            <p className="mb-6">Conteúdo de Planejar Rota...</p>
-            <AppCard className="bg-black/20 p-6 rounded-lg w-full text-left mb-8">
+            <AppCard className="bg-black/20 p-3 rounded-lg w-full text-left mb-4 text-sm space-y-3">
                 <h3 className="mb-2">Origem:</h3>
                 <AddressSearch
                     placeholder="Endereço de Origem"
