@@ -14,7 +14,6 @@ export default function AbaUsuarios({ profileData, isDialogOpen, setIsDialogOpen
                     <p className="mb-2"><strong>Nome:</strong> {profileData.nome}</p>
                     <p className="mb-2"><strong>Email:</strong> {profileData.email}</p>
                     <p className="mb-2"><strong>Telefone:</strong> {profileData.telefone}</p>
-                    <p className="mb-2"><strong>CPF:</strong> {profileData.cpf}</p>
                     <p><strong>Sexo:</strong> {profileData.sexo}</p>
                     <div className="p-4 flex justify-center">
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
