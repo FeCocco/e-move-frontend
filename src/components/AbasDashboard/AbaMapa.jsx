@@ -1,155 +1,308 @@
 "use client";
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { AppCard } from "@/components/AppCard/AppCard";
 import { AddressSearch } from "@/components/AddressSearch";
+import { fetchDirectRoute } from "@/lib/api";
+import polyline from '@mapbox/polyline';
+import { Loader2, AlertTriangle } from 'lucide-react';
 
-// estilos como constantes
+// URLs de estilos do mapa
 const GLOBE_STYLE = 'https://demotiles.maplibre.org/globe.json';
 const VOYAGER_STYLE = 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json';
-
-// nuivel de zoom da troca
 const ZOOM_THRESHOLD = 4;
 
+// IDs fixos para a rota
+const ROUTE_SOURCE_ID = 'route-source';
+const ROUTE_LAYER_ID = 'route-layer';
+
+// Cache em memória para rotas já calculadas
+const routeCache = new Map();
+
+// Gera uma chave única para cada par origem-destino
+const getCacheKey = (origin, destination) => {
+    return `${origin.latitude},${origin.longitude}-${destination.latitude},${destination.longitude}`;
+};
+
 export default function AbaMapa() {
-    // useRef para manter a instância do mapa e o estilo atual
+    // Refs para mapa e marcadores
     const mapContainerRef = useRef(null);
     const mapRef = useRef(null);
-    const currentStyleRef = useRef('globe'); // começa com 'globe'
+    const currentStyleRef = useRef('globe');
     const originMarkerRef = useRef(null);
     const destinationMarkerRef = useRef(null);
 
-    // Estados para origem e destino
+    // Ref para armazenar dados da rota atual
+    const routeDataRef = useRef(null);
+
+    // Estados principais
     const [origin, setOrigin] = useState(null);
     const [destination, setDestination] = useState(null);
+    const [isRouteLoading, setIsRouteLoading] = useState(false);
+    const [routeError, setRouteError] = useState(null);
 
+    // Desenha a rota no mapa
+    const drawRoute = useCallback((map, geoJson) => {
+        if (!map || !geoJson) return;
+
+        const attemptDraw = () => {
+            if (!map.isStyleLoaded()) return false;
+
+            try {
+                // Remove rota anterior, se existir
+                if (map.getLayer(ROUTE_LAYER_ID)) map.removeLayer(ROUTE_LAYER_ID);
+                if (map.getSource(ROUTE_SOURCE_ID)) map.removeSource(ROUTE_SOURCE_ID);
+
+                // Adiciona a nova rota
+                map.addSource(ROUTE_SOURCE_ID, {
+                    type: 'geojson',
+                    data: geoJson
+                });
+
+                map.addLayer({
+                    id: ROUTE_LAYER_ID,
+                    type: 'line',
+                    source: ROUTE_SOURCE_ID,
+                    layout: {
+                        'line-join': 'round',
+                        'line-cap': 'round'
+                    },
+                    paint: {
+                        'line-color': '#00BFFF',
+                        'line-width': [
+                            'interpolate',
+                            ['exponential', 1.5],
+                            ['zoom'],
+                            0, 2,
+                            5, 4,
+                            10, 6,
+                            15, 8
+                        ],
+                        'line-opacity': 0.9
+                    }
+                });
+
+                return true;
+            } catch (error) {
+                console.error("Erro ao desenhar rota:", error);
+                return false;
+            }
+        };
+
+        // Tenta desenhar imediatamente
+        if (attemptDraw()) return;
+
+        // Caso o estilo ainda não tenha carregado, tenta novamente
+        const checkInterval = setInterval(() => {
+            if (attemptDraw()) clearInterval(checkInterval);
+        }, 50);
+
+        // Timeout de segurança
+        setTimeout(() => clearInterval(checkInterval), 3000);
+    }, []);
+
+    // Remove rota atual
+    const clearRoute = useCallback((map) => {
+        if (!map) return;
+
+        try {
+            if (map.getLayer(ROUTE_LAYER_ID)) map.removeLayer(ROUTE_LAYER_ID);
+            if (map.getSource(ROUTE_SOURCE_ID)) map.removeSource(ROUTE_SOURCE_ID);
+        } catch (error) {
+            console.error("Erro ao limpar rota:", error);
+        }
+
+        routeDataRef.current = null;
+        setRouteError(null);
+    }, []);
+
+    // Inicializa o mapa
     useEffect(() => {
-        // evita a reinicialização do mapa se ele já existir
         if (mapRef.current) return;
 
         mapRef.current = new maplibregl.Map({
-            container: mapContainerRef.current, // usa a referencia do container
+            container: mapContainerRef.current,
             style: GLOBE_STYLE,
-            center: [-54, -15], // centralizado no brasil
-            zoom: 1.5
+            center: [-54, -15],
+            zoom: 1.5,
+            projection: 'globe'
         });
 
         const map = mapRef.current;
 
+        // Ignora erros de glyphs/fontes
+        map.on('error', (e) => {
+            const msg = e.error?.message || '';
+            if (msg.includes('glyphs') || msg.includes('pbf') || msg.includes('font')) {
+                e.preventDefault?.();
+                return;
+            }
+            console.error('Erro no mapa:', e);
+        });
+
+        const handleStyleLoad = () => {
+            if (routeDataRef.current) {
+                setTimeout(() => drawRoute(map, routeDataRef.current), 50);
+                setTimeout(() => drawRoute(map, routeDataRef.current), 200);
+                setTimeout(() => drawRoute(map, routeDataRef.current), 500);
+            }
+        };
+
         const handleZoom = () => {
             const currentZoom = map.getZoom();
-
-            // quais estilo devem ser exibidos com base no zoom
             const targetStyle = currentZoom >= ZOOM_THRESHOLD ? 'voyager' : 'globe';
 
-            // so troca o estilo se o alvo for diferente do atual, para evitar recargas desnecessárias
             if (targetStyle !== currentStyleRef.current) {
-                if (targetStyle === 'voyager') {
-                    map.setStyle(VOYAGER_STYLE);
-                    currentStyleRef.current = 'voyager';
-                } else {
-                    map.setStyle(GLOBE_STYLE);
-                    currentStyleRef.current = 'globe';
-                }
+                currentStyleRef.current = targetStyle;
+                map.setStyle(targetStyle === 'voyager' ? VOYAGER_STYLE : GLOBE_STYLE);
             }
         };
 
         map.on('zoom', handleZoom);
+        map.on('style.load', handleStyleLoad);
 
-        // função de limpeza
         return () => {
-            map.off('zoom', handleZoom);
-            map.remove();
+            if (map) {
+                map.off('zoom', handleZoom);
+                map.off('style.load', handleStyleLoad);
+                map.off('error');
+                map.remove();
+            }
             mapRef.current = null;
         };
-    }, []);
+    }, [drawRoute]);
 
-    // Atualizar marcador de origem no mapa
+    // Marcador de origem
     useEffect(() => {
-        if (!mapRef.current || !origin) return;
-
+        if (!mapRef.current) return;
         const map = mapRef.current;
 
-        // Remove marcador anterior se existir
-        if (originMarkerRef.current) {
-            originMarkerRef.current.remove();
+        if (originMarkerRef.current) originMarkerRef.current.remove();
+
+        if (origin) {
+            const el = document.createElement('div');
+            el.className = 'marker';
+            el.style.width = '30px';
+            el.style.height = '30px';
+            el.style.borderRadius = '50%';
+            el.style.backgroundColor = '#22c55e';
+            el.style.border = '3px solid white';
+            el.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
+
+            originMarkerRef.current = new maplibregl.Marker({ element: el })
+                .setLngLat([origin.longitude, origin.latitude])
+                .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(`<strong>Origem</strong><br>${origin.displayName}`))
+                .addTo(map);
+
+            if (!destination) {
+                map.flyTo({
+                    center: [origin.longitude, origin.latitude],
+                    zoom: 12,
+                    duration: 1500
+                });
+            }
         }
+    }, [origin, destination]);
 
-        // Cria novo marcador verde para origem
-        const el = document.createElement('div');
-        el.className = 'marker';
-        el.style.width = '30px';
-        el.style.height = '30px';
-        el.style.borderRadius = '50%';
-        el.style.backgroundColor = '#22c55e';
-        el.style.border = '3px solid white';
-        el.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
-
-        originMarkerRef.current = new maplibregl.Marker({ element: el })
-            .setLngLat([origin.longitude, origin.latitude])
-            .setPopup(
-                new maplibregl.Popup({ offset: 25 })
-                    .setHTML(`<strong>Origem</strong><br>${origin.displayName}`)
-            )
-            .addTo(map);
-
-        // Centraliza o mapa na origem
-        map.flyTo({
-            center: [origin.longitude, origin.latitude],
-            zoom: 12,
-            duration: 1500
-        });
-    }, [origin]);
-
-    // Atualizar marcador de destino no mapa
+    // Marcador de destino
     useEffect(() => {
-        if (!mapRef.current || !destination) return;
-
+        if (!mapRef.current) return;
         const map = mapRef.current;
 
-        // Remove marcador anterior se existir
-        if (destinationMarkerRef.current) {
-            destinationMarkerRef.current.remove();
-        }
+        if (destinationMarkerRef.current) destinationMarkerRef.current.remove();
 
-        // Cria novo marcador vermelho para destino
-        const el = document.createElement('div');
-        el.className = 'marker';
-        el.style.width = '30px';
-        el.style.height = '30px';
-        el.style.borderRadius = '50%';
-        el.style.backgroundColor = '#ef4444';
-        el.style.border = '3px solid white';
-        el.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
+        if (destination) {
+            const el = document.createElement('div');
+            el.className = 'marker';
+            el.style.width = '30px';
+            el.style.height = '30px';
+            el.style.borderRadius = '50%';
+            el.style.backgroundColor = '#ef4444';
+            el.style.border = '3px solid white';
+            el.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
 
-        destinationMarkerRef.current = new maplibregl.Marker({ element: el })
-            .setLngLat([destination.longitude, destination.latitude])
-            .setPopup(
-                new maplibregl.Popup({ offset: 25 })
-                    .setHTML(`<strong>Destino</strong><br>${destination.displayName}`)
-            )
-            .addTo(map);
+            destinationMarkerRef.current = new maplibregl.Marker({ element: el })
+                .setLngLat([destination.longitude, destination.latitude])
+                .setPopup(new maplibregl.Popup({ offset: 25 }).setHTML(`<strong>Destino</strong><br>${destination.displayName}`))
+                .addTo(map);
 
-        // Se ambos os pontos existirem, ajusta o zoom para mostrar os dois
-        if (origin && destination) {
-            const bounds = new maplibregl.LngLatBounds();
-            bounds.extend([origin.longitude, origin.latitude]);
-            bounds.extend([destination.longitude, destination.latitude]);
-            
-            map.fitBounds(bounds, {
-                padding: 100,
-                duration: 1500
-            });
-        } else {
-            // Centraliza apenas no destino
-            map.flyTo({
-                center: [destination.longitude, destination.latitude],
-                zoom: 12,
-                duration: 1500
-            });
+            if (!origin) {
+                map.flyTo({
+                    center: [destination.longitude, destination.latitude],
+                    zoom: 12,
+                    duration: 1500
+                });
+            }
         }
     }, [destination, origin]);
+
+    // Busca e desenha a rota (com cache)
+    useEffect(() => {
+        if (!mapRef.current) return;
+        const map = mapRef.current;
+
+        if (origin && destination) {
+            const fetchAndDrawRoute = async () => {
+                setIsRouteLoading(true);
+                setRouteError(null);
+
+                try {
+                    const cacheKey = getCacheKey(origin, destination);
+                    let geoJson;
+
+                    if (routeCache.has(cacheKey)) {
+                        console.log("Usando rota do cache");
+                        geoJson = routeCache.get(cacheKey);
+                    } else {
+                        console.log("Buscando rota da API");
+                        const response = await fetchDirectRoute(origin, destination);
+                        const { routes } = response.data;
+
+                        if (!routes || routes.length === 0) {
+                            throw new Error("Nenhuma rota encontrada.");
+                        }
+
+                        const { geometry } = routes[0];
+                        const coordinates = polyline.decode(geometry).map(coord => [coord[1], coord[0]]);
+
+                        geoJson = {
+                            type: 'Feature',
+                            geometry: {
+                                type: 'LineString',
+                                coordinates
+                            }
+                        };
+
+                        routeCache.set(cacheKey, geoJson);
+                        console.log("Rota armazenada no cache");
+                    }
+
+                    routeDataRef.current = geoJson;
+                    drawRoute(map, geoJson);
+
+                    const bounds = new maplibregl.LngLatBounds();
+                    bounds.extend([origin.longitude, origin.latitude]);
+                    bounds.extend([destination.longitude, destination.latitude]);
+
+                    map.fitBounds(bounds, {
+                        padding: { top: 100, bottom: 100, left: 100, right: 100 },
+                        duration: 1500
+                    });
+
+                } catch (error) {
+                    console.error("Erro ao buscar rota:", error);
+                    setRouteError("Não foi possível calcular a rota. " + (error.response?.data || error.message));
+                } finally {
+                    setIsRouteLoading(false);
+                }
+            };
+
+            fetchAndDrawRoute();
+        } else {
+            clearRoute(map);
+        }
+    }, [origin, destination, drawRoute, clearRoute]);
 
     return (
         <>
@@ -165,12 +318,25 @@ export default function AbaMapa() {
                     placeholder="Endereço de Destino"
                     onSelectLocation={setDestination}
                 />
+
+                {isRouteLoading && (
+                    <div className="flex items-center justify-center gap-2 p-2 text-azul-claro">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>Calculando rota...</span>
+                    </div>
+                )}
+                {routeError && (
+                    <div className="flex items-center justify-center gap-2 p-2 text-vermelho-status">
+                        <AlertTriangle className="h-4 w-4" />
+                        <span>{routeError}</span>
+                    </div>
+                )}
             </AppCard>
 
-            <div 
-                ref={mapContainerRef} 
-                id="map" 
-                style={{ width: '100%', height: '400px' }} 
+            <div
+                ref={mapContainerRef}
+                id="map"
+                style={{ width: '100%', height: '400px' }}
                 className="rounded-xl"
             />
         </>
