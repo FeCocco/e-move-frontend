@@ -14,6 +14,18 @@ export function AddressSearch({ placeholder, onSelectLocation, value, onChange }
     const debounceTimer = useRef(null);
     const lastSearchRef = useRef('');
 
+    useEffect(() => {
+        if (typeof value === 'string') {
+            setInputValue(value);
+        } else if (value && typeof value === 'object' && value.address) {
+            setInputValue(value.address);
+        } else {
+            setInputValue('');
+        }
+    }, [value]);
+
+
+
     const performSearch = async (searchText) => {
         if (searchText === lastSearchRef.current) {
             return;

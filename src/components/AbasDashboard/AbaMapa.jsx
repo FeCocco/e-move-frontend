@@ -7,6 +7,7 @@ import { AddressSearch } from "@/components/AddressSearch";
 import { fetchDirectRoute } from "@/lib/api";
 import polyline from '@mapbox/polyline';
 import { Loader2, AlertTriangle } from 'lucide-react';
+import {Button} from "@/components/ui/button";
 
 const GLOBE_STYLE = 'https://demotiles.maplibre.org/globe.json';
 const VOYAGER_STYLE = 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json';
@@ -95,6 +96,7 @@ export default function AbaMapa({ isVisible }) {
         try {
             if (map.getLayer(ROUTE_LAYER_ID)) map.removeLayer(ROUTE_LAYER_ID);
             if (map.getSource(ROUTE_SOURCE_ID)) map.removeSource(ROUTE_SOURCE_ID);
+
         } catch (error) {
             console.error("Erro ao limpar rota:", error);
         }
@@ -102,6 +104,38 @@ export default function AbaMapa({ isVisible }) {
         routeDataRef.current = null;
         setRouteError(null);
     }, []);
+
+    const forceClearRoute = useCallback((map) => {
+        if (!map) return;
+
+        try {
+            // Remove a rota se existir
+            if (map.getLayer(ROUTE_LAYER_ID)) map.removeLayer(ROUTE_LAYER_ID);
+            if (map.getSource(ROUTE_SOURCE_ID)) map.removeSource(ROUTE_SOURCE_ID);
+
+            // Remove marcadores se existirem
+            if (originMarkerRef.current) {
+                originMarkerRef.current.remove();
+                originMarkerRef.current = null;
+            }
+            if (destinationMarkerRef.current) {
+                destinationMarkerRef.current.remove();
+                destinationMarkerRef.current = null;
+            }
+
+            setOrigin(null);
+            setDestination(null);
+            setRouteError(null);
+            routeDataRef.current = null;
+
+            map.flyTo({ center: [-54, -15], zoom: 1.5 });
+
+            console.log("Mapa resetado para o estado inicial");
+        } catch (error) {
+            console.error("Erro ao limpar rota:", error);
+        }
+    }, []);
+
 
     useEffect(() => {
         if (isVisible && mapRef.current) {
@@ -175,6 +209,15 @@ export default function AbaMapa({ isVisible }) {
 
         if (originMarkerRef.current) originMarkerRef.current.remove();
 
+        if (
+            !origin ||
+            typeof origin !== 'object' ||
+            isNaN(origin.latitude) ||
+            isNaN(origin.longitude)
+        ) {
+            return;
+        }
+
         if (origin) {
             const el = document.createElement('div');
             el.className = 'marker';
@@ -206,6 +249,15 @@ export default function AbaMapa({ isVisible }) {
         const map = mapRef.current;
 
         if (destinationMarkerRef.current) destinationMarkerRef.current.remove();
+
+        if (
+            !destination ||
+            typeof destination !== 'object' ||
+            isNaN(destination.latitude) ||
+            isNaN(destination.longitude)
+        ) {
+            return;
+        }
 
         if (destination) {
             const el = document.createElement('div');
@@ -301,18 +353,21 @@ export default function AbaMapa({ isVisible }) {
 
     return (
         <>
-            <AppCard className="bg-black/20 p-3 rounded-lg w-full text-left mb-4 text-sm space-y-3">
-                <h3 className="mb-2">Origem:</h3>
+            <AppCard className="bg-black/20 p-3 rounded-lg w-full text-left mb-2 text-sm space-y-1">
+                <h3 className="mb-1">Origem:</h3>
                 <AddressSearch
                     placeholder="Endereço de Origem"
+                    value={origin}
                     onSelectLocation={setOrigin}
                 />
 
-                <h3 className="mb-2 mt-6">Destino:</h3>
+                <h3 className="mb-1">Destino:</h3>
                 <AddressSearch
                     placeholder="Endereço de Destino"
+                    value={destination}
                     onSelectLocation={setDestination}
                 />
+                <Button variant="ghost" onClick={() => forceClearRoute(mapRef.current)}>Limpar Rota</Button>
 
                 {isRouteLoading && (
                     <div className="flex items-center justify-center gap-2 p-2 text-azul-claro">
