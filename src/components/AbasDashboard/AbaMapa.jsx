@@ -8,24 +8,17 @@ import { fetchDirectRoute } from "@/lib/api";
 import polyline from '@mapbox/polyline';
 import { Loader2, AlertTriangle } from 'lucide-react';
 
-// URLs de estilos do mapa
 const GLOBE_STYLE = 'https://demotiles.maplibre.org/globe.json';
 const VOYAGER_STYLE = 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json';
-const ZOOM_THRESHOLD = 4;
-
-// IDs fixos para a rota
+const ZOOM_THRESHOLD = 3;
 const ROUTE_SOURCE_ID = 'route-source';
 const ROUTE_LAYER_ID = 'route-layer';
-
-// Cache em memória para rotas já calculadas
 const routeCache = new Map();
-
-// Gera uma chave única para cada par origem-destino
 const getCacheKey = (origin, destination) => {
     return `${origin.latitude},${origin.longitude}-${destination.latitude},${destination.longitude}`;
 };
 
-export default function AbaMapa() {
+export default function AbaMapa({ isVisible }) {
     // Refs para mapa e marcadores
     const mapContainerRef = useRef(null);
     const mapRef = useRef(null);
@@ -42,7 +35,6 @@ export default function AbaMapa() {
     const [isRouteLoading, setIsRouteLoading] = useState(false);
     const [routeError, setRouteError] = useState(null);
 
-    // Desenha a rota no mapa
     const drawRoute = useCallback((map, geoJson) => {
         if (!map || !geoJson) return;
 
@@ -50,11 +42,9 @@ export default function AbaMapa() {
             if (!map.isStyleLoaded()) return false;
 
             try {
-                // Remove rota anterior, se existir
                 if (map.getLayer(ROUTE_LAYER_ID)) map.removeLayer(ROUTE_LAYER_ID);
                 if (map.getSource(ROUTE_SOURCE_ID)) map.removeSource(ROUTE_SOURCE_ID);
 
-                // Adiciona a nova rota
                 map.addSource(ROUTE_SOURCE_ID, {
                     type: 'geojson',
                     data: geoJson
@@ -90,19 +80,15 @@ export default function AbaMapa() {
             }
         };
 
-        // Tenta desenhar imediatamente
         if (attemptDraw()) return;
 
-        // Caso o estilo ainda não tenha carregado, tenta novamente
         const checkInterval = setInterval(() => {
             if (attemptDraw()) clearInterval(checkInterval);
         }, 50);
 
-        // Timeout de segurança
         setTimeout(() => clearInterval(checkInterval), 3000);
     }, []);
 
-    // Remove rota atual
     const clearRoute = useCallback((map) => {
         if (!map) return;
 
@@ -117,7 +103,17 @@ export default function AbaMapa() {
         setRouteError(null);
     }, []);
 
-    // Inicializa o mapa
+    useEffect(() => {
+        if (isVisible && mapRef.current) {
+            const timer = setTimeout(() => {
+                mapRef.current.resize();
+            }, 100); // 100ms é geralmente seguro
+
+            return () => clearTimeout(timer);
+        }
+    }, [isVisible]);
+
+
     useEffect(() => {
         if (mapRef.current) return;
 
@@ -131,7 +127,6 @@ export default function AbaMapa() {
 
         const map = mapRef.current;
 
-        // Ignora erros de glyphs/fontes
         map.on('error', (e) => {
             const msg = e.error?.message || '';
             if (msg.includes('glyphs') || msg.includes('pbf') || msg.includes('font')) {
@@ -151,7 +146,7 @@ export default function AbaMapa() {
 
         const handleZoom = () => {
             const currentZoom = map.getZoom();
-            const targetStyle = currentZoom >= ZOOM_THRESHOLD ? 'voyager' : 'globe';
+            const targetStyle = currentZoom > ZOOM_THRESHOLD ? 'voyager' : 'globe';
 
             if (targetStyle !== currentStyleRef.current) {
                 currentStyleRef.current = targetStyle;
@@ -286,7 +281,7 @@ export default function AbaMapa() {
                     bounds.extend([destination.longitude, destination.latitude]);
 
                     map.fitBounds(bounds, {
-                        padding: { top: 100, bottom: 100, left: 100, right: 100 },
+                        padding: { top: 50, bottom: 50, left: 50, right: 50 },
                         duration: 1500
                     });
 

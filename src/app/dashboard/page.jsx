@@ -5,7 +5,6 @@
 // ============================================================================
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { AnimatePresence, motion } from 'framer-motion';
 import { z } from 'zod';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,10 +27,8 @@ import {AppCard} from "@/components/AppCard/AppCard";
 import Logo from "@/components/Logo/Logo";
 import Link from "next/link";
 
-
-
 // ============================================================================
-// SCHEMA DE VALIDAÇÃO (ZOD)
+// VALIDEACAO ZOD
 // ============================================================================
 const EditarUsuarioSchema = z.object({
     nome: z.string().min(3, { message: "O nome deve ter no mínimo 3 caracteres." }),
@@ -48,20 +45,17 @@ export default function DashboardPage() {
     const API_URL = 'http://localhost:8080/api';
     const router = useRouter();
 
-    // Estados para controle da UI e dados
     const [activeTab, setActiveTab] = useState('#BemVindo');
     const [profileData, setProfileData] = useState(null);
     const [apiError, setApiError] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [formStatus, setFormStatus] = useState('idle');
 
-    // Hooks para gerenciamento de formulário
     const { register, handleSubmit, formState: { errors }, setValue } = useForm({
         resolver: zodResolver(EditarUsuarioSchema),
         mode: "onBlur",
     });
 
-    // Função para submeter a edição de dados do usuário
     const EditarUsuarioSubmit = async (data) => {
         setApiError('');
         setFormStatus('submitting');
@@ -90,7 +84,6 @@ export default function DashboardPage() {
         }
     };
 
-    // Função para realizar o logout do usuário
     const handleLogout = async () => {
         try {
             await fetch(`${API_URL}/logout`, {
@@ -104,7 +97,6 @@ export default function DashboardPage() {
         }
     };
 
-    // Efeito para buscar os dados do perfil ao carregar a página
     useEffect(() => {
         const fetchProfile = async () => {
             try {
@@ -117,7 +109,6 @@ export default function DashboardPage() {
                 if (!response.ok) throw new Error('Sessão inválida ou expirada.');
                 const data = await response.json();
                 setProfileData(data);
-                // Preenche o formulário de edição com os dados buscados
                 setValue('nome', data.nome);
                 setValue('email', data.email);
                 setValue('telefone', data.telefone);
@@ -129,7 +120,6 @@ export default function DashboardPage() {
         fetchProfile();
     }, [router, setValue]);
 
-    // Renderiza uma tela de carregamento enquanto os dados do perfil são buscados
     if (!profileData) {
         return (
             <div className="flex justify-center items-center h-screen">
@@ -138,45 +128,13 @@ export default function DashboardPage() {
         );
     }
 
-    const renderContent = () => {
-        switch (activeTab) {
-            case '#BemVindo':
-                return <BemVindo profileData={profileData} />;
-            case '#AbaVeiculos':
-                return <AbaVeiculos />;
-            case '#AbaRotas':
-                return <AbaRotas />;
-            case '#AbaEstacoes':
-                return <AbaEstacoes />;
-            case '#AbaMapa':
-                return <AbaMapa />;
-            case '#AbaUsuarios':
-                return <AbaUsuarios
-                    profileData={profileData}
-                    isDialogOpen={isDialogOpen}
-                    setIsDialogOpen={setIsDialogOpen}
-                    formStatus={formStatus}
-                    handleLogout={handleLogout}
-                    handleSubmit={handleSubmit}
-                    EditarUsuarioSubmit={EditarUsuarioSubmit}
-                    register={register}
-                    errors={errors}
-                    apiError={apiError}
-                />;
-            case '#AbaRelatorio':
-                return <AbaRelatorio />;
-            default:
-                return null;
-        }
-    }
-
     return (
         <main className="flex flex-grow items-start sm:items-center justify-center p-0 sm:p-4">
             <AppCard className="h-screen sm:h-[90vh] w-full max-w-6xl p-2 sm:p-4 rounded-none sm:rounded-xl border-0 sm:border bg-transparent sm:bg-white/[0.08]" >
-            <div className="sm:hidden text-center mb-4 pt-8">
-                <Link href="/">
-                    <Logo className="text-4xl inline-block text-azul-claro/70 drop-shadow-[0_0_8px_rgba(0,255,255,0.4)]" />
-                </Link>
+                <div className="sm:hidden text-center mb-4 pt-8">
+                    <Link href="/">
+                        <Logo className="text-4xl inline-block text-azul-claro/70 drop-shadow-[0_0_8px_rgba(0,255,255,0.4)]" />
+                    </Link>
                 </div>
                 <h1 className="hidden sm:block text-2xl sm:text-3xl font-bold font-orbitron text-azul-claro text-center mb-4 sm:mb-7">
                     Painel de Controle e-Move
@@ -187,11 +145,46 @@ export default function DashboardPage() {
                 </div>
 
                 <div className="flex-grow overflow-y-auto px-1 py-4 sm:p-4">
-                    <AnimatePresence mode="wait">
-                        <motion.div key={activeTab} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.2 }}>
-                            {renderContent()}
-                        </motion.div>
-                    </AnimatePresence>
+
+                    <div style={{ display: activeTab === '#BemVindo' ? 'block' : 'none' }}>
+                        <BemVindo profileData={profileData} />
+                    </div>
+
+                    <div style={{ display: activeTab === '#AbaVeiculos' ? 'block' : 'none' }}>
+                        <AbaVeiculos />
+                    </div>
+
+                    <div style={{ display: activeTab === '#AbaRotas' ? 'block' : 'none' }}>
+                        <AbaRotas />
+                    </div>
+
+                    <div style={{ display: activeTab === '#AbaEstacoes' ? 'block' : 'none' }}>
+                        <AbaEstacoes />
+                    </div>
+
+                    <div style={{ display: activeTab === '#AbaMapa' ? 'block' : 'none' }}>
+                        <AbaMapa isVisible={activeTab === '#AbaMapa'} />
+                    </div>
+
+                    <div style={{ display: activeTab === '#AbaUsuarios' ? 'block' : 'none' }}>
+                        <AbaUsuarios
+                            profileData={profileData}
+                            isDialogOpen={isDialogOpen}
+                            setIsDialogOpen={setIsDialogOpen}
+                            formStatus={formStatus}
+                            handleLogout={handleLogout}
+                            handleSubmit={handleSubmit}
+                            EditarUsuarioSubmit={EditarUsuarioSubmit}
+                            register={register}
+                            errors={errors}
+                            apiError={apiError}
+                        />
+                    </div>
+
+                    <div style={{ display: activeTab === '#AbaRelatorio' ? 'block' : 'none' }}>
+                        <AbaRelatorio />
+                    </div>
+
                 </div>
             </AppCard>
         </main>

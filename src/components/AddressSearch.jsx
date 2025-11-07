@@ -1,11 +1,8 @@
-// src/components/AddressSearch.jsx
-
 "use client";
 import { useState, useEffect, useRef } from 'react';
 import { Input } from "@/components/ui/input";
 import { forwardGeocode } from "@/utils/geocoding";
 import { MapPin, Loader2, Search } from "lucide-react";
-// NOVAS IMPORTAÇÕES
 import { Popover, PopoverAnchor, PopoverContent } from "@/components/ui/popover";
 
 export function AddressSearch({ placeholder, onSelectLocation, value, onChange }) {
@@ -16,12 +13,6 @@ export function AddressSearch({ placeholder, onSelectLocation, value, onChange }
     const [error, setError] = useState(null);
     const debounceTimer = useRef(null);
     const lastSearchRef = useRef('');
-
-    // O useEffect que verificava cliques fora (handleClickOutside) não é mais necessário,
-    // o Popover cuida disso automaticamente.
-
-    // ... (toda a lógica: performSearch, useEffect[inputValue], handleInputChange, handleKeyDown) ...
-    // ... (permanece idêntica) ...
 
     const performSearch = async (searchText) => {
         if (searchText === lastSearchRef.current) {
@@ -125,7 +116,6 @@ export function AddressSearch({ placeholder, onSelectLocation, value, onChange }
                     Digite e aguarde ou pressione Enter para buscar
                 </p>
 
-                {/* PopoverContent é renderizado em um Portal, fora do AppCard */}
                 <PopoverContent
                     // Faz o Popover ter a mesma largura do Input
                     className="z-50 w-[var(--radix-popover-anchor-width)] mt-2 bg-background border rounded-lg shadow-lg max-h-80 overflow-y-auto p-0"
