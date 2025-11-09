@@ -13,6 +13,7 @@ export function AddressSearch({ placeholder, onSelectLocation, value, onChange }
     const [error, setError] = useState(null);
     const debounceTimer = useRef(null);
     const lastSearchRef = useRef('');
+    const previousInputRef = useRef('');
 
     useEffect(() => {
         if (typeof value === 'string') {
@@ -24,16 +25,19 @@ export function AddressSearch({ placeholder, onSelectLocation, value, onChange }
         }
     }, [value]);
 
-
-
     const performSearch = async (searchText) => {
-        if (searchText === lastSearchRef.current) {
-            return;
-        }
-
         if (searchText.trim().length < 3) {
             setResults([]);
             setShowDropdown(false);
+            lastSearchRef.current = '';
+            return;
+        }
+
+        if (searchText === lastSearchRef.current) {
+            // Se já temos resultados para esse texto, apenas mostra o dropdown
+            if (results.length > 0) {
+                setShowDropdown(true);
+            }
             return;
         }
 
@@ -44,7 +48,7 @@ export function AddressSearch({ placeholder, onSelectLocation, value, onChange }
         try {
             const locations = await forwardGeocode(searchText);
             setResults(locations);
-            setShowDropdown(true); // O Popover vai abrir
+            setShowDropdown(true);
         } catch (err) {
             setError('Erro ao buscar endereço');
             setResults([]);
@@ -76,7 +80,22 @@ export function AddressSearch({ placeholder, onSelectLocation, value, onChange }
 
     const handleInputChange = (e) => {
         const value = e.target.value;
+        const previousValue = previousInputRef.current;
+
         setInputValue(value);
+        previousInputRef.current = value;
+
+        // Se o input for limpo, reseta a última busca
+        if (value.trim().length === 0) {
+            lastSearchRef.current = '';
+            setResults([]);
+        }
+        // Se o usuário apagou o texto e começou a digitar algo diferente
+        else if (previousValue.length > 0 && value.length < previousValue.length) {
+            // Usuário está apagando, reseta para permitir nova busca
+            lastSearchRef.current = '';
+        }
+
         if (onChange) onChange(value);
     };
 
@@ -86,23 +105,29 @@ export function AddressSearch({ placeholder, onSelectLocation, value, onChange }
             if (debounceTimer.current) {
                 clearTimeout(debounceTimer.current);
             }
+
+            // Só força uma nova busca se o texto atual for diferente da última busca
+            // OU se o usuário apagou e digitou novamente (previousInputRef diferente)
+            if (inputValue !== lastSearchRef.current) {
+                lastSearchRef.current = '';
+            }
+
             performSearch(inputValue);
         }
     };
 
     const handleSelectResult = (location) => {
         setInputValue(location.address);
-        setShowDropdown(false); // O Popover vai fechar
+        setShowDropdown(false);
+        previousInputRef.current = location.address;
         if (onSelectLocation) {
             onSelectLocation(location);
         }
     };
 
     return (
-        // Envolvemos tudo no Popover
         <Popover open={showDropdown} onOpenChange={setShowDropdown}>
             <div className="relative w-full">
-                {/* PopoverAnchor define a referência de posição */}
                 <PopoverAnchor asChild>
                     <div className="relative">
                         <Input
@@ -111,7 +136,6 @@ export function AddressSearch({ placeholder, onSelectLocation, value, onChange }
                             onChange={handleInputChange}
                             onKeyDown={handleKeyDown}
                             className="pr-10"
-                            // Reabre o popover se clicar no input
                             onClick={() => (results.length > 0) && setShowDropdown(true)}
                         />
                         <div className="absolute right-3 top-1/2 -translate-y-1/2">
@@ -129,11 +153,9 @@ export function AddressSearch({ placeholder, onSelectLocation, value, onChange }
                 </p>
 
                 <PopoverContent
-                    // Faz o Popover ter a mesma largura do Input
                     className="z-50 w-[var(--radix-popover-anchor-width)] mt-2 bg-background border rounded-lg shadow-lg max-h-80 overflow-y-auto p-0"
                     align="start"
                     side="bottom"
-                    // Impede o popover de "roubar" o foco do input ao abrir
                     onOpenAutoFocus={(e) => e.preventDefault()}
                 >
                     {results.length > 0 && (

@@ -35,6 +35,7 @@ export default function AbaMapa({ isVisible }) {
     const [destination, setDestination] = useState(null);
     const [isRouteLoading, setIsRouteLoading] = useState(false);
     const [routeError, setRouteError] = useState(null);
+    const [totalDistance, setTotalDistance] = useState(null);
 
     const drawRoute = useCallback((map, geoJson) => {
         if (!map || !geoJson) return;
@@ -293,14 +294,19 @@ export default function AbaMapa({ isVisible }) {
             const fetchAndDrawRoute = async () => {
                 setIsRouteLoading(true);
                 setRouteError(null);
+                setTotalDistance(null);
 
                 try {
                     const cacheKey = getCacheKey(origin, destination);
                     let geoJson;
+                    let distance;
 
                     if (routeCache.has(cacheKey)) {
                         console.log("Usando rota do cache");
-                        geoJson = routeCache.get(cacheKey);
+                        const cachedData = routeCache.get(cacheKey);
+                        geoJson = cachedData.geoJson;
+                        distance = cachedData.distance;
+                        setTotalDistance(distance);
                     } else {
                         console.log("Buscando rota da API");
                         const response = await fetchDirectRoute(origin, destination);
@@ -310,7 +316,9 @@ export default function AbaMapa({ isVisible }) {
                             throw new Error("Nenhuma rota encontrada.");
                         }
 
-                        const { geometry } = routes[0];
+                        const { geometry, distance: routeDistance } = routes[0];
+                        distance = routeDistance;
+                        setTotalDistance(distance);
                         const coordinates = polyline.decode(geometry).map(coord => [coord[1], coord[0]]);
 
                         geoJson = {
@@ -321,7 +329,8 @@ export default function AbaMapa({ isVisible }) {
                             }
                         };
 
-                        routeCache.set(cacheKey, geoJson);
+                        // Armazena os dados em cache
+                        routeCache.set(cacheKey, { geoJson, distance });
                         console.log("Rota armazenada no cache");
                     }
 
@@ -367,7 +376,6 @@ export default function AbaMapa({ isVisible }) {
                     value={destination}
                     onSelectLocation={setDestination}
                 />
-                <Button variant="ghost" onClick={() => forceClearRoute(mapRef.current)}>Limpar Rota</Button>
 
                 {isRouteLoading && (
                     <div className="flex items-center justify-center gap-2 p-2 text-azul-claro">
@@ -381,6 +389,13 @@ export default function AbaMapa({ isVisible }) {
                         <span>{routeError}</span>
                     </div>
                 )}
+
+                {!isRouteLoading && totalDistance && (
+                    <div className="flex items-center justify-center gap-2 p-2 text-texto-claro">
+                        <p>Distância Total: {(totalDistance/1000).toFixed(2)} km</p>
+                    </div>
+                )}
+                <Button variant="ghost" onClick={() => forceClearRoute(mapRef.current)}>Limpar Rota</Button>
             </AppCard>
 
             <div
