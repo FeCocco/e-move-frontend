@@ -6,8 +6,17 @@ import { AppCard } from "@/components/AppCard/AppCard";
 import { AddressSearch } from "@/components/AddressSearch";
 import { fetchDirectRoute } from "@/lib/api";
 import polyline from '@mapbox/polyline';
-import { Loader2, AlertTriangle } from 'lucide-react';
-import {Button} from "@/components/ui/button";
+import { Loader2, AlertTriangle, CheckCircle } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { useVeiculos } from "@/context/VeiculosContext";
+import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
 const GLOBE_STYLE = 'https://demotiles.maplibre.org/globe.json';
 const VOYAGER_STYLE = 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json';
@@ -36,6 +45,11 @@ export default function AbaMapa({ isVisible }) {
     const [isRouteLoading, setIsRouteLoading] = useState(false);
     const [routeError, setRouteError] = useState(null);
     const [totalDistance, setTotalDistance] = useState(null);
+
+    // --- NOVOS ESTADOS ---
+    const { meusVeiculos, loading: veiculosLoading } = useVeiculos();
+    const [selectedVehicle, setSelectedVehicle] = useState(null);
+    const [autonomyReport, setAutonomyReport] = useState(null);
 
     const drawRoute = useCallback((map, geoJson) => {
         if (!map || !geoJson) return;
@@ -104,6 +118,8 @@ export default function AbaMapa({ isVisible }) {
 
         routeDataRef.current = null;
         setRouteError(null);
+        setAutonomyReport(null); // Limpa o relatório
+        setTotalDistance(null);  // Limpa a distância
     }, []);
 
     const forceClearRoute = useCallback((map) => {
@@ -127,6 +143,9 @@ export default function AbaMapa({ isVisible }) {
             setOrigin(null);
             setDestination(null);
             setRouteError(null);
+            setAutonomyReport(null); // Limpa o relatório
+            setTotalDistance(null);  // Limpa a distância
+            setSelectedVehicle(null); // Limpa o veículo
             routeDataRef.current = null;
 
             map.flyTo({ center: [-54, -15], zoom: 1.5 });
@@ -142,7 +161,7 @@ export default function AbaMapa({ isVisible }) {
         if (isVisible && mapRef.current) {
             const timer = setTimeout(() => {
                 mapRef.current.resize();
-            }, 100); // 100ms é geralmente seguro
+            }, 100);
 
             return () => clearTimeout(timer);
         }
@@ -202,6 +221,29 @@ export default function AbaMapa({ isVisible }) {
             mapRef.current = null;
         };
     }, [drawRoute]);
+
+    // --- NOVO USEEFFECT PARA CALCULAR AUTONOMIA ---
+    useEffect(() => {
+        if (totalDistance && selectedVehicle) {
+            const distanceInKm = totalDistance / 1000;
+            const autonomy = selectedVehicle.autonomiaEstimada;
+            const diff = autonomy - distanceInKm;
+
+            if (diff >= 0) {
+                setAutonomyReport({
+                    status: 'success',
+                    message: `Viagem tranquila! Seu ${selectedVehicle.modelo} tem ${diff.toFixed(0)} km de autonomia sobrando.`
+                });
+            } else {
+                setAutonomyReport({
+                    status: 'error',
+                    message: `Alerta! Faltam ${Math.abs(diff).toFixed(0)} km. A rota exige ${distanceInKm.toFixed(0)} km, mas seu ${selectedVehicle.modelo} tem apenas ${autonomy.toFixed(0)} km.`
+                });
+            }
+        } else {
+            setAutonomyReport(null);
+        }
+    }, [totalDistance, selectedVehicle]);
 
     // Marcador de origem
     useEffect(() => {
@@ -295,6 +337,7 @@ export default function AbaMapa({ isVisible }) {
                 setIsRouteLoading(true);
                 setRouteError(null);
                 setTotalDistance(null);
+                setAutonomyReport(null); // Limpa o relatório antigo
 
                 try {
                     const cacheKey = getCacheKey(origin, destination);
@@ -377,6 +420,30 @@ export default function AbaMapa({ isVisible }) {
                     onSelectLocation={setDestination}
                 />
 
+                <Label htmlFor="vehicle-select" className="mb-1 mt-2">Veículo para a Rota:</Label>
+                <Select
+                    value={selectedVehicle ? String(selectedVehicle.id) : undefined}
+                    onValueChange={(value) => {
+                        const vehicle = meusVeiculos.find(v => v.id == value);
+                        setSelectedVehicle(vehicle || null);
+                    }}
+                    disabled={veiculosLoading}
+                >
+                    <SelectTrigger
+                        id="vehicle-select"
+                        className="w-full justify-start text-left font-normal p-3 h-9 rounded-lg border text-white data-[placeholder]:text-white/50 focus:ring-1 focus:ring-azul-claro"
+                    >
+                        <SelectValue placeholder={veiculosLoading ? "Carregando veículos..." : "Selecione seu veículo..."} />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {!veiculosLoading && meusVeiculos.map(v => (
+                            <SelectItem key={v.id} value={String(v.id)}>
+                                {v.marca} {v.modelo} (Autonomia: {v.autonomiaEstimada.toFixed(0)} km)
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+
                 {isRouteLoading && (
                     <div className="flex items-center justify-center gap-2 p-2 text-azul-claro">
                         <Loader2 className="h-4 w-4 animate-spin" />
@@ -391,8 +458,19 @@ export default function AbaMapa({ isVisible }) {
                 )}
 
                 {!isRouteLoading && totalDistance && (
-                    <div className="flex items-center justify-center gap-2 p-2 text-texto-claro">
-                        <p>Distância Total: {(totalDistance/1000).toFixed(2)} km</p>
+                    <div className="flex flex-col items-center justify-center gap-2 p-2 text-texto-claro">
+                        <p>Distância Total: <span className="font-bold text-lg">{(totalDistance / 1000).toFixed(2)} km</span></p>
+
+                        {autonomyReport && (
+                            <div className={`flex items-center gap-2 p-2 rounded-md w-full justify-center ${
+                                autonomyReport.status === 'success'
+                                    ? 'bg-verde-claro/10 text-verde-claro'
+                                    : 'bg-vermelho-status/10 text-vermelho-status'
+                            }`}>
+                                {autonomyReport.status === 'success' ? <CheckCircle className="h-4 w-4" /> : <AlertTriangle className="h-4 w-4" />}
+                                <span className="text-xs text-center">{autonomyReport.message}</span>
+                            </div>
+                        )}
                     </div>
                 )}
                 <Button variant="ghost" onClick={() => forceClearRoute(mapRef.current)}>Limpar Rota</Button>

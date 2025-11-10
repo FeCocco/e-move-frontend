@@ -1,14 +1,17 @@
-import { useState, useEffect, useCallback } from 'react';
+"use client";
+
+import { useState, useEffect, useCallback, createContext, useContext } from 'react';
 import api from '@/lib/api';
 import { toast } from 'sonner';
 
-export function useVeiculos() {
+const VeiculosContext = createContext(null);
+
+export function VeiculosProvider({ children }) {
     const [meusVeiculos, setMeusVeiculos] = useState([]);
     const [todosVeiculos, setTodosVeiculos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    // Esta função agora será nossa única fonte de verdade para os veículos do usuário
     const fetchMeusVeiculos = useCallback(async () => {
         try {
             const response = await api.get('/api/veiculos/meus-veiculos');
@@ -16,7 +19,6 @@ export function useVeiculos() {
         } catch (err) {
             console.error("Erro ao buscar meus veículos:", err);
             setError('Não foi possível carregar seus veículos.');
-            // A notificação de erro já acontece aqui, não precisa repetir nas outras funções
         }
     }, []);
 
@@ -42,11 +44,9 @@ export function useVeiculos() {
 
     const adicionarVeiculo = async (veiculoId) => {
         try {
-            // 1. Faz a chamada à API para adicionar
             await api.post(`/api/veiculos/meus-veiculos/${veiculoId}`);
             toast.success('Sucesso!', { description: 'Veículo adicionado à sua garagem.' });
-            // 2. [A MUDANÇA] Busca a lista atualizada do servidor
-            await fetchMeusVeiculos();
+            await fetchMeusVeiculos(); // Re-busca a lista ATUALIZADA
         } catch (err) {
             console.error("Erro ao adicionar veículo:", err);
             toast.error('Erro!', { description: err.response?.data || 'Não foi possível adicionar o veículo.' });
@@ -55,11 +55,9 @@ export function useVeiculos() {
 
     const removerVeiculo = async (veiculoId) => {
         try {
-            // 1. Faz a chamada à API para remover
             await api.delete(`/api/veiculos/meus-veiculos/${veiculoId}`);
             toast.success('Sucesso!', { description: 'Veículo removido da sua garagem.' });
-            // 2. [A MUDANÇA] Busca a lista atualizada do servidor
-            await fetchMeusVeiculos();
+            await fetchMeusVeiculos(); // Re-busca a lista ATUALIZADA
         } catch (err) {
             console.error("Erro ao remover veículo:", err);
             toast.error('Erro!', { description: err.response?.data || 'Não foi possível remover o veículo.' });
@@ -68,18 +66,16 @@ export function useVeiculos() {
 
     const atualizarNivelBateria = async (veiculoId, nivelBateria) => {
         try {
-            // 1. Faz a chamada à API para atualizar
             await api.put(`/api/veiculos/${veiculoId}/bateria`, { nivelBateria });
             toast.success('Sucesso!', { description: 'Nível da bateria atualizado.' });
-            // 2. [A MUDANÇA] Busca a lista atualizada para refletir a nova autonomia estimada
-            await fetchMeusVeiculos();
+            await fetchMeusVeiculos(); // Re-busca a lista ATUALIZADA
         } catch (err) {
             console.error("Erro ao atualizar bateria:", err);
             toast.error('Erro!', { description: err.response?.data || 'Não foi possível atualizar a bateria.' });
         }
     };
 
-    return {
+    const value = {
         meusVeiculos,
         todosVeiculos,
         loading,
@@ -88,4 +84,18 @@ export function useVeiculos() {
         removerVeiculo,
         atualizarNivelBateria
     };
+
+    return (
+        <VeiculosContext.Provider value={value}>
+            {children}
+        </VeiculosContext.Provider>
+    );
+}
+
+export function useVeiculos() {
+    const context = useContext(VeiculosContext);
+    if (!context) {
+        throw new Error('useVeiculos deve ser usado dentro de um VeiculosProvider');
+    }
+    return context;
 }
