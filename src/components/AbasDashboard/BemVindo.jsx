@@ -1,4 +1,9 @@
 export default function BemVindo({ profileData }) {
+
+    if (!profileData) {
+        return null;
+    }
+
     return (
         <div className="text-center">
             <h1 className="text-3xl font-bold font-orbitron mb-4">Bem-vindo(a), {profileData.nome}!</h1>

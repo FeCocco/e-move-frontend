@@ -23,8 +23,6 @@ export default function RootLayout({ children }) {
         </head>
         <body className={`${orbitron.variable} ${poppins.variable} ${josefinSans.variable} font-poppins`}>
 
-        <Header pathname={pathname} />
-
         <Link href="/" className="hidden sm:block">
             <Logo className="fixed top-[25px] left-[30px] z-[1002] text-[1.6rem] text-azul-claro/70 drop-shadow-[0_0_8px_rgba(0,255,255,0.4)] cursor-pointer" />
         </Link>

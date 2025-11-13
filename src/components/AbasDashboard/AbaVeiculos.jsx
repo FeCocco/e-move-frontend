@@ -2,8 +2,7 @@ import { useState, useMemo } from "react";
 import VeiculoCard from "@/components/VeiculoCard/VeiculoCard";
 import AdicionarVeiculoCard from "@/components/AppCard/AdicionarVeiculoCard";
 import EditarBateriaModal from "@/components/EditarBateriaModal/EditarBateriaModal";
-import { useVeiculos } from "@/hooks/useVeiculos";
-
+import { useVeiculos } from "@/context/VeiculosContext";
 import {
     Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger
 } from "@/components/ui/dialog";
