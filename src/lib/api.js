@@ -22,4 +22,14 @@ export const fetchDirectRoute = (origin, destination) => {
     });
 };
 
+// --- ADICIONE ESTA NOVA FUNÇÃO ---
+/**
+ * Salva uma nova viagem no histórico do usuário
+ * @param {object} viagemData { veiculoId, kmTotal, co2Preservado }
+ * @returns {Promise<object>} A viagem salva
+ */
+export const salvarViagem = (viagemData) => {
+    return api.post('/api/viagens', viagemData);
+};
+
 export default api;
