@@ -5,12 +5,6 @@ const api = axios.create({
     withCredentials: true,
 });
 
-/**
- * Busca a rota direta entre dois pontos
- * @param {object} origin { latitude, longitude }
- * @param {object} destination { latitude, longitude }
- * @returns {Promise<object>} A resposta da API de direções
- */
 export const fetchDirectRoute = (origin, destination) => {
     return api.get('/api/directions', {
         params: {
@@ -22,14 +16,12 @@ export const fetchDirectRoute = (origin, destination) => {
     });
 };
 
-// --- ADICIONE ESTA NOVA FUNÇÃO ---
-/**
- * Salva uma nova viagem no histórico do usuário
- * @param {object} viagemData { veiculoId, kmTotal, co2Preservado }
- * @returns {Promise<object>} A viagem salva
- */
 export const salvarViagem = (viagemData) => {
     return api.post('/api/viagens', viagemData);
 };
+
+export const consultarViagem = () => {
+    return api.get('/api/viagens');
+}
 
 export default api;
