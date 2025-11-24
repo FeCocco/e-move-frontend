@@ -22,6 +22,10 @@ export const salvarViagem = (viagemData) => {
 
 export const consultarViagem = () => {
     return api.get('/api/viagens');
-}
+};
+
+export const atualizarViagem = (viagemId, dados) => {
+    return api.patch(`/api/viagens/${viagemId}`, dados);
+};
 
 export default api;
