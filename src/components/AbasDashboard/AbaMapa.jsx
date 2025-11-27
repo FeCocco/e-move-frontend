@@ -381,18 +381,18 @@ export default function AbaMapa({ isVisible }) {
                     value={destination}
                     onSelectLocation={setDestination}
                 />
-                <Label htmlFor="vehicle-select" className="mb-1 mt-2">Veículo para a Rota:</Label>
+                <Label htmlFor="vehicle-select">Veículo para a Rota:</Label>
                 <Select
                     value={selectedVehicle ? String(selectedVehicle.id) : undefined}
                     onValueChange={(value) => {
-                        const vehicle = meusVeiculos.find(v => v.id == value);
+                        const vehicle = meusVeiculos.find(v => v.id === value);
                         setSelectedVehicle(vehicle || null);
                     }}
                     disabled={veiculosLoading}
                 >
                     <SelectTrigger
                         id="vehicle-select"
-                        className="w-full justify-start text-left font-normal p-3 h-12 rounded-lg border border-white/30 bg-white/5 text-white data-[placeholder]:text-white/50 focus:ring-1 focus:ring-azul-claro"
+                        className="w-full justify-start text-left p-3 h-9 rounded-lg "
                     >
                         <SelectValue placeholder={veiculosLoading ? "Carregando veículos..." : "Selecione seu veículo..."} />
                     </SelectTrigger>
