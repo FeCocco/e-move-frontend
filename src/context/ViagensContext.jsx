@@ -12,6 +12,9 @@ export function ViagensProvider({ children }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    // --- Estado de Ponte entre Rotas e Mapa ---
+    const [rotaParaCarregar, setRotaParaCarregar] = useState(null);
+
     const fetchHistorico = useCallback(async () => {
         try {
             setLoading(true);
@@ -49,8 +52,7 @@ export function ViagensProvider({ children }) {
             await atualizarViagem(viagemId, { favorita, apelido });
 
             setHistoricoRotas(prevRotas =>
-                prevRotas.map(rota =>
-                    rota.id_viagem === viagemId
+                prevRotas.map(rota => rota.id_viagem === viagemId
                         ? { ...rota, favorita, apelido }
                         : rota
                 )
@@ -70,7 +72,9 @@ export function ViagensProvider({ children }) {
         error,
         salvarViagem,
         toggleFavorito,
-        refetchHistorico: fetchHistorico
+        refetchHistorico: fetchHistorico,
+        rotaParaCarregar,    // Exportado
+        setRotaParaCarregar  // Exportado
     };
 
     return (
