@@ -13,16 +13,13 @@ export function ViagensProvider({ children }) {
     const [error, setError] = useState(null);
     const [rotaParaCarregar, setRotaParaCarregar] = useState(null);
 
-    // --- CÁLCULO DE ESTATÍSTICAS REAIS ---
+    // --- NOVOS ESTADOS PARA FILTRO ---
+    const [dataInicio, setDataInicio] = useState(null);
+    const [dataFim, setDataFim] = useState(null);
+
     const estatisticas = useMemo(() => {
         if (!historicoRotas || historicoRotas.length === 0) {
-            return {
-                totalDistancia: 0,
-                totalCO2: 0,
-                totalEnergia: 0,
-                veiculosRanking: [],
-                evolucaoMensal: [] // Novo dado
-            };
+            return { totalDistancia: 0, totalCO2: 0, totalEnergia: 0, veiculosRanking: [], evolucaoMensal: [] };
         }
 
         let dist = 0;
@@ -30,22 +27,18 @@ export function ViagensProvider({ children }) {
         const veiculoCount = {};
         const mesesMap = {};
 
-        // Processa cada rota
         historicoRotas.forEach(rota => {
-            // Somas totais
             dist += rota.kmTotal || 0;
             co2 += rota.co2Preservado || 0;
 
-            // Ranking de Veículos
             if (rota.veiculo) {
                 const nomeVeiculo = `${rota.veiculo.marca} ${rota.veiculo.modelo}`;
                 veiculoCount[nomeVeiculo] = (veiculoCount[nomeVeiculo] || 0) + 1;
             }
 
-            // Agrupamento por Mês para o Gráfico de Evolução
             if (rota.dtViagem) {
                 const data = new Date(rota.dtViagem);
-
+                // Agrupa por dia/mês para o gráfico
                 const diaFormatado = data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
 
                 if (!mesesMap[diaFormatado]) {
@@ -56,48 +49,56 @@ export function ViagensProvider({ children }) {
             }
         });
 
-        // Formata Ranking Veículos
         const ranking = Object.entries(veiculoCount)
             .map(([veiculo, uso]) => ({ veiculo, uso }))
             .sort((a, b) => b.uso - a.uso)
             .slice(0, 5);
 
-        // Formata Evolução Mensal (Ordenado por data)
         const evolucao = Object.values(mesesMap)
             .sort((a, b) => a.ordem - b.ordem)
             .map(({ mes, km, co2 }) => ({ mes, km: Math.round(km), co2: Number(co2.toFixed(1)) }));
 
-        // Se tiver menos de 2 meses, adiciona um placeholder para o gráfico não quebrar
-        if (evolucao.length === 0) {
-            evolucao.push({ mes: 'Atual', km: 0, co2: 0 });
-        }
+        if (evolucao.length === 0) evolucao.push({ mes: 'Atual', km: 0, co2: 0 });
 
         return {
             totalDistancia: dist,
             totalCO2: co2,
-            totalEnergia: dist * 0.18, // Estimativa 0.18 kWh/km
+            totalEnergia: dist * 0.18,
             veiculosRanking: ranking,
             evolucaoMensal: evolucao
         };
     }, [historicoRotas]);
 
-    const fetchHistorico = useCallback(async () => {
+    // --- FETCH ATUALIZADO PARA USAR FILTROS ---
+    const fetchHistorico = useCallback(async (inicio = dataInicio, fim = dataFim) => {
         try {
             setLoading(true);
             setError(null);
-            const response = await consultarViagem();
+
+            // Formata datas para YYYY-MM-DD se existirem
+            const formatDate = (date) => date ? date.toISOString().split('T')[0] : null;
+
+            const response = await consultarViagem(formatDate(inicio), formatDate(fim));
             setHistoricoRotas(response.data);
         } catch (err) {
+            setError("Não foi possível carregar o histórico de rotas.");
             console.error("Erro ao buscar histórico:", err);
-            // Não setamos erro crítico aqui para não travar o dashboard inteiro se falhar
         } finally {
             setLoading(false);
         }
-    }, []);
+    }, [dataInicio, dataFim]);
 
     useEffect(() => {
         fetchHistorico();
     }, [fetchHistorico]);
+
+    // --- FUNÇÃO QUE FALTAVA ---
+    const aplicarFiltro = (inicio, fim) => {
+        setDataInicio(inicio);
+        setDataFim(fim);
+        // Força o fetch com os novos valores imediatamente
+        fetchHistorico(inicio, fim);
+    };
 
     const salvarViagem = async (viagemData) => {
         try {
@@ -130,7 +131,11 @@ export function ViagensProvider({ children }) {
         historicoRotas, loading, error,
         salvarViagem, toggleFavorito, refetchHistorico: fetchHistorico,
         rotaParaCarregar, setRotaParaCarregar,
-        estatisticas // Exportando estatísticas completas
+        estatisticas,
+        // Novos exports
+        aplicarFiltro,
+        dataInicio,
+        dataFim
     };
 
     return (

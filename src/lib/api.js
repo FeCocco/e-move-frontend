@@ -20,8 +20,13 @@ export const salvarViagem = (viagemData) => {
     return api.post('/api/viagens', viagemData);
 };
 
-export const consultarViagem = () => {
-    return api.get('/api/viagens');
+export const consultarViagem = (inicio, fim) => {
+    // Se tiver datas, adiciona como query params
+    const params = {};
+    if (inicio) params.inicio = inicio; // YYYY-MM-DD
+    if (fim) params.fim = fim;
+
+    return api.get('/api/viagens', { params });
 };
 
 export const atualizarViagem = (viagemId, dados) => {
