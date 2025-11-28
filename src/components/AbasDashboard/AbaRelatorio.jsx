@@ -1,63 +1,81 @@
+"use client";
+import { useViagens } from "@/context/ViagensContext";
+import EvolucaoChart from '@/components/Charts/EvolucaoChart';
 import VeiculoChart from '@/components/Charts/VeiculoChart';
-import PostoChart from '@/components/Charts/PostoChart';
-import RotasChart from '@/components/Charts/RotasChart';
-import SatisfacaoChart from '@/components/Charts/SatisfacaoChart';
 import StatCard from '@/components/Charts/StatCard';
-import AnimatedCar from '@/components/Charts/AnimatedCar';
+import AnimatedCar from '@/components/Charts/AnimatedCar'; // Importando o carrinho
 import { Route, Zap, Droplets } from 'lucide-react';
 
 export default function AbaRelatorio() {
+    const { estatisticas } = useViagens();
+
+    // Valores seguros (0 se undefined)
+    const {
+        totalDistancia = 0,
+        totalEnergia = 0,
+        totalCO2 = 0,
+        veiculosRanking = [],
+        evolucaoMensal = []
+    } = estatisticas || {};
+
     return (
-        <div className="px-1 sm:px-4">
+        <div className="px-1 sm:px-2 py-2">
             <h2 className="text-2xl font-orbitron text-verde-claro mb-2 text-center">
                 Meus Relatórios
             </h2>
-            <p className="text-texto-claro/80 mb-6 text-center max-w-2xl mx-auto">
-                Visualize os dados e métricas de uso do seu aplicativo e-Move.
+            <p className="text-texto-claro/80 mb-8 text-center max-w-2xl mx-auto">
+                Acompanhe métricas reais do seu impacto e consumo.
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-fr">
-                {/* O card de Satisfação agora ocupa duas colunas em telas grandes para melhor equilíbrio */}
-                <div className="md:col-span-1 lg:col-span-2 bg-black/20 p-4 sm:p-5 md:p-6 rounded-lg flex flex-col justify-between space-y-4">
-                    <h3 className="text-lg font-semibold text-azul-claro text-center">
-                        Satisfação e Resumo
+            {/* --- GRID PRINCIPAL --- */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+
+                {/* 1. CARD ÚNICO DE RESUMO (Topo - Ocupa toda a largura) */}
+                <div className="lg:col-span-3 bg-black/20 border border-white/10 p-6 rounded-xl flex flex-col gap-6 relative overflow-hidden">
+
+                    {/* Título da Seção */}
+                    <h3 className="text-lg font-semibold text-azul-claro flex items-center gap-2">
+                        <Zap size={20} /> Resumo Geral
                     </h3>
 
-                    <div className="flex-1 min-h-[200px]">
-                        <SatisfacaoChart />
+                    {/* Grid dos 3 Cards Internos */}
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 z-10">
+                        <StatCard
+                            icon={Route}
+                            value={totalDistancia.toFixed(0)}
+                            unit="km"
+                            label="Distância Total"
+                        />
+                        <StatCard
+                            icon={Zap}
+                            value={totalEnergia.toFixed(0)}
+                            unit="kWh"
+                            label="Energia Estimada"
+                        />
+                        <StatCard
+                            icon={Droplets}
+                            value={totalCO2.toFixed(1)}
+                            unit="kg"
+                            label="CO₂ Evitado"
+                        />
                     </div>
 
-                    <div className="grid grid-cols-3 gap-3 pt-4">
-                        <StatCard icon={Route} value="1.280" unit="km" label="Distância" />
-                        <StatCard icon={Zap} value="256" unit="kWh" label="Energia" />
-                        <StatCard icon={Droplets} value="1.152" unit="kg" label="CO₂" />
+                    {/* O Carrinho volta aqui, na parte inferior do card */}
+                    <div className="mt-2 pt-4 border-t border-white/5">
+                        <AnimatedCar />
                     </div>
-
-                    <AnimatedCar />
                 </div>
 
-                {/* Veículos */}
-                <div className="bg-black/20 p-4 sm:p-5 md:p-6 rounded-lg flex flex-col space-y-4">
-                    <h3 className="text-lg font-semibold text-azul-claro text-center">
-                        Veículos Mais Utilizados
-                    </h3>
-                    <div className="flex-1 min-h-[300px]">
-                        <VeiculoChart />
-                    </div>
+                {/* 2. GRÁFICO DE EVOLUÇÃO (Principal - 2/3 da largura) */}
+                <div className="lg:col-span-2 bg-black/20 border border-white/10 rounded-xl overflow-hidden flex flex-col h-[400px]">
+                    <EvolucaoChart data={evolucaoMensal} />
                 </div>
 
-                {/* Rotas e Postos */}
-                <div className="lg:col-span-3 xl:col-span-1 bg-black/20 p-4 sm:p-5 md:p-6 rounded-lg flex flex-col space-y-4">
-                    <h3 className="text-lg font-semibold text-azul-claro text-center">
-                        Rotas e Postos
-                    </h3>
-                    <div className="flex-1 min-h-[200px]">
-                        <RotasChart />
-                    </div>
-                    <div className="flex-1 min-h-[200px]">
-                        <PostoChart />
-                    </div>
+                {/* 3. GRÁFICO DE VEÍCULOS (Lateral - 1/3 da largura) */}
+                <div className="lg:col-span-1 bg-black/20 border border-white/10 rounded-xl overflow-hidden flex flex-col h-[400px]">
+                    <VeiculoChart data={veiculosRanking} />
                 </div>
+
             </div>
         </div>
     );

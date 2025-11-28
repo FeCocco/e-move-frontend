@@ -148,7 +148,7 @@ export function AddressSearch({ placeholder, onSelectLocation, value, onChange }
                     </div>
                 </PopoverAnchor>
 
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-xs text-muted-foreground mt-1 mb-1">
                     Digite e aguarde ou pressione Enter para buscar
                 </p>
 
