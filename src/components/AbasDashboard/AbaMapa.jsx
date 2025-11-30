@@ -1,11 +1,13 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from 'react';
+import { createRoot } from 'react-dom/client'; // <-- IMPORTANTE: Para renderizar componentes no popup
 import maplibregl from 'maplibre-gl';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { AppCard } from "@/components/AppCard/AppCard";
 import { AddressSearch } from "@/components/AddressSearch";
 import polyline from '@mapbox/polyline';
 import * as turf from '@turf/turf';
+import StationPopup from "@/components/Map/StationPopup"; // <-- Componente do Popup
 
 // --- Importações de API e UI ---
 import { fetchDirectRoute, buscarEstacoesProximas } from "@/lib/api";
@@ -24,6 +26,7 @@ import {
 // --- Contexto ---
 import { useVeiculos } from "@/context/VeiculosContext";
 import { useViagens } from "@/context/ViagensContext";
+import { useEstacoes } from "@/context/EstacoesContext"; // <-- Contexto de Estações
 
 const GLOBE_STYLE = 'https://demotiles.maplibre.org/globe.json';
 const VOYAGER_STYLE = 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json';
@@ -57,6 +60,7 @@ export default function AbaMapa({ isVisible }) {
 
     const { meusVeiculos, loading: veiculosLoading } = useVeiculos();
     const { salvarViagem, rotaParaCarregar, setRotaParaCarregar } = useViagens();
+    const { isFavorita, toggleFavorita } = useEstacoes(); // <-- Hook de favoritos
 
     const [selectedVehicleId, setSelectedVehicleId] = useState(null);
     const selectedVehicle = meusVeiculos.find(v => String(v.id) === selectedVehicleId) || null;
@@ -64,6 +68,7 @@ export default function AbaMapa({ isVisible }) {
     const [autonomyReport, setAutonomyReport] = useState(null);
     const [isSavingTrip, setIsSavingTrip] = useState(false);
 
+    // Novo estado para guardar as paradas
     const [waypoints, setWaypoints] = useState([]);
 
     // --- ALGORITMO DE ROTA COM AUTONOMIA ---
@@ -81,11 +86,9 @@ export default function AbaMapa({ isVisible }) {
         let origemAtual = { ...pontoOrigem };
         let destinoFinal = { ...pontoDestino };
 
-        // Garante que temos números válidos para a bateria
         let autonomiaDisponivel = veiculo.autonomiaEstimada || 0;
         let autonomiaTotalCarro = veiculo.autonomiaTotal || 0;
 
-        // Se a autonomia estimada estiver zerada (bateria 0%), evita divisão por zero
         if (autonomiaDisponivel <= 0) autonomiaDisponivel = 10;
         if (autonomiaTotalCarro <= 0) autonomiaTotalCarro = autonomiaDisponivel / ((veiculo.nivelBateria || 100) / 100);
 
@@ -104,7 +107,6 @@ export default function AbaMapa({ isVisible }) {
             const distanciaRotaKm = routeData.distance / 1000;
             const geometriaRota = routeData.geometry;
 
-            // Capacidade atual menos a reserva
             const capacidadeViagem = autonomiaDisponivel - bufferSeguranca;
 
             if (distanciaRotaKm <= capacidadeViagem && capacidadeViagem > 0) {
@@ -118,11 +120,9 @@ export default function AbaMapa({ isVisible }) {
                 const pontoIdealParada = turf.along(lineString, distanciaParaParar, {units: 'kilometers'});
                 const [lonParada, latParada] = pontoIdealParada.geometry.coordinates;
 
-                // Busca estações (Raio aumentado para 50km para garantir resultados em testes)
                 const estacoes = await buscarEstacoesProximas(latParada, lonParada, 50);
 
                 if (!estacoes.data || estacoes.data.length === 0) {
-                    // Se não achar, tenta seguir até o fim da autonomia sem buffer (modo emergência)
                     if (iteracoes === 1 && distanciaRotaKm < autonomiaDisponivel) {
                         rotaFinal.push(routeData);
                         chegouAoDestino = true;
@@ -152,6 +152,8 @@ export default function AbaMapa({ isVisible }) {
 
         return { rotas: rotaFinal, paradas: pontosDeParada };
     };
+
+    // --- FUNÇÕES DE DESENHO ---
 
     const drawRoute = useCallback((map, geoJson) => {
         if (!map || !geoJson) return;
@@ -215,6 +217,8 @@ export default function AbaMapa({ isVisible }) {
         } catch (error) { console.error("Erro ao forçar limpeza:", error); }
     }, [clearRoute]);
 
+    // --- EFEITOS DE INICIALIZAÇÃO ---
+
     useEffect(() => {
         if (isVisible && mapRef.current) {
             const timer = setTimeout(() => mapRef.current.resize(), 100);
@@ -254,7 +258,7 @@ export default function AbaMapa({ isVisible }) {
         };
     }, [drawRoute]);
 
-    // Marcador de Origem
+    // --- EFEITOS DE MARCADORES (ORIGEM E DESTINO) ---
     useEffect(() => {
         if (!mapRef.current) return;
         const map = mapRef.current;
@@ -277,7 +281,6 @@ export default function AbaMapa({ isVisible }) {
         }
     }, [origin, destination]);
 
-    // Marcador de Destino
     useEffect(() => {
         if (!mapRef.current) return;
         const map = mapRef.current;
@@ -301,7 +304,7 @@ export default function AbaMapa({ isVisible }) {
     }, [destination, origin]);
 
 
-    // --- WAYPOINTS ---
+    // --- EFEITO DE WAYPOINTS (ESTAÇÕES) COM POPUP INTERATIVO ---
     useEffect(() => {
         if (!mapRef.current) return;
 
@@ -313,29 +316,29 @@ export default function AbaMapa({ isVisible }) {
             el.className = 'marker-estacao flex items-center justify-center bg-white rounded-full shadow-lg border-2 border-verde-claro w-8 h-8 cursor-pointer hover:scale-110 transition-transform';
             el.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>';
 
-            const info = estacao.AddressInfo;
-            const conn = estacao.Connections?.[0];
+            // --- INÍCIO DA MUDANÇA: Renderização React ---
+            const popupNode = document.createElement('div');
+            const root = createRoot(popupNode);
 
-            const popupHTML = `
-                <div class="p-2 text-slate-900 min-w-[200px]">
-                    <strong class="text-sm block mb-1">${info.Title}</strong>
-                    <span class="text-xs text-slate-500 block mb-2">${info.AddressLine1 || 'Endereço não disponível'}</span>
-                    <div class="flex items-center gap-1 bg-verde-claro/10 p-1 rounded text-verde-claro text-xs font-bold w-fit">
-                        ⚡ ${conn ? conn.PowerKW + ' kW' : 'Potência desc.'}
-                    </div>
-                </div>
-            `;
+            root.render(
+                <StationPopup
+                    station={estacao}
+                    isFavorite={isFavorita(estacao.ID)}
+                    onToggleFavorite={toggleFavorita}
+                />
+            );
+            // --- FIM DA MUDANÇA ---
 
             const marker = new maplibregl.Marker({ element: el })
-                .setLngLat([info.Longitude, info.Latitude])
-                .setPopup(new maplibregl.Popup({ offset: 15, closeButton: false }).setHTML(popupHTML))
+                .setLngLat([estacao.AddressInfo.Longitude, estacao.AddressInfo.Latitude])
+                .setPopup(new maplibregl.Popup({ offset: 15, closeButton: false }).setDOMContent(popupNode)) // Usando setDOMContent
                 .addTo(mapRef.current);
 
             stationMarkersRef.current.push(marker);
         });
-    }, [waypoints]);
+    }, [waypoints, isFavorita, toggleFavorita]); // Adicionadas dependências de favoritos
 
-    // --- CÁLCULO DA ROTA ---
+    // --- CÁLCULO PRINCIPAL DA ROTA ---
     useEffect(() => {
         if (!mapRef.current) return;
         const map = mapRef.current;
@@ -430,7 +433,6 @@ export default function AbaMapa({ isVisible }) {
                     message: `Viagem tranquila! Seu ${selectedVehicle.modelo} tem ${diff.toFixed(0)} km de autonomia sobrando.`
                 });
             } else {
-                //algoritmo não achou paradas e a autonomia não dá
                 setAutonomyReport({
                     status: 'error',
                     message: `Atenção: Autonomia insuficiente e sem estações encontradas.`
@@ -502,7 +504,6 @@ export default function AbaMapa({ isVisible }) {
                     <div className="flex flex-col items-center justify-center gap-2 p-2 text-texto-claro">
                         <p>Distância Total: <span className="font-bold text-lg">{(totalDistance / 1000).toFixed(2)} km</span></p>
 
-                        {/* Relatório de Paradas */}
                         {waypoints.length > 0 ? (
                             <div className="flex flex-col items-center gap-1 w-full">
                                 <div className="flex items-center gap-2 bg-amarelo-status/10 text-amarelo-status p-2 rounded-md w-full justify-center">
