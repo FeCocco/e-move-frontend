@@ -33,4 +33,10 @@ export const atualizarViagem = (viagemId, dados) => {
     return api.patch(`/api/viagens/${viagemId}`, dados);
 };
 
+export const buscarEstacoesProximas = (lat, lon, raio = 50) => {
+    return api.get('/api/estacoes/proximas', {
+        params: { lat, lon, raio }
+    });
+};
+
 export default api;
