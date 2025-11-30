@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, createContext, useContext, useMemo } from 'react';
 import { consultarViagem, salvarViagem as apiSalvarViagem, atualizarViagem } from '@/lib/api';
 import { toast } from 'sonner';
+import { parseDataLocal, formatarDataParaAPI } from '@/lib/utils';
 
 const ViagensContext = createContext(null);
 
@@ -12,8 +13,6 @@ export function ViagensProvider({ children }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [rotaParaCarregar, setRotaParaCarregar] = useState(null);
-
-    // --- NOVOS ESTADOS PARA FILTRO ---
     const [dataInicio, setDataInicio] = useState(null);
     const [dataFim, setDataFim] = useState(null);
 
@@ -37,8 +36,7 @@ export function ViagensProvider({ children }) {
             }
 
             if (rota.dtViagem) {
-                const data = new Date(rota.dtViagem);
-                // Agrupa por dia/mês para o gráfico
+                const data = parseDataLocal(rota.dtViagem);
                 const diaFormatado = data.toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit' });
 
                 if (!mesesMap[diaFormatado]) {
@@ -69,16 +67,14 @@ export function ViagensProvider({ children }) {
         };
     }, [historicoRotas]);
 
-    // --- FETCH ATUALIZADO PARA USAR FILTROS ---
     const fetchHistorico = useCallback(async (inicio = dataInicio, fim = dataFim) => {
         try {
             setLoading(true);
             setError(null);
+            const inicioFormatado = formatarDataParaAPI(inicio);
+            const fimFormatado = formatarDataParaAPI(fim);
 
-            // Formata datas para YYYY-MM-DD se existirem
-            const formatDate = (date) => date ? date.toISOString().split('T')[0] : null;
-
-            const response = await consultarViagem(formatDate(inicio), formatDate(fim));
+            const response = await consultarViagem(inicioFormatado, fimFormatado);
             setHistoricoRotas(response.data);
         } catch (err) {
             setError("Não foi possível carregar o histórico de rotas.");
@@ -92,11 +88,9 @@ export function ViagensProvider({ children }) {
         fetchHistorico();
     }, [fetchHistorico]);
 
-    // --- FUNÇÃO QUE FALTAVA ---
     const aplicarFiltro = (inicio, fim) => {
         setDataInicio(inicio);
         setDataFim(fim);
-        // Força o fetch com os novos valores imediatamente
         fetchHistorico(inicio, fim);
     };
 
@@ -117,7 +111,8 @@ export function ViagensProvider({ children }) {
             await atualizarViagem(viagemId, { favorita, apelido });
             setHistoricoRotas(prevRotas =>
                 prevRotas.map(rota =>
-                    rota.id_viagem === viagemId ? { ...rota, favorita, apelido } : rota
+                    // CORREÇÃO AQUI: mudou de id_viagem para idViagem
+                    rota.idViagem === viagemId ? { ...rota, favorita, apelido } : rota
                 )
             );
             toast.success(favorita ? 'Adicionado aos favoritos!' : 'Removido dos favoritos.');
@@ -131,11 +126,7 @@ export function ViagensProvider({ children }) {
         historicoRotas, loading, error,
         salvarViagem, toggleFavorito, refetchHistorico: fetchHistorico,
         rotaParaCarregar, setRotaParaCarregar,
-        estatisticas,
-        // Novos exports
-        aplicarFiltro,
-        dataInicio,
-        dataFim
+        estatisticas, aplicarFiltro, dataInicio, dataFim
     };
 
     return (

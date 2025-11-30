@@ -27,6 +27,7 @@ import AbaUsuarios from '@/components/AbasDashboard/AbaUsuarios';
 // Contextos
 import { VeiculosProvider } from '@/context/VeiculosContext';
 import { ViagensProvider } from '@/context/ViagensContext';
+import {EstacoesProvider} from "@/context/EstacoesContext";
 
 // ============================================================================
 // VALIDAÇÃO ZOD (O CÓDIGO QUE ESTAVA FALTANDO)
@@ -133,50 +134,52 @@ export default function DashboardPage() {
         <main className="min-h-screen w-full flex flex-col items-center p-2 sm:p-6">
             <VeiculosProvider>
                 <ViagensProvider>
+                    <EstacoesProvider>
 
-                    <div className="w-full max-w-7xl flex flex-col h-full gap-6">
+                        <div className="w-full max-w-7xl flex flex-col h-full gap-6">
 
-                        {/* CABEÇALHO FLUTUANTE LIMPO */}
-                        <header className="flex flex-col items-center justify-center relative mt-2 sm:mt-0">
-                            {/* Navegação Centralizada */}
-                            <DashboardNav activeTab={activeTab} setActiveTab={setActiveTab} />
-                        </header>
+                            {/* CABEÇALHO FLUTUANTE LIMPO */}
+                            <header className="flex flex-col items-center justify-center relative mt-2 sm:mt-0">
+                                {/* Navegação Centralizada */}
+                                <DashboardNav activeTab={activeTab} setActiveTab={setActiveTab} />
+                            </header>
 
-                        <div className="flex-grow w-full fade-in-up">
+                            <div className="flex-grow w-full fade-in-up">
 
-                            <div style={{ display: activeTab === '#BemVindo' ? 'block' : 'none' }}>
-                                <BemVindo profileData={profileData} />
-                            </div>
-
-                            <div style={{ display: activeTab === '#AbaVeiculos' ? 'block' : 'none' }}>
-                                <AbaVeiculos />
-                            </div>
-
-                            <div style={{ display: activeTab === '#AbaRotas' ? 'block' : 'none' }}>
-                                <AbaRotas setActiveTab={setActiveTab} />
-                            </div>
-
-                            <div style={{ display: activeTab === '#AbaEstacoes' ? 'block' : 'none' }}>
-                                <AbaEstacoes />
-                            </div>
-
-                            <div style={{ display: activeTab === '#AbaMapa' ? 'block' : 'none' }}>
-                                <div className="min-h-[500px]">
-                                    <AbaMapa isVisible={activeTab === '#AbaMapa'} />
+                                <div style={{ display: activeTab === '#BemVindo' ? 'block' : 'none' }}>
+                                    <BemVindo profileData={profileData} />
                                 </div>
-                            </div>
 
-                            <div style={{ display: activeTab === '#AbaUsuarios' ? 'block' : 'none' }}>
-                                <AbaUsuarios profileData={profileData} isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen} formStatus={formStatus} handleLogout={handleLogout} handleSubmit={handleSubmit} EditarUsuarioSubmit={EditarUsuarioSubmit} register={register} errors={errors} apiError={apiError} />
-                            </div>
+                                <div style={{ display: activeTab === '#AbaVeiculos' ? 'block' : 'none' }}>
+                                    <AbaVeiculos />
+                                </div>
 
-                            <div style={{ display: activeTab === '#AbaRelatorio' ? 'block' : 'none' }}>
-                                <AbaRelatorio />
-                            </div>
+                                <div style={{ display: activeTab === '#AbaRotas' ? 'block' : 'none' }}>
+                                    <AbaRotas setActiveTab={setActiveTab} />
+                                </div>
 
+                                <div style={{ display: activeTab === '#AbaEstacoes' ? 'block' : 'none' }}>
+                                    <AbaEstacoes />
+                                </div>
+
+                                <div style={{ display: activeTab === '#AbaMapa' ? 'block' : 'none' }}>
+                                    <div className="min-h-[500px]">
+                                        <AbaMapa isVisible={activeTab === '#AbaMapa'} />
+                                    </div>
+                                </div>
+
+                                <div style={{ display: activeTab === '#AbaUsuarios' ? 'block' : 'none' }}>
+                                    <AbaUsuarios profileData={profileData} isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen} formStatus={formStatus} handleLogout={handleLogout} handleSubmit={handleSubmit} EditarUsuarioSubmit={EditarUsuarioSubmit} register={register} errors={errors} apiError={apiError} />
+                                </div>
+
+                                <div style={{ display: activeTab === '#AbaRelatorio' ? 'block' : 'none' }}>
+                                    <AbaRelatorio />
+                                </div>
+
+                            </div>
                         </div>
-                    </div>
 
+                    </EstacoesProvider>
                 </ViagensProvider>
             </VeiculosProvider>
         </main>

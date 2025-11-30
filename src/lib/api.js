@@ -33,4 +33,14 @@ export const atualizarViagem = (viagemId, dados) => {
     return api.patch(`/api/viagens/${viagemId}`, dados);
 };
 
+export const buscarEstacoesProximas = (lat, lon, raio = 50) => {
+    return api.get('/api/estacoes/proximas', {
+        params: { lat, lon, raio }
+    });
+};
+
+export const getEstacoesFavoritas = () => api.get('/api/estacoes/favoritas');
+export const favoritarEstacao = (id) => api.post(`/api/estacoes/${id}/favorito`);
+export const desfavoritarEstacao = (id) => api.delete(`/api/estacoes/${id}/favorito`);
+
 export default api;
