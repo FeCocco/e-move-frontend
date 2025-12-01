@@ -4,6 +4,7 @@ import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, Di
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UserRoundPen, LogOut, Check } from 'lucide-react';
+import { formatarTelefone } from "@/lib/utils";
 
 export default function AbaUsuarios({ profileData, isDialogOpen, setIsDialogOpen, formStatus, handleLogout, handleSubmit, EditarUsuarioSubmit, register, errors, apiError }) {
 
@@ -16,10 +17,9 @@ export default function AbaUsuarios({ profileData, isDialogOpen, setIsDialogOpen
             <h2 className="flex justify-center text-2xl font-orbitron text-verde-claro mb-4">Minha Conta</h2>
             <div className="flex justify-center">
                 <AppCard className="bg-black/20 p-6 rounded-lg w-full max-w-md text-left">
-                    {/* Agora esta linha é segura */}
                     <p className="mb-2"><strong>Nome:</strong> {profileData.nome}</p>
                     <p className="mb-2"><strong>Email:</strong> {profileData.email}</p>
-                    <p className="mb-2"><strong>Telefone:</strong> {profileData.telefone}</p>
+                    <p className="mb-2"><strong>Telefone:</strong> {formatarTelefone(profileData.telefone)}</p>
                     <p><strong>Sexo:</strong> {profileData.sexo}</p>
                     <div className="p-4 flex justify-center">
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -54,11 +54,24 @@ export default function AbaUsuarios({ profileData, isDialogOpen, setIsDialogOpen
                                                 <Input id="edit_email" {...register("email")} defaultValue={profileData.email} />
                                                 {errors.email && <p className="text-vermelho-status text-xs mt-1">{errors.email.message}</p>}
                                             </div>
+
                                             <div className="grid gap-2">
-                                                <Label htmlFor="edit_telefone">Telefone</Label>
-                                                <Input id="edit_telefone" {...register("telefone")} defaultValue={profileData.telefone} />
+                                                <Label htmlFor="edit_telefone" className="mt-3">Telefone</Label>
+                                                <Input
+                                                    id="edit_telefone"
+                                                    defaultValue={formatarTelefone(profileData.telefone)}
+                                                    {...register("telefone")}
+                                                    onChange={(e) => {
+                                                        const formatted = formatarTelefone(e.target.value);
+                                                        e.target.value = formatted;
+                                                        // Atualiza o hook form
+                                                        register("telefone").onChange(e);
+                                                    }}
+                                                    maxLength={15}
+                                                />
                                                 {errors.telefone && <p className="text-vermelho-status text-xs mt-1">{errors.telefone.message}</p>}
                                             </div>
+
                                         </div>
                                         {apiError && <p className="text-vermelho-status text-center text-sm mb-2">{apiError}</p>}
                                         <DialogFooter>

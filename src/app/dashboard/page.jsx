@@ -14,6 +14,7 @@ import DashboardNav from '@/components/DashboardNav/DashboardNav';
 
 // Utilitários
 import { getApiErrorMessage } from '@/lib/errorHandler';
+import { formatarTelefone } from "@/lib/utils";
 
 // Abas do Dashboard
 import BemVindo from '@/components/AbasDashboard/BemVindo';
@@ -27,17 +28,17 @@ import AbaUsuarios from '@/components/AbasDashboard/AbaUsuarios';
 // Contextos
 import { VeiculosProvider } from '@/context/VeiculosContext';
 import { ViagensProvider } from '@/context/ViagensContext';
-import {EstacoesProvider} from "@/context/EstacoesContext";
+import { EstacoesProvider } from '@/context/EstacoesContext';
 
 // ============================================================================
-// VALIDAÇÃO ZOD (O CÓDIGO QUE ESTAVA FALTANDO)
+// VALIDAÇÃO ZOD
 // ============================================================================
 const EditarUsuarioSchema = z.object({
     nome: z.string().min(3, { message: "O nome deve ter no mínimo 3 caracteres." }),
     email: z.email({ message: "Formato de e-mail inválido." }),
     telefone: z.string()
-        .regex(/^\d+$/, { message: "O telefone deve conter apenas números." })
-        .min(10, { message: "O telefone não pode ter mais de 11 dígitos." }),
+        .min(14, { message: "O telefone parece incompleto." })
+        .max(15, { message: "Telefone inválido." }),
 });
 
 // ============================================================================
@@ -61,13 +62,19 @@ export default function DashboardPage() {
     const EditarUsuarioSubmit = async (data) => {
         setApiError('');
         setFormStatus('submitting');
+
+        const dadosParaEnviar = {
+            ...data,
+            telefone: data.telefone.replace(/\D/g, '')
+        };
+
         try {
             const response = await fetch(`${API_URL}/usuario/me`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
                 cache: 'no-store',
-                body: JSON.stringify(data),
+                body: JSON.stringify(dadosParaEnviar),
             });
             if (!response.ok) {
                 const errorText = await response.text();
@@ -111,9 +118,11 @@ export default function DashboardPage() {
                 if (!response.ok) throw new Error('Sessão inválida ou expirada.');
                 const data = await response.json();
                 setProfileData(data);
+
                 setValue('nome', data.nome);
                 setValue('email', data.email);
-                setValue('telefone', data.telefone);
+                setValue('telefone', formatarTelefone(data.telefone));
+
             } catch (error) {
                 console.error(error);
                 router.push('/');
@@ -138,9 +147,7 @@ export default function DashboardPage() {
 
                         <div className="w-full max-w-7xl flex flex-col h-full gap-6">
 
-                            {/* CABEÇALHO FLUTUANTE LIMPO */}
                             <header className="flex flex-col items-center justify-center relative mt-2 sm:mt-0">
-                                {/* Navegação Centralizada */}
                                 <DashboardNav activeTab={activeTab} setActiveTab={setActiveTab} />
                             </header>
 
@@ -169,7 +176,18 @@ export default function DashboardPage() {
                                 </div>
 
                                 <div style={{ display: activeTab === '#AbaUsuarios' ? 'block' : 'none' }}>
-                                    <AbaUsuarios profileData={profileData} isDialogOpen={isDialogOpen} setIsDialogOpen={setIsDialogOpen} formStatus={formStatus} handleLogout={handleLogout} handleSubmit={handleSubmit} EditarUsuarioSubmit={EditarUsuarioSubmit} register={register} errors={errors} apiError={apiError} />
+                                    <AbaUsuarios
+                                        profileData={profileData}
+                                        isDialogOpen={isDialogOpen}
+                                        setIsDialogOpen={setIsDialogOpen}
+                                        formStatus={formStatus}
+                                        handleLogout={handleLogout}
+                                        handleSubmit={handleSubmit}
+                                        EditarUsuarioSubmit={EditarUsuarioSubmit}
+                                        register={register}
+                                        errors={errors}
+                                        apiError={apiError}
+                                    />
                                 </div>
 
                                 <div style={{ display: activeTab === '#AbaRelatorio' ? 'block' : 'none' }}>

@@ -19,6 +19,7 @@ import { DatePicker } from '@/components/DatePicker/DatePicker';
 import { getApiErrorMessage } from '@/lib/errorHandler';
 import GenderSelector from "@/components/ui/GenderSlector";
 import MedidorForcaSenha from "@/components/ui/MedidorForcaSenha";
+import { formatarTelefone } from "@/lib/utils";
 
 // ============================================================================
 // SCHEMA DE VALIDAÇÃO (ZOD)
@@ -27,9 +28,8 @@ const cadastroSchema = z.object({
     nome: z.string().min(3, { message: "O nome deve ter no mínimo 3 caracteres." }),
     email: z.email({ message: "Formato de e-mail inválido." }),
     telefone: z.string()
-        .regex(/^\d+$/, { message: "O telefone deve conter apenas números." })
-        .min(10, { message: "O telefone deve ter no mínimo 10 dígitos." })
-        .max(12, { message: "O telefone não pode ter mais de 11 dígitos." }),
+        .min(14, { message: "O telefone parece incompleto." })
+        .max(15, { message: "Telefone inválido." }),
     sexo: z.string().nonempty("Por favor, selecione um gênero."),
     dataNascimento: z
         .date()
@@ -74,11 +74,16 @@ export default function CadastroPage() {
         setApiError('');
         setSuccess('');
 
+        const dadosParaEnviar = {
+            ...data,
+            telefone: data.telefone.replace(/\D/g, '')
+        };
+
         try {
             const response = await fetch(`${API_URL}/cadastro`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
+                body: JSON.stringify(dadosParaEnviar),
             });
 
             if (!response.ok) {
@@ -97,7 +102,6 @@ export default function CadastroPage() {
     };
 
     return (
-        // Div adicionada para centralizar o conteúdo na vertical e horizontal
         <div className="flex items-center justify-center w-full min-h-screen py-8 px-4">
             <AppCard className="w-full max-w-lg">
                 <AppCardHeader>
@@ -127,7 +131,22 @@ export default function CadastroPage() {
                         {errors.email && <p className="text-vermelho-status text-xs mt-1">{errors.email.message}</p>}
 
                         <Label htmlFor="telefone" className="mt-3">Telefone</Label>
-                        <Input id="telefone" {...register("telefone")} type="phone" placeholder="(xx) xxxxx-xxxx" className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro h-11" />
+                        <Input
+                            id="telefone"
+                            type="tel"
+                            placeholder="(xx) xxxxx-xxxx"
+                            className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro h-11"
+                            {...register("telefone")}
+                            onChange={(e) => {
+
+                                const formatted = formatarTelefone(e.target.value);
+
+                                e.target.value = formatted;
+
+                                register("telefone").onChange(e);
+                            }}
+                            maxLength={15}
+                        />
                         {errors.telefone && <p className="text-vermelho-status text-xs mt-1">{errors.telefone.message}</p>}
 
                         <Label htmlFor="sexo" className="mt-3">Sexo</Label>

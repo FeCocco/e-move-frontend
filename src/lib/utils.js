@@ -29,3 +29,16 @@ export function formatarDataParaAPI(date) {
     const dia = String(date.getDate()).padStart(2, '0');
     return `${ano}-${mes}-${dia}`;
 }
+
+export function formatarTelefone(value) {
+    if (!value) return "";
+
+    value = value.replace(/\D/g, '');
+
+    value = value.substring(0, 11);
+
+    value = value.replace(/^(\d{2})(\d)/g, '($1) $2');
+    value = value.replace(/(\d)(\d{4})$/, '$1-$2');
+
+    return value;
+};
