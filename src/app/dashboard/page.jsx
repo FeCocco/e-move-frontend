@@ -17,7 +17,6 @@ import { getApiErrorMessage } from '@/lib/errorHandler';
 import { formatarTelefone } from "@/lib/utils";
 
 // Abas do Dashboard
-import BemVindo from '@/components/AbasDashboard/BemVindo';
 import AbaVeiculos from '@/components/AbasDashboard/AbaVeiculos';
 import AbaRotas from '@/components/AbasDashboard/AbaRotas';
 import AbaEstacoes from '@/components/AbasDashboard/AbaEstacoes';
@@ -48,7 +47,7 @@ export default function DashboardPage() {
     const API_URL = 'http://localhost:8080/api';
     const router = useRouter();
 
-    const [activeTab, setActiveTab] = useState('#BemVindo');
+    const [activeTab, setActiveTab] = useState('#AbaRelatorio');
     const [profileData, setProfileData] = useState(null);
     const [apiError, setApiError] = useState('');
     const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -152,10 +151,6 @@ export default function DashboardPage() {
                             </header>
 
                             <div className="flex-grow w-full fade-in-up">
-
-                                <div style={{ display: activeTab === '#BemVindo' ? 'block' : 'none' }}>
-                                    <BemVindo profileData={profileData} />
-                                </div>
 
                                 <div style={{ display: activeTab === '#AbaVeiculos' ? 'block' : 'none' }}>
                                     <AbaVeiculos />

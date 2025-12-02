@@ -4,11 +4,11 @@ import { UserRoundCog, Gauge, MapPinned, EvCharger, Route, Car } from 'lucide-re
 import { motion } from 'framer-motion';
 
 const navItems = [
+    { id: '#AbaRelatorio', icon: () => <Gauge size={18} />, label: 'Relatório' },
     { id: '#AbaVeiculos', icon: () => <Car size={18} />, label: 'Veículos' },
     { id: '#AbaRotas', icon: () => <Route size={18} />, label: 'Rotas' },
     { id: '#AbaEstacoes', icon: () => <EvCharger size={18} />, label: 'Estações' },
     { id: '#AbaMapa', icon: () => <MapPinned size={18} />, label: 'Mapa' },
-    { id: '#AbaRelatorio', icon: () => <Gauge size={18} />, label: 'Relatório' },
     { id: '#AbaUsuarios', icon: () => <UserRoundCog size={18} />, label: 'Conta' },
 ];
 
