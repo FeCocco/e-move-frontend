@@ -149,7 +149,7 @@ export default function CadastroPage() {
                         />
                         {errors.telefone && <p className="text-vermelho-status text-xs mt-1">{errors.telefone.message}</p>}
 
-                        <Label htmlFor="sexo" className="mt-3">Sexo</Label>
+                        <Label htmlFor="sexo" className="mt-3">Gênero</Label>
                         <GenderSelector
                             value={sexoValue}
                             onChange={(value) => setValue("sexo", value, { shouldValidate: true })}

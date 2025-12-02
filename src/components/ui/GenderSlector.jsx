@@ -6,6 +6,7 @@ const GenderSelector = ({ value, onChange }) => {
     const options = [
         { label: "Masculino", value: "MASCULINO" },
         { label: "Feminino", value: "FEMININO" },
+        { label: "Outros", value: "OUTROS" },
     ];
 
     return (
