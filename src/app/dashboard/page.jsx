@@ -38,6 +38,7 @@ const EditarUsuarioSchema = z.object({
     telefone: z.string()
         .min(14, { message: "O telefone parece incompleto." })
         .max(15, { message: "Telefone inválido." }),
+    sexo: z.string().nonempty("O gênero é obrigatório."),
 });
 
 // ============================================================================
@@ -53,7 +54,7 @@ export default function DashboardPage() {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [formStatus, setFormStatus] = useState('idle');
 
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm({
+    const { register, handleSubmit, control, formState: { errors }, setValue } = useForm({
         resolver: zodResolver(EditarUsuarioSchema),
         mode: "onBlur",
     });
@@ -182,6 +183,7 @@ export default function DashboardPage() {
                                         register={register}
                                         errors={errors}
                                         apiError={apiError}
+                                        control={control}
                                     />
                                 </div>
 

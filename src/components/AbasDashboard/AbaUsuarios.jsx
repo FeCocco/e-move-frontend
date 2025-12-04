@@ -5,8 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UserRoundPen, LogOut, Check } from 'lucide-react';
 import { formatarTelefone } from "@/lib/utils";
+import GenderSelector from "@/components/ui/GenderSlector";
+import {Controller} from "react-hook-form";
 
-export default function AbaUsuarios({ profileData, isDialogOpen, setIsDialogOpen, formStatus, handleLogout, handleSubmit, EditarUsuarioSubmit, register, errors, apiError }) {
+export default function AbaUsuarios({ profileData, isDialogOpen, setIsDialogOpen, formStatus, handleLogout, handleSubmit, EditarUsuarioSubmit, register, errors, apiError, control }) {
 
     if (!profileData) {
         return null;
@@ -71,6 +73,19 @@ export default function AbaUsuarios({ profileData, isDialogOpen, setIsDialogOpen
                                                 />
                                                 {errors.telefone && <p className="text-vermelho-status text-xs mt-1">{errors.telefone.message}</p>}
                                             </div>
+
+                                            <Label htmlFor="sexo" className="mt-3">Gênero</Label>
+                                            <Controller
+                                                name="sexo"
+                                                control={control}
+                                                defaultValue={profileData.sexo}
+                                                render={({ field }) => (
+                                                    <GenderSelector
+                                                        value={field.value}
+                                                        onChange={(value) => field.onChange(value)}
+                                                    />
+                                                )}
+                                            />
 
                                         </div>
                                         {apiError && <p className="text-vermelho-status text-center text-sm mb-2">{apiError}</p>}
