@@ -87,6 +87,34 @@ export default function AbaUsuarios({ profileData, isDialogOpen, setIsDialogOpen
                                                 )}
                                             />
 
+                                            <div className="border-t border-white/10 pt-4 mt-2">
+                                                <p className="text-xs text-texto-claro/50 mb-3 uppercase font-bold">Alterar Senha (Deixe em branco para manter)</p>
+
+                                                <div className="grid gap-2 mb-3">
+                                                    <Label htmlFor="edit_senha">Nova Senha</Label>
+                                                    <Input
+                                                        id="edit_senha"
+                                                        type="password"
+                                                        placeholder="Nova Senha"
+                                                        {...register("senha")}
+                                                        className="bg-white/5 border-white/30"
+                                                    />
+                                                    {errors.senha && <p className="text-vermelho-status text-xs">{errors.senha.message}</p>}
+                                                </div>
+
+                                                <div className="grid gap-2">
+                                                    <Label htmlFor="edit_conf_senha">Confirmar Nova Senha</Label>
+                                                    <Input
+                                                        id="edit_conf_senha"
+                                                        type="password"
+                                                        placeholder="Repita a nova senha"
+                                                        {...register("confirmar_senha")}
+                                                        className="bg-white/5 border-white/30"
+                                                    />
+                                                    {errors.confirmar_senha && <p className="text-vermelho-status text-xs">{errors.confirmar_senha.message}</p>}
+                                                </div>
+                                            </div>
+
                                         </div>
                                         {apiError && <p className="text-vermelho-status text-center text-sm mb-2">{apiError}</p>}
                                         <DialogFooter>

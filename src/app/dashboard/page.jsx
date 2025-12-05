@@ -39,7 +39,18 @@ const EditarUsuarioSchema = z.object({
         .min(14, { message: "O telefone parece incompleto." })
         .max(15, { message: "Telefone inválido." }),
     sexo: z.string().nonempty("O gênero é obrigatório."),
-});
+    senha: z.string().optional(),
+    confirmar_senha: z.string().optional()
+}).refine((data) => {
+    //confirmação deve ser igual
+    if (data.senha && data.senha !== "") {
+        return data.senha === data.confirmar_senha;
+    }
+    return true;
+    }, {
+        message: "As senhas não coincidem",
+        path: ["confirmar_senha"],
+    });
 
 // ============================================================================
 // COMPONENTE DA PÁGINA DE DASHBOARD
@@ -65,8 +76,16 @@ export default function DashboardPage() {
 
         const dadosParaEnviar = {
             ...data,
-            telefone: data.telefone.replace(/\D/g, '')
+            telefone: data.telefone.replace(/\D/g, ''),
         };
+
+            if (!data.senha) {
+            delete dadosParaEnviar.senha;
+            delete dadosParaEnviar.confirmar_senha;
+        } else {
+            // Se tem senha, remove só a confirmação
+            delete dadosParaEnviar.confirmar_senha;
+        }
 
         try {
             const response = await fetch(`${API_URL}/usuario/me`, {
