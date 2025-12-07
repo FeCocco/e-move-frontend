@@ -1,132 +1,206 @@
 import { AppCard } from "@/components/AppCard/AppCard";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { UserRoundPen, LogOut, Check } from 'lucide-react';
+import { User, Mail, Phone, Edit2, LogOut, Check, UserRound } from 'lucide-react';
 import { formatarTelefone } from "@/lib/utils";
 import GenderSelector from "@/components/ui/GenderSlector";
-import {Controller} from "react-hook-form";
+import { Controller } from "react-hook-form";
 
-export default function AbaUsuarios({ profileData, isDialogOpen, setIsDialogOpen, formStatus, handleLogout, handleSubmit, EditarUsuarioSubmit, register, errors, apiError, control }) {
+export default function AbaUsuarios({
+                                        profileData,
+                                        isDialogOpen,
+                                        setIsDialogOpen,
+                                        formStatus,
+                                        handleLogout,
+                                        handleSubmit,
+                                        EditarUsuarioSubmit,
+                                        register,
+                                        errors,
+                                        apiError,
+                                        control
+                                    }) {
 
     if (!profileData) {
         return null;
     }
 
     return (
-        <div>
-            <h2 className="flex justify-center text-2xl font-orbitron text-verde-claro mb-4">Minha Conta</h2>
-            <div className="flex justify-center">
-                <AppCard className="bg-black/20 p-6 rounded-lg w-full max-w-md text-left">
-                    <p className="mb-2"><strong>Nome:</strong> {profileData.nome}</p>
-                    <p className="mb-2"><strong>Email:</strong> {profileData.email}</p>
-                    <p className="mb-2"><strong>Telefone:</strong> {formatarTelefone(profileData.telefone)}</p>
-                    <p><strong>Sexo:</strong> {profileData.sexo}</p>
-                    <div className="p-4 flex justify-center">
+        <div className="w-full flex justify-center fade-in-up pb-20 md:pb-0"> {/* Padding bottom extra no mobile */}
+            <AppCard className="bg-black/20 border-white/10 w-full max-w-4xl overflow-hidden rounded-2xl flex flex-col md:flex-row">
+
+                {/* --- COLUNA DA ESQUERDA (Mobile: Topo) --- */}
+                <div className="w-full md:w-1/3 bg-white/5 p-8 flex flex-col items-center justify-center border-b md:border-b-0 md:border-r border-white/10 text-center gap-4 relative">
+                    {/* Avatar */}
+                    <div className="w-32 h-32 rounded-full bg-gradient-to-br from-azul-claro to-verde-claro p-1 shadow-lg shadow-azul-claro/20">
+                        <div className="w-full h-full rounded-full bg-zinc-900 flex items-center justify-center">
+                            <UserRound size={64} className="text-white/80" />
+                        </div>
+                    </div>
+
+                    <div>
+                        <h2 className="text-2xl font-bold text-white mb-1">{profileData.nome}</h2>
+                        <p className="text-sm text-texto-claro/60 break-all">{profileData.email}</p>
+                    </div>
+
+                    {/* Botão de Logout (Desktop): Só aparece em telas médias ou maiores */}
+                    <Button
+                        variant="ghost"
+                        onClick={handleLogout}
+                        className="hidden md:flex mt-4 text-vermelho-status hover:bg-vermelho-status/10 hover:text-vermelho-status w-full"
+                    >
+                        <LogOut size={18} className="mr-2"/> Sair da Conta
+                    </Button>
+                </div>
+
+                {/* --- COLUNA DA DIREITA (Mobile: Meio) --- */}
+                <div className="flex-1 p-6 md:p-8 flex flex-col">
+                    <div className="flex justify-between items-center mb-6">
+                        <h3 className="text-xl font-orbitron text-verde-claro">Informações Pessoais</h3>
+
+                        {/* BOTÃO DE EDITAR (Modal) */}
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
-                                <Button variant="botaoazul"><UserRoundPen /> Editar Meus Dados</Button>
+                                <Button variant="outline" size="sm" className="border-azul-claro/50 text-azul-claro hover:bg-azul-claro/10">
+                                    <Edit2 size={16} className="mr-2"/> Editar
+                                </Button>
                             </DialogTrigger>
-                            <DialogContent className="sm:max-w-[425px]">
+
+                            <DialogContent className="sm:max-w-[500px] bg-zinc-900 border-white/10 text-white w-[95%] max-h-[90vh] overflow-y-auto">
                                 {formStatus === 'success' ? (
-                                    <div className="flex flex-col items-center justify-center p-8 h-48">
-                                        <Check size={48} className="text-verde-claro mb-4"/>
-                                        <DialogTitle className="text-xl">Perfil Atualizado!</DialogTitle>
-                                        <DialogDescription>
+                                    <div className="flex flex-col items-center justify-center p-8 h-64">
+                                        <div className="w-16 h-16 bg-verde-claro/20 rounded-full flex items-center justify-center mb-4">
+                                            <Check size={32} className="text-verde-claro"/>
+                                        </div>
+                                        <DialogTitle className="text-xl font-bold mb-2">Perfil Atualizado!</DialogTitle>
+                                        <DialogDescription className="text-center text-texto-claro/70">
                                             Seus dados foram salvos com sucesso.
                                         </DialogDescription>
                                     </div>
                                 ) : (
                                     <form onSubmit={handleSubmit(EditarUsuarioSubmit)}>
                                         <DialogHeader>
-                                            <DialogTitle>Editar Perfil</DialogTitle>
+                                            <DialogTitle className="text-xl font-bold text-azul-claro">Editar Perfil</DialogTitle>
                                             <DialogDescription>
-                                                Faça suas modificações aqui e salve quando tiver finalizado.
+                                                Atualize suas informações pessoais abaixo.
                                             </DialogDescription>
                                         </DialogHeader>
-                                        <div className="grid gap-4 py-4">
+
+                                        <div className="grid gap-5 py-6">
+                                            {/* Nome */}
                                             <div className="grid gap-2">
-                                                <Label htmlFor="edit_nome">Nome</Label>
-                                                <Input id="edit_nome" {...register("nome")} defaultValue={profileData.nome} />
-                                                {errors.nome && <p className="text-vermelho-status text-xs mt-1">{errors.nome.message}</p>}
-                                            </div>
-                                            <div className="grid gap-2">
-                                                <Label htmlFor="edit_email">E-mail</Label>
-                                                <Input id="edit_email" {...register("email")} defaultValue={profileData.email} />
-                                                {errors.email && <p className="text-vermelho-status text-xs mt-1">{errors.email.message}</p>}
-                                            </div>
-
-                                            <div className="grid gap-2">
-                                                <Label htmlFor="edit_telefone" className="mt-3">Telefone</Label>
-                                                <Input
-                                                    id="edit_telefone"
-                                                    defaultValue={formatarTelefone(profileData.telefone)}
-                                                    {...register("telefone")}
-                                                    onChange={(e) => {
-                                                        const formatted = formatarTelefone(e.target.value);
-                                                        e.target.value = formatted;
-                                                        // Atualiza o hook form
-                                                        register("telefone").onChange(e);
-                                                    }}
-                                                    maxLength={15}
-                                                />
-                                                {errors.telefone && <p className="text-vermelho-status text-xs mt-1">{errors.telefone.message}</p>}
-                                            </div>
-
-                                            <Label htmlFor="sexo" className="mt-3">Gênero</Label>
-                                            <Controller
-                                                name="sexo"
-                                                control={control}
-                                                defaultValue={profileData.sexo}
-                                                render={({ field }) => (
-                                                    <GenderSelector
-                                                        value={field.value}
-                                                        onChange={(value) => field.onChange(value)}
-                                                    />
-                                                )}
-                                            />
-
-                                            <div className="border-t border-white/10 pt-4 mt-2">
-                                                <p className="text-xs text-texto-claro/50 mb-3 uppercase font-bold">Alterar Senha (Deixe em branco para manter)</p>
-
-                                                <div className="grid gap-2 mb-3">
-                                                    <Label htmlFor="edit_senha">Nova Senha</Label>
-                                                    <Input
-                                                        id="edit_senha"
-                                                        type="password"
-                                                        placeholder="Nova Senha"
-                                                        {...register("senha")}
-                                                        className="bg-white/5 border-white/30"
-                                                    />
-                                                    {errors.senha && <p className="text-vermelho-status text-xs">{errors.senha.message}</p>}
+                                                <Label htmlFor="edit_nome">Nome Completo</Label>
+                                                <div className="relative">
+                                                    <User className="absolute left-3 top-2.5 h-4 w-4 text-texto-claro/50" />
+                                                    <Input id="edit_nome" className="pl-9 bg-white/5 border-white/20" {...register("nome")} defaultValue={profileData.nome} />
                                                 </div>
+                                                {errors.nome && <p className="text-vermelho-status text-xs">{errors.nome.message}</p>}
+                                            </div>
 
+                                            {/* Email */}
+                                            <div className="grid gap-2">
+                                                <Label htmlFor="edit_email">Endereço de E-mail</Label>
+                                                <div className="relative">
+                                                    <Mail className="absolute left-3 top-2.5 h-4 w-4 text-texto-claro/50" />
+                                                    <Input id="edit_email" className="pl-9 bg-white/5 border-white/20" {...register("email")} defaultValue={profileData.email} />
+                                                </div>
+                                                {errors.email && <p className="text-vermelho-status text-xs">{errors.email.message}</p>}
+                                            </div>
+
+                                            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+                                                {/* Telefone */}
                                                 <div className="grid gap-2">
-                                                    <Label htmlFor="edit_conf_senha">Confirmar Nova Senha</Label>
-                                                    <Input
-                                                        id="edit_conf_senha"
-                                                        type="password"
-                                                        placeholder="Repita a nova senha"
-                                                        {...register("confirmar_senha")}
-                                                        className="bg-white/5 border-white/30"
+                                                    <Label htmlFor="edit_telefone">Telefone</Label>
+                                                    <div className="relative">
+                                                        <Phone className="absolute left-3 top-2.5 h-4 w-4 text-texto-claro/50" />
+                                                        <Input
+                                                            id="edit_telefone"
+                                                            className="pl-9 bg-white/5 border-white/20"
+                                                            defaultValue={formatarTelefone(profileData.telefone)}
+                                                            {...register("telefone")}
+                                                            onChange={(e) => {
+                                                                const formatted = formatarTelefone(e.target.value);
+                                                                e.target.value = formatted;
+                                                                register("telefone").onChange(e);
+                                                            }}
+                                                            maxLength={15}
+                                                        />
+                                                    </div>
+                                                    {errors.telefone && <p className="text-vermelho-status text-xs">{errors.telefone.message}</p>}
+                                                </div>
+
+                                                {/* Gênero */}
+                                                <div className="grid gap-2">
+                                                    <Label htmlFor="sexo" className="mt-0 md:mt-0">Gênero</Label>
+                                                    <Controller
+                                                        name="sexo"
+                                                        control={control}
+                                                        defaultValue={profileData.sexo}
+                                                        render={({ field }) => (
+                                                            <GenderSelector
+                                                                value={field.value}
+                                                                onChange={(value) => field.onChange(value)}
+                                                            />
+                                                        )}
                                                     />
-                                                    {errors.confirmar_senha && <p className="text-vermelho-status text-xs">{errors.confirmar_senha.message}</p>}
                                                 </div>
                                             </div>
 
+                                            {/* Senhas (Opcional) */}
+                                            <div className="border-t border-white/10 pt-4 mt-2">
+                                                <p className="text-xs text-texto-claro/50 mb-3 uppercase font-bold tracking-wider">Segurança (Opcional)</p>
+
+                                                <div className="grid gap-3">
+                                                    <div className="grid gap-2">
+                                                        <Label htmlFor="edit_senha">Nova Senha</Label>
+                                                        <Input
+                                                            id="edit_senha"
+                                                            type="password"
+                                                            placeholder="Deixe vazio para manter"
+                                                            {...register("senha")}
+                                                            className="bg-white/5 border-white/20"
+                                                        />
+                                                        {errors.senha && <p className="text-vermelho-status text-xs">{errors.senha.message}</p>}
+                                                    </div>
+
+                                                    <div className="grid gap-2">
+                                                        <Label htmlFor="edit_conf_senha">Confirmar Nova Senha</Label>
+                                                        <Input
+                                                            id="edit_conf_senha"
+                                                            type="password"
+                                                            placeholder="Repita a nova senha"
+                                                            {...register("confirmar_senha")}
+                                                            className="bg-white/5 border-white/20"
+                                                        />
+                                                        {errors.confirmar_senha && <p className="text-vermelho-status text-xs">{errors.confirmar_senha.message}</p>}
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
-                                        {apiError && <p className="text-vermelho-status text-center text-sm mb-2">{apiError}</p>}
-                                        <DialogFooter>
+
+                                        {apiError && <p className="text-vermelho-status text-center text-sm mb-4 bg-vermelho-status/10 p-2 rounded">{apiError}</p>}
+
+                                        <DialogFooter className="gap-2 sm:gap-0 flex-col-reverse sm:flex-row">
                                             <DialogClose asChild>
-                                                <Button variant="botaoazul">Cancelar</Button>
+                                                <Button type="button" variant="ghost" className="hover:bg-white/10 w-full sm:w-auto mt-2 sm:mt-0">Cancelar</Button>
                                             </DialogClose>
                                             <Button
-                                                variant="ghost"
-                                                className="text-white"
+                                                type="submit"
+                                                variant="botaoazul"
                                                 disabled={formStatus === 'submitting'}
+                                                className="min-w-[120px] w-full sm:w-auto"
                                             >
-                                                {formStatus === 'submitting' ? 'Salvando...' : 'Salvar'}
+                                                {formStatus === 'submitting' ? 'Salvando...' : 'Salvar Alterações'}
                                             </Button>
                                         </DialogFooter>
                                     </form>
@@ -134,11 +208,62 @@ export default function AbaUsuarios({ profileData, isDialogOpen, setIsDialogOpen
                             </DialogContent>
                         </Dialog>
                     </div>
-                </AppCard>
-            </div>
-            <div className="text-center mt-6">
-                <Button variant="link" onClick={handleLogout} className="text-xl text-azul-botao"> <LogOut size={48}/>Sair da Conta</Button>
-            </div>
+
+                    {/* GRID DE INFORMAÇÕES (Card Principal) */}
+                    <div className="grid grid-cols-1 gap-4 mb-6 sm:grid-cols-2">
+                        <div className="bg-white/5 p-4 rounded-lg border border-white/5 flex items-start gap-3">
+                            <div className="p-2 bg-azul-claro/10 rounded text-azul-claro">
+                                <Phone size={20} />
+                            </div>
+                            <div>
+                                <p className="text-xs text-texto-claro/50 uppercase font-bold">Telefone</p>
+                                <p className="text-white font-medium">{formatarTelefone(profileData.telefone)}</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-white/5 p-4 rounded-lg border border-white/5 flex items-start gap-3">
+                            <div className="p-2 bg-verde-claro/10 rounded text-verde-claro">
+                                <User size={20} />
+                            </div>
+                            <div>
+                                <p className="text-xs text-texto-claro/50 uppercase font-bold">Gênero</p>
+                                <p className="text-white font-medium">{profileData.sexo || "Não informado"}</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-white/5 p-4 rounded-lg border border-white/5 flex items-start gap-3">
+                            <div className="p-2 bg-purple-500/10 rounded text-purple-400">
+                                <Mail size={20} />
+                            </div>
+                            <div>
+                                <p className="text-xs text-texto-claro/50 uppercase font-bold">Email</p>
+                                <p className="text-white font-medium break-all">{profileData.email}</p>
+                            </div>
+                        </div>
+
+                        <div className="bg-white/5 p-4 rounded-lg border border-white/5 flex items-start gap-3 opacity-50">
+                            <div className="p-2 bg-white/10 rounded text-white">
+                                <UserRound size={20} />
+                            </div>
+                            <div>
+                                <p className="text-xs text-texto-claro/50 uppercase font-bold">Senha</p>
+                                <p className="text-white font-medium">********</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Botão de Logout (Mobile): Só aparece em telas pequenas, abaixo de tudo */}
+                    <div className="md:hidden mt-auto pt-4 border-t border-white/10">
+                        <Button
+                            variant="ghost"
+                            onClick={handleLogout}
+                            className="w-full text-vermelho-status hover:bg-vermelho-status/10 hover:text-vermelho-status py-6 text-lg"
+                        >
+                            <LogOut size={20} className="mr-2"/> Sair da Conta
+                        </Button>
+                    </div>
+                </div>
+            </AppCard>
         </div>
     );
 }
