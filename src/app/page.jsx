@@ -10,22 +10,28 @@ import BackToTopButton from "@/components/BackToTopButton/BackToTopButton";
 import Tecnologias from "@/components/Tecnologias/Tecnologias";
 import Header from "@/components/Header/Header";
 import { usePathname } from 'next/navigation';
+import BackgroundSlider from "@/components/BackgroundSlider/BackgroundSlider";
 
 export default function Home() {
 
     const pathname = usePathname();
 
     return (
-        <>
-            <Header pathname={pathname} />
-            <TelaInicial />
-            <SobreNos />
-            <Roadmap />
-            <Inovacao />
-            <Suporte />
-            <Tecnologias />
-            <Footer />
-            <BackToTopButton />
-        </>
+        <div className="relative w-full min-h-screen">
+
+            <BackgroundSlider />
+
+            <div className="relative z-10">
+                <Header pathname={pathname} />
+                <TelaInicial />
+                <SobreNos />
+                <Roadmap />
+                <Inovacao />
+                <Suporte />
+                <Tecnologias />
+                <Footer />
+                <BackToTopButton />
+            </div>
+        </div>
     );
 }

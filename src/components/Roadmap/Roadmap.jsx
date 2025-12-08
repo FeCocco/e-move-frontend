@@ -15,15 +15,15 @@ export default function Roadmap() {
             phase: "Fase 2",
             title: "Desenvolvimento MVP",
             description: "Construção das funcionalidades core e testes internos",
-            status: "active",
+            status: "completed",
             date: "Q2 2025",
-            icon: Clock
+            icon: CheckCircle
         },
         {
             phase: "Fase 3",
             title: "Lançamento Beta",
             description: "Abertura para primeiros usuários e coleta de feedback",
-            status: "upcoming",
+            status: "active",
             date: "Q4 2025",
             icon: Circle
         },
