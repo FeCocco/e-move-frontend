@@ -120,8 +120,6 @@ export default function AbaMapa({ isVisible }) {
                 // 3. Busca estações no raio da bateria restante (Reserva)
                 const raioDeBuscaKm = kmReserva * 0.95;
 
-                toast.info(`Bateria reserva em ${distanciaAteParada.toFixed(0)}km. Buscando estações...`);
-
                 try {
                     const estacoes = await buscarEstacoesProximas(latParada, lonParada, raioDeBuscaKm);
 
