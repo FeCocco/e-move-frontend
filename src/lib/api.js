@@ -33,10 +33,16 @@ export const atualizarViagem = (viagemId, dados) => {
     return api.patch(`/api/viagens/${viagemId}`, dados);
 };
 
-export const buscarEstacoesProximas = (lat, lon, raio = 50) => {
-    return api.get('/api/estacoes/proximas', {
-        params: { lat, lon, raio }
-    });
+export const buscarEstacoesProximas = async (lat, lon, raio = 50) => { // Raio padrão 50, mas aceita dinâmico
+    try {
+        const response = await api.get('/api/estacoes/proximas', {
+            params: { lat, lon, raio } // Passa o raio calculado pelo algoritmo
+        });
+        return response;
+    } catch (error) {
+        console.error("Erro ao buscar estações:", error);
+        return { data: [] };
+    }
 };
 
 export const getEstacoesFavoritas = () => api.get('/api/estacoes/favoritas');
