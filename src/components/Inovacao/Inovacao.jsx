@@ -41,14 +41,15 @@ export default function Inovacao() {
                         label="Veículos Elétricos no Brasil"
                     />
                     <AnimatedStat
+                        icon={Users}
+                        finalValue={30}
+                        label="Veículos Pé-Cadastrados no Sistema"
+                    />
+
+                    <AnimatedStat
                         icon={Zap}
                         finalValue={4300}
                         label="Pontos de Recarga Mapeados"
-                    />
-                    <AnimatedStat
-                        icon={Users}
-                        finalValue={1500}
-                        label="Usuários na Lista de Espera"
                     />
                 </div>
 
