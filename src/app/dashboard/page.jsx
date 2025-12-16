@@ -28,6 +28,7 @@ import AbaUsuarios from '@/components/AbasDashboard/AbaUsuarios';
 import { VeiculosProvider } from '@/context/VeiculosContext';
 import { ViagensProvider } from '@/context/ViagensContext';
 import { EstacoesProvider } from '@/context/EstacoesContext';
+import * as response from "framer-motion/m";
 
 // ============================================================================
 // VALIDAÇÃO ZOD
@@ -95,10 +96,7 @@ export default function DashboardPage() {
                 cache: 'no-store',
                 body: JSON.stringify(dadosParaEnviar),
             });
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(errorText || 'Falha ao atualizar.');
-            }
+
             const updatedProfile = await response.json();
             setProfileData(updatedProfile);
             setFormStatus('success');
@@ -109,32 +107,31 @@ export default function DashboardPage() {
         } catch (error) {
             setApiError(getApiErrorMessage(error.message));
             setFormStatus('idle');
-        }
+
+            const errorText = await response.text();
+            throw new Error(errorText || 'Falha ao atualizar.');
+            }
     };
 
-    const handleLogout = async () => {
-        try {
-            await fetch(`${API_URL}/logout`, {
-                method: 'POST',
-                credentials: 'include',
-            });
-        } catch (error) {
-            console.error("Erro ao fazer logout no servidor:", error);
-        } finally {
-            router.push('/');
-        }
+    const handleLogout = () => {
+        localStorage.removeItem('emove_token');
+        router.push('/');
     };
 
     useEffect(() => {
         const fetchProfile = async () => {
             try {
+                const token = localStorage.getItem("emove_token");
+
                 const response = await fetch(`${API_URL}/usuario/me`, {
                     method: 'GET',
-                    credentials: 'include',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
                     cache: 'no-store'
                 });
-                if (!response.ok) throw new Error('Sessão inválida ou expirada.');
+
                 const data = await response.json();
                 setProfileData(data);
 
@@ -142,9 +139,9 @@ export default function DashboardPage() {
                 setValue('email', data.email);
                 setValue('telefone', formatarTelefone(data.telefone));
 
-            } catch (error) {
-                console.error(error);
+            } catch {
                 router.push('/');
+                throw new Error('Sessão inválida ou expirada.');
             }
         };
         fetchProfile();

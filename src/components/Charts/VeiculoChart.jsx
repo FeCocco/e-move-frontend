@@ -1,5 +1,4 @@
 "use client";
-import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -25,7 +24,7 @@ export default function VeiculoChart({ data }) {
                 <CardTitle className="text-lg">Veículos Favoritos</CardTitle>
                 <CardDescription>Modelos mais utilizados em suas rotas</CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 pb-0 p-2 flex items-center justify-center min-h-[200px]">
+            <CardContent className="flex-1 pb-0 p-2 flex items-center justify-center h-[200px]">
                 {temDados ? (
                     <ChartContainer config={chartConfig} className="h-full w-full">
                         <ResponsiveContainer>

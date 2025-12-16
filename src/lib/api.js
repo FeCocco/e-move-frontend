@@ -2,7 +2,19 @@ import axios from 'axios';
 
 const api = axios.create({
     baseURL: 'http://localhost:8080',
-    withCredentials: true,
+});
+
+api.interceptors.request.use((config) => {
+    // Tenta pegar o token do storage
+    const token = typeof window !== 'undefined' ? localStorage.getItem('emove_token') : null;
+
+    if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+}, (error) => {
+    return Promise.reject(error);
 });
 
 export const fetchDirectRoute = (origin, destination) => {
@@ -35,10 +47,9 @@ export const atualizarViagem = (viagemId, dados) => {
 
 export const buscarEstacoesProximas = async (lat, lon, raio = 50) => { // Raio padrão 50, mas aceita dinâmico
     try {
-        const response = await api.get('/api/estacoes/proximas', {
-            params: { lat, lon, raio } // Passa o raio calculado pelo algoritmo
+        return await api.get('/api/estacoes/proximas', {
+            params: {lat, lon, raio} // Passa o raio calculado pelo algoritmo
         });
-        return response;
     } catch (error) {
         console.error("Erro ao buscar estações:", error);
         return { data: [] };

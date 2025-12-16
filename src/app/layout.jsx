@@ -4,8 +4,6 @@ import { Orbitron, Poppins, Josefin_Sans } from "next/font/google";
 import "./globals.css";
 import Logo from "../components/Logo/Logo";
 import Link from "next/link";
-import Header from "@/components/Header/Header";
-import { usePathname } from 'next/navigation';
 import {Toaster} from "sonner";
 
 const orbitron = Orbitron({ subsets: ["latin"], weight: ["500", "700"], variable: "--font-orbitron" });
@@ -13,10 +11,9 @@ const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600
 const josefinSans = Josefin_Sans({ subsets: ["latin"], weight: ["400", "700"], variable: "--font-josefin-sans" });
 
 export default function RootLayout({ children }) {
-    const pathname = usePathname();
 
     return (
-        <html lang="pt-br">
+        <html lang="pt-br" className="scroll-smooth">
         <head>
             <title>e-Move</title>
             <meta name="description" content="Plataforma de mobilidade elétrica" />

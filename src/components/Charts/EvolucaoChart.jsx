@@ -23,7 +23,7 @@ export default function EvolucaoChart({ data }) {
                 <CardTitle className="text-lg">Evolução Mensal</CardTitle>
                 <CardDescription>Seu impacto ambiental ao longo do tempo</CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 p-4 min-h-[250px]">
+            <CardContent className="flex-1 p-4 h-[250px] w-full">
                 {temDados ? (
                     <ChartContainer config={chartConfig} className="h-full w-full">
                         <ResponsiveContainer width="100%" height="100%">

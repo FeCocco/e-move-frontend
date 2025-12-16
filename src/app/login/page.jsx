@@ -17,7 +17,6 @@ import Logo from "@/components/Logo/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { getApiErrorMessage } from "@/lib/errorHandler";
 
 // ============================================================================
 // SCHEMA DE VALIDAÇÃO (ZOD)
@@ -53,16 +52,14 @@ export default function LoginPage() {
                 body: JSON.stringify(data),
             });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(errorText || 'E-mail ou senha inválidos.');
-            }
+            const dataResponse = await response.json();
+            localStorage.setItem("emove_token", dataResponse.token);
 
             setSuccess('Login bem-sucedido! Redirecionando...');
             router.push('/dashboard');
 
-        } catch (err) {
-            setApiError(getApiErrorMessage(err.message));
+        } catch {
+            throw new Error('E-mail ou senha inválidos.');
         }
     };
 
