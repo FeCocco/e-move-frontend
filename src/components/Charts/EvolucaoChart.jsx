@@ -23,10 +23,10 @@ export default function EvolucaoChart({ data }) {
                 <CardTitle className="text-lg">Evolução Mensal</CardTitle>
                 <CardDescription>Seu impacto ambiental ao longo do tempo</CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 p-4 h-[250px] w-full">
+            {/* CORREÇÃO: Removido h-[250px], mantido flex-1 para preencher o pai (400px) */}
+            <CardContent className="flex-1 p-4 w-full min-h-0">
                 {temDados ? (
                     <ChartContainer config={chartConfig} className="h-full w-full">
-                        <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                                 <defs>
                                     <linearGradient id="fillKm" x1="0" y1="0" x2="0" y2="1">
@@ -70,7 +70,6 @@ export default function EvolucaoChart({ data }) {
                                     strokeWidth={2}
                                 />
                             </AreaChart>
-                        </ResponsiveContainer>
                     </ChartContainer>
                 ) : (
                     <div className="h-full flex flex-col items-center justify-center text-texto-claro/40 text-sm">

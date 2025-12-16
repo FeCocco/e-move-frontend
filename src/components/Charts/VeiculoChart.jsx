@@ -1,4 +1,5 @@
 "use client";
+import { TrendingUp } from "lucide-react";
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis, ResponsiveContainer } from "recharts";
 import { CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart";
@@ -24,10 +25,10 @@ export default function VeiculoChart({ data }) {
                 <CardTitle className="text-lg">Veículos Favoritos</CardTitle>
                 <CardDescription>Modelos mais utilizados em suas rotas</CardDescription>
             </CardHeader>
-            <CardContent className="flex-1 pb-0 p-2 flex items-center justify-center h-[200px]">
+            {/* CORREÇÃO: Removido h-[250px], mantido flex-1 e min-h-0 */}
+            <CardContent className="flex-1 pb-0 p-2 flex items-center justify-center w-full min-h-0">
                 {temDados ? (
                     <ChartContainer config={chartConfig} className="h-full w-full">
-                        <ResponsiveContainer>
                             <BarChart data={data} layout="vertical" margin={{ left: 5, right: 40, top: 10, bottom: 10 }}>
                                 <CartesianGrid horizontal={false} stroke="rgba(255, 255, 255, 0.1)" />
                                 <YAxis dataKey="veiculo" type="category" tickLine={false} axisLine={false} width={85} interval={0} tick={<CustomYAxisTick />} />
@@ -37,7 +38,6 @@ export default function VeiculoChart({ data }) {
                                     <LabelList dataKey="uso" position="right" offset={8} className="fill-white font-bold" fontSize={12} />
                                 </Bar>
                             </BarChart>
-                        </ResponsiveContainer>
                     </ChartContainer>
                 ) : (
                     <div className="text-center text-texto-claro/40 text-sm">

@@ -28,7 +28,6 @@ import AbaUsuarios from '@/components/AbasDashboard/AbaUsuarios';
 import { VeiculosProvider } from '@/context/VeiculosContext';
 import { ViagensProvider } from '@/context/ViagensContext';
 import { EstacoesProvider } from '@/context/EstacoesContext';
-import * as response from "framer-motion/m";
 
 // ============================================================================
 // VALIDAÇÃO ZOD
@@ -48,10 +47,10 @@ const EditarUsuarioSchema = z.object({
         return data.senha === data.confirmar_senha;
     }
     return true;
-    }, {
-        message: "As senhas não coincidem",
-        path: ["confirmar_senha"],
-    });
+}, {
+    message: "As senhas não coincidem",
+    path: ["confirmar_senha"],
+});
 
 // ============================================================================
 // COMPONENTE DA PÁGINA DE DASHBOARD
@@ -80,23 +79,30 @@ export default function DashboardPage() {
             telefone: data.telefone.replace(/\D/g, ''),
         };
 
-            if (!data.senha) {
+        if (!data.senha) {
             delete dadosParaEnviar.senha;
             delete dadosParaEnviar.confirmar_senha;
         } else {
-            // Se tem senha, remove só a confirmação
             delete dadosParaEnviar.confirmar_senha;
         }
 
         try {
+            const token = localStorage.getItem("e-move-token");
+            if (!token) throw new Error("Token não encontrado.");
+
             const response = await fetch(`${API_URL}/usuario/me`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
                 cache: 'no-store',
                 body: JSON.stringify(dadosParaEnviar),
             });
-
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || 'Falha ao atualizar.');
+            }
             const updatedProfile = await response.json();
             setProfileData(updatedProfile);
             setFormStatus('success');
@@ -107,21 +113,27 @@ export default function DashboardPage() {
         } catch (error) {
             setApiError(getApiErrorMessage(error.message));
             setFormStatus('idle');
-
-            const errorText = await response.text();
-            throw new Error(errorText || 'Falha ao atualizar.');
-            }
+        }
     };
 
-    const handleLogout = () => {
-        localStorage.removeItem('emove_token');
-        router.push('/');
+    const handleLogout = async () => {
+        try {
+            await fetch(`${API_URL}/logout`, {
+                method: 'POST',
+            });
+        } catch (error) {
+            console.error("Erro ao fazer logout no servidor:", error);
+        } finally {
+            localStorage.removeItem("e-move-token");
+            router.push('/');
+        }
     };
 
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const token = localStorage.getItem("emove_token");
+                const token = localStorage.getItem("e-move-token");
+                if (!token) throw new Error('Token não encontrado.');
 
                 const response = await fetch(`${API_URL}/usuario/me`, {
                     method: 'GET',
@@ -131,7 +143,7 @@ export default function DashboardPage() {
                     },
                     cache: 'no-store'
                 });
-
+                if (!response.ok) throw new Error('Sessão inválida ou expirada.');
                 const data = await response.json();
                 setProfileData(data);
 
@@ -139,9 +151,10 @@ export default function DashboardPage() {
                 setValue('email', data.email);
                 setValue('telefone', formatarTelefone(data.telefone));
 
-            } catch {
+            } catch (error) {
+                console.error(error);
+                localStorage.removeItem("e-move-token");
                 router.push('/');
-                throw new Error('Sessão inválida ou expirada.');
             }
         };
         fetchProfile();
@@ -149,8 +162,8 @@ export default function DashboardPage() {
 
     if (!profileData) {
         return (
-            <div className="flex justify-center items-center h-screen">
-                <p className="text-white text-2xl">Verificando sessão...</p>
+            <div className="flex justify-center items-center h-screen bg-zinc-950">
+                <p className="text-white text-xl animate-pulse">Carregando perfil...</p>
             </div>
         );
     }
@@ -169,25 +182,22 @@ export default function DashboardPage() {
 
                             <div className="flex-grow w-full fade-in-up">
 
-                                <div style={{ display: activeTab === '#AbaVeiculos' ? 'block' : 'none' }}>
-                                    <AbaVeiculos />
+                                {/* MUDANÇA: Renderização Condicional para evitar erros de Chart width(0) */}
+
+                                {activeTab === '#AbaVeiculos' && <AbaVeiculos />}
+
+                                {activeTab === '#AbaRotas' && <AbaRotas setActiveTab={setActiveTab} />}
+
+                                {activeTab === '#AbaEstacoes' && <AbaEstacoes />}
+
+                                <div
+                                    className="min-h-[500px]"
+                                    style={{ display: activeTab === '#AbaMapa' ? 'block' : 'none' }}
+                                >
+                                    <AbaMapa isVisible={activeTab === '#AbaMapa'} />
                                 </div>
 
-                                <div style={{ display: activeTab === '#AbaRotas' ? 'block' : 'none' }}>
-                                    <AbaRotas setActiveTab={setActiveTab} />
-                                </div>
-
-                                <div style={{ display: activeTab === '#AbaEstacoes' ? 'block' : 'none' }}>
-                                    <AbaEstacoes />
-                                </div>
-
-                                <div style={{ display: activeTab === '#AbaMapa' ? 'block' : 'none' }}>
-                                    <div className="min-h-[500px]">
-                                        <AbaMapa isVisible={activeTab === '#AbaMapa'} />
-                                    </div>
-                                </div>
-
-                                <div style={{ display: activeTab === '#AbaUsuarios' ? 'block' : 'none' }}>
+                                {activeTab === '#AbaUsuarios' && (
                                     <AbaUsuarios
                                         profileData={profileData}
                                         isDialogOpen={isDialogOpen}
@@ -201,11 +211,9 @@ export default function DashboardPage() {
                                         apiError={apiError}
                                         control={control}
                                     />
-                                </div>
+                                )}
 
-                                <div style={{ display: activeTab === '#AbaRelatorio' ? 'block' : 'none' }}>
-                                    <AbaRelatorio />
-                                </div>
+                                {activeTab === '#AbaRelatorio' && <AbaRelatorio />}
 
                             </div>
                         </div>
