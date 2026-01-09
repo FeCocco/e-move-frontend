@@ -6,8 +6,11 @@
 
 @layer base {
 
-    html {
+    html, body {
         @apply scroll-smooth;
+        overscroll-behavior: none;
+        @apply text-foreground;
+        background: #203a43;
     }
 
     :root {
@@ -47,14 +50,5 @@
         --destructive-foreground: 210 40% 98%;
 
         --input: 217.2 32.6% 17.5%;
-    }
-}
-
-@layer base {
-    * {
-        @apply border-border;
-    }
-    body {
-        @apply text-foreground;
     }
 }
