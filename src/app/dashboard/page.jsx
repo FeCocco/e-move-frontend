@@ -93,8 +93,9 @@ export default function DashboardPage() {
         try {
             await api.post('/logout');
         } catch (error) {
-            console.error("Erro ao fazer logout no servidor:", error);
+            console.error(error);
         } finally {
+            localStorage.removeItem('e-move-token');
             router.push('/');
         }
     };

@@ -35,7 +35,11 @@ export default function LoginPage() {
         setSuccess('');
 
         try {
-            await api.post('/login', data);
+            const response = await api.post('/login', data);
+
+            if (response.data.token) {
+                localStorage.setItem('e-move-token', response.data.token);
+            }
 
             setSuccess('Login bem-sucedido! Redirecionando...');
             router.push('/dashboard');
