@@ -1,7 +1,8 @@
 import axios from 'axios';
+import process from "next/dist/build/webpack/loaders/resolve-url-loader/lib/postcss";
 
 const api = axios.create({
-    baseURL: 'http://localhost:8080',
+    baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api',
     withCredentials: true,
 });
 
