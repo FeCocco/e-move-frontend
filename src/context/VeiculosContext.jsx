@@ -14,7 +14,7 @@ export function VeiculosProvider({ children }) {
 
     const fetchMeusVeiculos = useCallback(async () => {
         try {
-            const response = await api.get('/api/veiculos/meus-veiculos');
+            const response = await api.get('/veiculos/meus-veiculos');
             setMeusVeiculos(response.data);
         } catch (err) {
             console.error("Erro ao buscar meus veículos:", err);
@@ -24,7 +24,7 @@ export function VeiculosProvider({ children }) {
 
     const fetchTodosVeiculos = useCallback(async () => {
         try {
-            const response = await api.get('/api/veiculos');
+            const response = await api.get('/veiculos');
             setTodosVeiculos(response.data);
         } catch (err) {
             console.error("Erro ao buscar todos os veículos:", err);
@@ -44,7 +44,7 @@ export function VeiculosProvider({ children }) {
 
     const adicionarVeiculo = async (veiculoId) => {
         try {
-            await api.post(`/api/veiculos/meus-veiculos/${veiculoId}`);
+            await api.post(`/veiculos/meus-veiculos/${veiculoId}`);
             toast.success('Sucesso!', { description: 'Veículo adicionado à sua garagem.' });
             await fetchMeusVeiculos(); // Re-busca a lista ATUALIZADA
         } catch (err) {
@@ -55,7 +55,7 @@ export function VeiculosProvider({ children }) {
 
     const removerVeiculo = async (veiculoId) => {
         try {
-            await api.delete(`/api/veiculos/meus-veiculos/${veiculoId}`);
+            await api.delete(`/veiculos/meus-veiculos/${veiculoId}`);
             toast.success('Sucesso!', { description: 'Veículo removido da sua garagem.' });
             await fetchMeusVeiculos(); // Re-busca a lista ATUALIZADA
         } catch (err) {
@@ -66,7 +66,7 @@ export function VeiculosProvider({ children }) {
 
     const atualizarNivelBateria = async (veiculoId, nivelBateria) => {
         try {
-            await api.put(`/api/veiculos/${veiculoId}/bateria`, { nivelBateria });
+            await api.put(`/veiculos/${veiculoId}/bateria`, { nivelBateria });
             toast.success('Sucesso!', { description: 'Nível da bateria atualizado.' });
             await fetchMeusVeiculos(); // Re-busca a lista ATUALIZADA
         } catch (err) {

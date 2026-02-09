@@ -1,8 +1,5 @@
 'use client';
 
-// ============================================================================
-// IMPORTS
-// ============================================================================
 import { useState } from 'react';
 import { useRouter } from "next/navigation";
 import Link from 'next/link';
@@ -10,7 +7,6 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-// Componentes da Interface (UI)
 import { CardDescription, CardTitle } from "@/components/ui/card";
 import { AppCard, AppCardHeader, AppCardContent } from "@/components/AppCard/AppCard";
 import { Input } from "@/components/ui/input";
@@ -20,10 +16,8 @@ import { getApiErrorMessage } from '@/lib/errorHandler';
 import GenderSelector from "@/components/ui/GenderSlector";
 import MedidorForcaSenha from "@/components/ui/MedidorForcaSenha";
 import { formatarTelefone } from "@/lib/utils";
+import api from '@/lib/api'; // <--- Importação adicionada
 
-// ============================================================================
-// SCHEMA DE VALIDAÇÃO (ZOD)
-// ============================================================================
 const cadastroSchema = z.object({
     nome: z.string().min(3, { message: "O nome deve ter no mínimo 3 caracteres." }),
     email: z.email({ message: "Formato de e-mail inválido." }),
@@ -44,11 +38,7 @@ const cadastroSchema = z.object({
     path: ["senha_confirmacao"],
 });
 
-// ============================================================================
-// COMPONENTE DA PÁGINA DE CADASTRO
-// ============================================================================
 export default function CadastroPage() {
-    const API_URL = 'http://localhost:8080/api';
     const router = useRouter();
     const [apiError, setApiError] = useState('');
     const [success, setSuccess] = useState('');
@@ -80,16 +70,7 @@ export default function CadastroPage() {
         };
 
         try {
-            const response = await fetch(`${API_URL}/cadastro`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(dadosParaEnviar),
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(errorText || 'Falha ao cadastrar.');
-            }
+            await api.post('/cadastro', dadosParaEnviar);
 
             setSuccess('Cadastro realizado com sucesso! Redirecionando para o login...');
             setTimeout(() => {
@@ -97,7 +78,8 @@ export default function CadastroPage() {
             }, 2000);
 
         } catch (err) {
-            setApiError(getApiErrorMessage(err.message));
+            const mensagemErro = err.response?.data || err.message || 'Falha ao cadastrar.';
+            setApiError(mensagemErro);
         }
     };
 
@@ -138,11 +120,8 @@ export default function CadastroPage() {
                             className="bg-white/5 border-white/30 placeholder:text-white/50 focus-visible:ring-azul-claro h-11"
                             {...register("telefone")}
                             onChange={(e) => {
-
                                 const formatted = formatarTelefone(e.target.value);
-
                                 e.target.value = formatted;
-
                                 register("telefone").onChange(e);
                             }}
                             maxLength={15}

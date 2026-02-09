@@ -1,8 +1,5 @@
 'use client';
 
-// ============================================================================
-// IMPORTS
-// ============================================================================
 import { useState } from 'react';
 import { useRouter } from "next/navigation";
 import Link from 'next/link';
@@ -10,28 +7,20 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 
-// Componentes da Interface (UI)
 import { CardDescription } from "@/components/ui/card";
 import { AppCard, AppCardHeader, AppCardContent } from "@/components/AppCard/AppCard";
 import Logo from "@/components/Logo/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { getApiErrorMessage } from "@/lib/errorHandler";
+import api from '@/lib/api';
 
-// ============================================================================
-// SCHEMA DE VALIDAÇÃO (ZOD)
-// ============================================================================
 const loginSchema = z.object({
     email: z.email({ message: "Formato de e-mail inválido." }),
     senha: z.string().min(1, { message: "A senha não pode estar em branco." }),
 });
 
-// ============================================================================
-// COMPONENTE DA PÁGINA DE LOGIN
-// ============================================================================
 export default function LoginPage() {
-    const API_URL = 'http://localhost:8080/api';
     const router = useRouter();
     const [apiError, setApiError] = useState('');
     const [success, setSuccess] = useState('');
@@ -46,23 +35,14 @@ export default function LoginPage() {
         setSuccess('');
 
         try {
-            const response = await fetch(`${API_URL}/login`, {
-                method: 'POST',
-                credentials: "include",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data),
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(errorText || 'E-mail ou senha inválidos.');
-            }
+            await api.post('/login', data);
 
             setSuccess('Login bem-sucedido! Redirecionando...');
             router.push('/dashboard');
 
         } catch (err) {
-            setApiError(getApiErrorMessage(err.message));
+            const mensagemErro = err.response?.data || err.message || 'Erro ao realizar login.';
+            setApiError(mensagemErro);
         }
     };
 
