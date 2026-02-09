@@ -1,30 +1,20 @@
 'use client';
 
-// ============================================================================
-// IMPORTS
-// ============================================================================
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-// Componentes da Interface (UI)
 import DashboardNav from '@/components/DashboardNav/DashboardNav';
-
-// Utilitários
 import { getApiErrorMessage } from '@/lib/errorHandler';
 import { formatarTelefone } from "@/lib/utils";
-
-// Abas do Dashboard
+import api from '@/lib/api';
 import AbaVeiculos from '@/components/AbasDashboard/AbaVeiculos';
 import AbaRotas from '@/components/AbasDashboard/AbaRotas';
 import AbaEstacoes from '@/components/AbasDashboard/AbaEstacoes';
 import AbaMapa from '@/components/AbasDashboard/AbaMapa';
 import AbaRelatorio from '@/components/AbasDashboard/AbaRelatorio';
 import AbaUsuarios from '@/components/AbasDashboard/AbaUsuarios';
-
-// Contextos
 import { VeiculosProvider } from '@/context/VeiculosContext';
 import { ViagensProvider } from '@/context/ViagensContext';
 import { EstacoesProvider } from '@/context/EstacoesContext';
@@ -42,21 +32,17 @@ const EditarUsuarioSchema = z.object({
     senha: z.string().optional(),
     confirmar_senha: z.string().optional()
 }).refine((data) => {
-    //confirmação deve ser igual
     if (data.senha && data.senha !== "") {
         return data.senha === data.confirmar_senha;
     }
     return true;
-    }, {
-        message: "As senhas não coincidem",
-        path: ["confirmar_senha"],
-    });
+}, {
+    message: "As senhas não coincidem",
+    path: ["confirmar_senha"],
+});
 
-// ============================================================================
-// COMPONENTE DA PÁGINA DE DASHBOARD
-// ============================================================================
 export default function DashboardPage() {
-    const API_URL = 'http://localhost:8080/api';
+    // REMOVIDO: const API_URL = ... (Causa do erro)
     const router = useRouter();
 
     const [activeTab, setActiveTab] = useState('#AbaRelatorio');
@@ -79,27 +65,17 @@ export default function DashboardPage() {
             telefone: data.telefone.replace(/\D/g, ''),
         };
 
-            if (!data.senha) {
+        if (!data.senha) {
             delete dadosParaEnviar.senha;
             delete dadosParaEnviar.confirmar_senha;
         } else {
-            // Se tem senha, remove só a confirmação
             delete dadosParaEnviar.confirmar_senha;
         }
 
         try {
-            const response = await fetch(`${API_URL}/usuario/me`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                credentials: 'include',
-                cache: 'no-store',
-                body: JSON.stringify(dadosParaEnviar),
-            });
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(errorText || 'Falha ao atualizar.');
-            }
-            const updatedProfile = await response.json();
+            const response = await api.put('/usuario/me', dadosParaEnviar);
+
+            const updatedProfile = response.data;
             setProfileData(updatedProfile);
             setFormStatus('success');
             setTimeout(() => {
@@ -107,17 +83,15 @@ export default function DashboardPage() {
                 setFormStatus('idle');
             }, 2000);
         } catch (error) {
-            setApiError(getApiErrorMessage(error.message));
+            const msg = error.response?.data || error.message || 'Falha ao atualizar.';
+            setApiError(getApiErrorMessage(msg));
             setFormStatus('idle');
         }
     };
 
     const handleLogout = async () => {
         try {
-            await fetch(`${API_URL}/logout`, {
-                method: 'POST',
-                credentials: 'include',
-            });
+            await api.post('/logout');
         } catch (error) {
             console.error("Erro ao fazer logout no servidor:", error);
         } finally {
@@ -128,22 +102,16 @@ export default function DashboardPage() {
     useEffect(() => {
         const fetchProfile = async () => {
             try {
-                const response = await fetch(`${API_URL}/usuario/me`, {
-                    method: 'GET',
-                    credentials: 'include',
-                    headers: { 'Content-Type': 'application/json' },
-                    cache: 'no-store'
-                });
-                if (!response.ok) throw new Error('Sessão inválida ou expirada.');
-                const data = await response.json();
-                setProfileData(data);
+                const response = await api.get('/usuario/me');
+                const data = response.data;
 
+                setProfileData(data);
                 setValue('nome', data.nome);
                 setValue('email', data.email);
                 setValue('telefone', formatarTelefone(data.telefone));
 
             } catch (error) {
-                console.error(error);
+                console.error("Erro ao carregar perfil:", error);
                 router.push('/');
             }
         };
@@ -153,7 +121,7 @@ export default function DashboardPage() {
     if (!profileData) {
         return (
             <div className="flex justify-center items-center h-screen">
-                <p className="text-white text-2xl">Verificando sessão...</p>
+                <p className="text-white text-2xl animate-pulse">Verificando sessão...</p>
             </div>
         );
     }

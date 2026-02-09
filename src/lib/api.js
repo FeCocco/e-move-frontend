@@ -1,53 +1,61 @@
 import axios from 'axios';
 import process from "next/dist/build/webpack/loaders/resolve-url-loader/lib/postcss";
 
+
 const api = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api',
     withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json',
+    }
 });
 
-export const fetchDirectRoute = (origin, destination) => {
-    return api.get('/api/directions', {
-        params: {
-            oLat: origin.latitude,
-            oLon: origin.longitude,
-            dLat: destination.latitude,
-            dLon: destination.longitude,
-        }
-    });
-};
-
-export const salvarViagem = (viagemData) => {
-    return api.post('/api/viagens', viagemData);
-};
-
-export const consultarViagem = (inicio, fim) => {
-    // Se tiver datas, adiciona como query params
-    const params = {};
-    if (inicio) params.inicio = inicio; // YYYY-MM-DD
-    if (fim) params.fim = fim;
-
-    return api.get('/api/viagens', { params });
-};
-
-export const atualizarViagem = (viagemId, dados) => {
-    return api.patch(`/api/viagens/${viagemId}`, dados);
-};
-
-export const buscarEstacoesProximas = async (lat, lon, raio = 50) => { // Raio padrão 50, mas aceita dinâmico
-    try {
-        const response = await api.get('/api/estacoes/proximas', {
-            params: { lat, lon, raio } // Passa o raio calculado pelo algoritmo
-        });
-        return response;
-    } catch (error) {
-        console.error("Erro ao buscar estações:", error);
-        return { data: [] };
-    }
-};
-
-export const getEstacoesFavoritas = () => api.get('/api/estacoes/favoritas');
-export const favoritarEstacao = (id) => api.post(`/api/estacoes/${id}/favorito`);
-export const desfavoritarEstacao = (id) => api.delete(`/api/estacoes/${id}/favorito`);
-
 export default api;
+
+// --- MAPA E GEOLOCALIZAÇÃO ---
+export const fetchDirectRoute = async (origin, destination) => {
+    // Exemplo de payload esperado pelo backend
+    const coords = {
+        latOrigem: origin.latitude,
+        longiOrigem: origin.longitude,
+        latDestino: destination.latitude,
+        longiDestino: destination.longitude
+    };
+    return api.post('/mapa/rota', coords);
+};
+
+export const buscarEstacoesProximas = async (lat, lon, raioKm = 20) => {
+    return api.get(`/estacoes/proximas?latitude=${lat}&longitude=${lon}&raio=${raioKm}`);
+};
+
+export const geocodeAddress = async (address) => {
+    return api.get(`/mapa/geocode?q=${encodeURIComponent(address)}`);
+};
+
+export const consultarViagem = async (inicio, fim) => {
+    let url = '/viagens';
+    if (inicio && fim) {
+        url += `?inicio=${inicio}&fim=${fim}`;
+    }
+    return api.get(url);
+};
+
+export const salvarViagem = async (dadosViagem) => {
+    return api.post('/viagens', dadosViagem);
+};
+
+export const atualizarViagem = async (id, dados) => {
+    return api.put(`/viagens/${id}`, dados);
+};
+
+export const getEstacoesFavoritas = async () => {
+    return api.get('/estacoes/favoritas');
+};
+
+export const favoritarEstacao = async (stationId) => {
+    return api.post(`/estacoes/${stationId}/favoritar`);
+};
+
+export const desfavoritarEstacao = async (stationId) => {
+    return api.delete(`/estacoes/${stationId}/favoritar`);
+};
