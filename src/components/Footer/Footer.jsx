@@ -33,7 +33,16 @@ export default function Footer() {
                     </div>
 
                     <p className="text-slate-500 text-sm">
-                        © {new Date().getFullYear()} e-Move. Licença ainda a ser definida.
+                        © {new Date().getFullYear()} e-Move. Licenciado sob{" "}
+                        <a
+                            href="https://www.apache.org/licenses/LICENSE-2.0"
+                            target="_blank"
+                            rel="noreferrer"
+                            className="hover:underline"
+                        >
+                            Apache-2.0
+                        </a>
+                        .
                     </p>
                 </div>
             </div>

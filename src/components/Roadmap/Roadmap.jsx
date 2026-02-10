@@ -23,7 +23,7 @@ export default function Roadmap() {
             phase: "Fase 3",
             title: "Lançamento Beta",
             description: "Abertura para primeiros usuários e coleta de feedback",
-            status: "active",
+            status: "completed",
             date: "Q4 2025",
             icon: Circle
         },
