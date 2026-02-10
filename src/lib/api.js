@@ -31,7 +31,13 @@ export const fetchDirectRoute = async (origin, destination) => {
 };
 
 export const buscarEstacoesProximas = async (lat, lon, raioKm = 20) => {
-    return api.get(`/estacoes/proximas?latitude=${lat}&longitude=${lon}&raio=${raioKm}`);
+    return api.get('/estacoes/proximas', {
+        params: {
+            lat,
+            lon,
+            raio: raioKm,
+        },
+    });
 };
 
 export const geocodeAddress = async (address) => {
@@ -58,11 +64,11 @@ export const getEstacoesFavoritas = async () => {
 };
 
 export const favoritarEstacao = async (stationId) => {
-    return api.post(`/estacoes/${stationId}/favoritar`);
+    return api.post(`/estacoes/${stationId}/favorito`);
 };
 
 export const desfavoritarEstacao = async (stationId) => {
-    return api.delete(`/estacoes/${stationId}/favoritar`);
+    return api.delete(`/estacoes/${stationId}/favorito`);
 };
 
 export default api;
