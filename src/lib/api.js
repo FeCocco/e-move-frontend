@@ -1,5 +1,4 @@
 import axios from 'axios';
-import process from "next/dist/build/webpack/loaders/resolve-url-loader/lib/postcss";
 
 const api = axios.create({
     baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api',
@@ -9,7 +8,6 @@ const api = axios.create({
 });
 
 api.interceptors.request.use((config) => {
-    // Verifica se estamos no navegador
     if (typeof window !== 'undefined') {
         const token = localStorage.getItem('e-move-token');
         if (token) {
