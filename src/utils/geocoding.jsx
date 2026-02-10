@@ -1,6 +1,4 @@
-import axios from 'axios';
-
-const API_BASE_URL = 'http://localhost:8080/api';
+import api from "@/lib/api";
 
 /**
  * Forward Geocoding - Convert address to coordinates
@@ -9,7 +7,7 @@ const API_BASE_URL = 'http://localhost:8080/api';
  */
 export async function forwardGeocode(address) {
     try {
-        const response = await axios.get(`${API_BASE_URL}/forward-geocoding`, {
+        const response = await api.get(`/forward-geocoding`, {
             params: { address }
         });
         return response.data;
