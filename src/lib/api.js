@@ -56,7 +56,7 @@ export const salvarViagem = async (dadosViagem) => {
 };
 
 export const atualizarViagem = async (id, dados) => {
-    return api.put(`/viagens/${id}`, dados);
+    return api.patch(`/viagens/${id}`, dados);
 };
 
 export const getEstacoesFavoritas = async () => {
