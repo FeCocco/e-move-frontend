@@ -20,13 +20,14 @@ api.interceptors.request.use((config) => {
 });
 
 export const fetchDirectRoute = async (origin, destination) => {
-    const coords = {
-        latOrigem: origin.latitude,
-        longiOrigem: origin.longitude,
-        latDestino: destination.latitude,
-        longiDestino: destination.longitude
-    };
-    return api.post('/mapa/rota', coords);
+    return api.get('/directions', {
+        params: {
+            oLat: origin.latitude,
+            oLon: origin.longitude,
+            dLat: destination.latitude,
+            dLon: destination.longitude,
+        },
+    });
 };
 
 export const buscarEstacoesProximas = async (lat, lon, raioKm = 20) => {

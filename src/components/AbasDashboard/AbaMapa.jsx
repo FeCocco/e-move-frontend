@@ -60,7 +60,6 @@ export default function AbaMapa({ isVisible }) {
     const [isSavingTrip, setIsSavingTrip] = useState(false);
     const [waypoints, setWaypoints] = useState([]);
 
-    // --- FUNÇÃO CORRIGIDA E POSICIONADA CORRETAMENTE ---
     const calcularRotaComAutonomia = async (pontoOrigem, pontoDestino, veiculo) => {
         // Se não tiver veículo, rota simples
         if (!veiculo) {
