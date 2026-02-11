@@ -25,7 +25,7 @@ export default function Roadmap() {
             description: "Abertura para primeiros usuários e coleta de feedback",
             status: "completed",
             date: "Q4 2025",
-            icon: Circle
+            icon: CheckCircle
         },
         {
             phase: "Fase 4",

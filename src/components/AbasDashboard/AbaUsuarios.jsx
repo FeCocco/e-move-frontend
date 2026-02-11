@@ -1,5 +1,5 @@
-import { AppCard } from "@/components/AppCard/AppCard";
-import { Button } from "@/components/ui/button";
+import {AppCard} from "@/components/AppCard/AppCard";
+import {Button} from "@/components/ui/button";
 import {
     Dialog,
     DialogClose,
@@ -10,12 +10,12 @@ import {
     DialogTitle,
     DialogTrigger
 } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { User, Mail, Phone, Edit2, LogOut, Check, UserRound } from 'lucide-react';
-import { formatarTelefone } from "@/lib/utils";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {Check, Edit2, LogOut, Mail, Phone, User, UserRound} from 'lucide-react';
+import {formatarTelefone} from "@/lib/utils";
 import GenderSelector from "@/components/ui/GenderSlector";
-import { Controller } from "react-hook-form";
+import {Controller} from "react-hook-form";
 
 export default function AbaUsuarios({
                                         profileData,
@@ -48,9 +48,14 @@ export default function AbaUsuarios({
                         </div>
                     </div>
 
-                    <div>
+                    <div className="w-full">
                         <h2 className="text-2xl font-bold text-white mb-1">{profileData.nome}</h2>
-                        <p className="text-sm text-texto-claro/60 break-all">{profileData.email}</p>
+                        <p
+                            className="text-sm text-texto-claro/60 truncate"
+                            title={profileData.email}
+                        >
+                            {profileData.email}
+                        </p>
                     </div>
 
                     {/* Botão de Logout (Desktop): Só aparece em telas médias ou maiores */}
@@ -129,8 +134,7 @@ export default function AbaUsuarios({
                                                             defaultValue={formatarTelefone(profileData.telefone)}
                                                             {...register("telefone")}
                                                             onChange={(e) => {
-                                                                const formatted = formatarTelefone(e.target.value);
-                                                                e.target.value = formatted;
+                                                                e.target.value = formatarTelefone(e.target.value);
                                                                 register("telefone").onChange(e);
                                                             }}
                                                             maxLength={15}
@@ -235,9 +239,14 @@ export default function AbaUsuarios({
                             <div className="p-2 bg-purple-500/10 rounded text-purple-400">
                                 <Mail size={20} />
                             </div>
-                            <div>
+                            <div className="min-w-0 flex-1">
                                 <p className="text-xs text-texto-claro/50 uppercase font-bold">Email</p>
-                                <p className="text-white font-medium break-all">{profileData.email}</p>
+                                <p
+                                    className="text-white font-medium truncate"
+                                    title={profileData.email}
+                                >
+                                    {profileData.email}
+                                </p>
                             </div>
                         </div>
 
