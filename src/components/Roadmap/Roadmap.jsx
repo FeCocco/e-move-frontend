@@ -31,8 +31,16 @@ export default function Roadmap() {
             phase: "Fase 4",
             title: "Expansão Nacional",
             description: "Cobertura completa do território e parcerias estratégicas",
-            status: "upcoming",
+            status: "active",
             date: "Q1 2026",
+            icon: Clock
+        },
+        {
+            phase: "Fase 5",
+            title: "Internacionalização",
+            description: "Expansão global, com interface em múltiplos idiomas",
+            status: "upcoming",
+            date: "2026",
             icon: Circle
         }
     ];
