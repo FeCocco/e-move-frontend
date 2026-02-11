@@ -3,11 +3,62 @@ import { useViagens } from "@/context/ViagensContext";
 import EvolucaoChart from '@/components/Charts/EvolucaoChart';
 import VeiculoChart from '@/components/Charts/VeiculoChart';
 import StatCard from '@/components/Charts/StatCard';
-import AnimatedCar from '@/components/Charts/AnimatedCar'; // Importando o carrinho
+import AnimatedCar from '@/components/Charts/AnimatedCar';
 import { Route, Zap, Droplets } from 'lucide-react';
 
+function AbaRelatorioSkeleton() {
+    return (
+        <div className="px-1 sm:px-2 py-2">
+            <div className="flex flex-col items-center">
+                <div className="h-7 w-56 rounded-md bg-white/10 animate-pulse mb-3" />
+                <div className="h-4 w-[90%] max-w-2xl rounded-md bg-white/5 animate-pulse mb-8" />
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+                {/* Card Resumo */}
+                <div className="lg:col-span-3 bg-black/20 border border-white/10 p-6 rounded-xl relative overflow-hidden">
+                    <div className="h-5 w-44 rounded-md bg-white/10 animate-pulse mb-6" />
+
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        {Array.from({ length: 3 }).map((_, i) => (
+                            <div
+                                key={i}
+                                className="bg-white/5 border border-white/10 rounded-xl p-4 animate-pulse"
+                            >
+                                <div className="h-9 w-9 rounded-lg bg-white/10 mb-4" />
+                                <div className="h-7 w-24 rounded-md bg-white/10 mb-2" />
+                                <div className="h-4 w-32 rounded-md bg-white/5" />
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="mt-6 pt-4 border-t border-white/5">
+                        <div className="h-6 w-64 rounded-md bg-white/5 animate-pulse" />
+                    </div>
+                </div>
+
+                {/* Gráfico Evolução */}
+                <div className="lg:col-span-2 bg-black/20 border border-white/10 rounded-xl overflow-hidden flex flex-col h-[400px] p-6">
+                    <div className="h-5 w-52 rounded-md bg-white/10 animate-pulse mb-6" />
+                    <div className="flex-1 rounded-lg bg-white/5 animate-pulse" />
+                </div>
+
+                {/* Gráfico Veículos */}
+                <div className="lg:col-span-1 bg-black/20 border border-white/10 rounded-xl overflow-hidden flex flex-col h-[400px] p-6">
+                    <div className="h-5 w-40 rounded-md bg-white/10 animate-pulse mb-6" />
+                    <div className="flex-1 rounded-lg bg-white/5 animate-pulse" />
+                </div>
+            </div>
+        </div>
+    );
+}
+
 export default function AbaRelatorio() {
-    const { estatisticas } = useViagens();
+    const { estatisticas, loading } = useViagens();
+
+    if (loading) {
+        return <AbaRelatorioSkeleton />;
+    }
 
     // Valores seguros (0 se undefined)
     const {
