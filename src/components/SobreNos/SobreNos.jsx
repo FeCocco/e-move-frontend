@@ -3,11 +3,11 @@ import { Target, Users, Sparkles } from 'lucide-react';
 
 export default function SobreNos() {
     const team = [
-        { name: "Felipe Giacomini Cocco", id: "116525", role: "FullStack" },
-        { name: "Fernando Gabriel Perinotto", id: "115575", role: "Banco de Dados" },
-        { name: "Jhonatas K. de Oliveira Braga", id: "116707", role: "QA" },
-        { name: "Lucas Santos Souza", id: "116852", role: "Frontend" },
-        { name: "Samuel Wilson Rufino", id: "117792", role: "Infraestrutura" }
+        { name: "Felipe Giacomini Cocco", id: "116525", role: "FullStack", github: "FeCocco" },
+        { name: "Fernando Gabriel Perinotto", id: "115575", role: "Banco de Dados", github: "yFernand0W7" },
+        { name: "Jhonatas K. de Oliveira Braga", id: "116707", role: "QA", github: "jhonataskevin" },
+        { name: "Lucas Santos Souza", id: "116852", role: "UX" },
+        { name: "Samuel Wilson Rufino", id: "117792", role: "Infraestrutura", github: "sawiiru" }
     ];
 
     return (
@@ -65,7 +65,30 @@ export default function SobreNos() {
                         {team.map((member, index) => (
                             <div key={index} className="group relative ">
                                 <div className="min-h-56 p-6 bg-white/5 backdrop-blur rounded-xl border border-white/10 transition-all duration-300 group-hover:bg-white/10 group-hover:border-verde-claro/30">
-                                    <div className=" w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-verde-claro to-azul-claro rounded-full"></div>
+                                    {member.github ? (
+                                        <a
+                                            href={`https://github.com/${member.github}`}
+                                            target="_blank"
+                                            rel="noreferrer noopener"
+                                            aria-label={`Abrir GitHub de ${member.name}`}
+                                            className="inline-block"
+                                            title={`GitHub: ${member.github}`}
+                                        >
+                                            <img
+                                                className="w-12 h-12 mx-auto mb-4 rounded-full object-cover ring-2 ring-white/10 transition-transform duration-200 hover:scale-105"
+                                                src={`https://github.com/${member.github}.png?size=128`}
+                                                alt={`Foto de ${member.name}`}
+                                                loading="lazy"
+                                                referrerPolicy="no-referrer"
+                                                onError={(e) => {
+                                                    e.currentTarget.style.display = "none";
+                                                }}
+                                            />
+                                        </a>
+                                    ) : (
+                                        <div className="w-12 h-12 mx-auto mb-4 bg-gradient-to-br from-verde-claro to-azul-claro rounded-full" />
+                                    )}
+
                                     <h4 className="text-white font-medium mb-1">{member.name}</h4>
                                     <p className="text-xs text-azul-claro mb-2">{member.role}</p>
                                     <p className="text-xs text-texto-claro/50">{member.id}</p>
