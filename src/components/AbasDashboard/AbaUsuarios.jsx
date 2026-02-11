@@ -35,6 +35,15 @@ export default function AbaUsuarios({
         return null;
     }
 
+    function formatarSexo() {
+        if (profileData.sexo === 'MASCULINO') {
+            return 'Masculino';
+        }
+        if (profileData.sexo === 'FEMININO') {
+            return 'Feminino';
+        }
+    }
+
     return (
         <div className="w-full flex justify-center fade-in-up pb-20 md:pb-0"> {/* Padding bottom extra no mobile */}
             <AppCard className="bg-black/20 border-white/10 w-full max-w-4xl overflow-hidden rounded-2xl flex flex-col md:flex-row">
@@ -231,7 +240,7 @@ export default function AbaUsuarios({
                             </div>
                             <div>
                                 <p className="text-xs text-texto-claro/50 uppercase font-bold">Gênero</p>
-                                <p className="text-white font-medium">{profileData.sexo || "Não informado"}</p>
+                                <p className="text-white font-medium">{formatarSexo() || "Não informado"}</p>
                             </div>
                         </div>
 
