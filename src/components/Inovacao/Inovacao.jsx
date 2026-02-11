@@ -37,8 +37,10 @@ export default function Inovacao() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
                     <AnimatedStat
                         icon={Car}
-                        finalValue={180000}
-                        label="Veículos Elétricos no Brasil"
+                        finalValue={100000000}
+                        label="Veículos Elétricos no Mundo"
+                        prefix="≈ "
+                        numberFormat="compact"
                     />
                     <AnimatedStat
                         icon={Users}
@@ -48,8 +50,9 @@ export default function Inovacao() {
 
                     <AnimatedStat
                         icon={Zap}
-                        finalValue={4300}
+                        finalValue={530000}
                         label="Pontos de Recarga Mapeados"
+                        prefix="≈ "
                     />
                 </div>
 
