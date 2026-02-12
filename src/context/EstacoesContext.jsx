@@ -1,15 +1,16 @@
 "use client";
-import {createContext, useCallback, useContext, useEffect, useState} from 'react';
-import {desfavoritarEstacao, favoritarEstacao, getEstacoesFavoritas} from '@/lib/api';
-import {toast} from 'sonner';
+import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { desfavoritarEstacao, favoritarEstacao, getEstacoesFavoritas } from '@/lib/api';
+import { toast } from 'sonner';
 
 const EstacoesContext = createContext(null);
 
 export function EstacoesProvider({ children }) {
-    const [favoritas, setFavoritas] = useState([]); // Lista de objetos StationDTO completos
+    const [favoritas, setFavoritas] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const fetchFavoritas = useCallback(async () => {
+        setLoading(true);
         try {
             const res = await getEstacoesFavoritas();
             setFavoritas(res.data);
@@ -42,7 +43,15 @@ export function EstacoesProvider({ children }) {
     const isFavorita = (id) => favoritas.some(f => f.ID === id);
 
     return (
-        <EstacoesContext.Provider value={{ favoritas, loading, toggleFavorita, isFavorita }}>
+        <EstacoesContext.Provider
+            value={{
+                favoritas,
+                loading,
+                toggleFavorita,
+                isFavorita,
+                refetchFavoritas: fetchFavoritas,
+            }}
+        >
             {children}
         </EstacoesContext.Provider>
     );

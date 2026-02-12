@@ -41,6 +41,29 @@ const EditarUsuarioSchema = z.object({
     path: ["confirmar_senha"],
 });
 
+function DashboardSkeleton() {
+    return (
+        <main className="min-h-screen w-full flex flex-col items-center p-2 sm:p-6">
+            <div className="w-full max-w-7xl flex flex-col h-full gap-6 animate-pulse">
+                <header className="flex flex-col items-center justify-center relative mt-2 sm:mt-0">
+                    <div className="h-12 w-full max-w-[520px] rounded-full bg-white/10" />
+                </header>
+
+                <div className="flex-grow w-full">
+                    <div className="bg-black/20 border border-white/10 rounded-xl p-6">
+                        <div className="h-6 w-44 rounded-md bg-white/10 mb-6" />
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {Array.from({ length: 6 }).map((_, i) => (
+                                <div key={i} className="h-40 rounded-xl bg-white/5 border border-white/10" />
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    );
+}
+
 export default function DashboardPage() {
     // REMOVIDO: const API_URL = ... (Causa do erro)
     const router = useRouter();
@@ -120,11 +143,7 @@ export default function DashboardPage() {
     }, [router, setValue]);
 
     if (!profileData) {
-        return (
-            <div className="flex justify-center items-center h-screen">
-                <p className="text-white text-2xl animate-pulse">Verificando sessão...</p>
-            </div>
-        );
+        return <DashboardSkeleton />;
     }
 
     return (

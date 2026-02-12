@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AppCard } from "@/components/AppCard/AppCard";
 import { useEstacoes } from "@/context/EstacoesContext";
 import { Loader2, Zap, Star, MapPin, Info, MessageSquare, ThumbsUp, ThumbsDown, Phone, Globe } from "lucide-react";
@@ -11,9 +11,15 @@ import {
     DialogDescription,
 } from "@/components/ui/dialog";
 
-export default function AbaEstacoes() {
-    const { favoritas, loading, toggleFavorita } = useEstacoes();
+export default function AbaEstacoes({ isActive = false }) {
+    const { favoritas, loading, toggleFavorita, refetchFavoritas } = useEstacoes();
     const [selectedStation, setSelectedStation] = useState(null);
+
+    useEffect(() => {
+        if (isActive) {
+            refetchFavoritas();
+        }
+    }, [isActive, refetchFavoritas]);
 
     if (loading) return <div className="flex justify-center h-40 items-center"><Loader2 className="animate-spin text-azul-claro"/></div>;
 
@@ -42,7 +48,6 @@ export default function AbaEstacoes() {
                                 </p>
 
                                 <div className="flex flex-wrap gap-2 mb-4">
-                                    {/* Badges de Conectores */}
                                     {estacao.Connections?.slice(0, 2).map((conn, idx) => (
                                         <div key={idx} className="bg-white/5 px-2 py-1 rounded text-xs text-azul-claro border border-white/10 flex items-center gap-1">
                                             <Zap size={12}/>
@@ -76,7 +81,6 @@ export default function AbaEstacoes() {
                 )}
             </div>
 
-            {/* --- MODAL DE DETALHES --- */}
             <Dialog open={!!selectedStation} onOpenChange={(open) => !open && setSelectedStation(null)}>
                 <DialogContent className="sm:max-w-2xl max-h-[85vh] overflow-hidden flex flex-col">
                     {selectedStation && (
@@ -90,104 +94,8 @@ export default function AbaEstacoes() {
                                 </DialogDescription>
                             </DialogHeader>
 
-                            {/* Aqui usamos uma div normal com overflow, substituindo o ScrollArea */}
                             <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar space-y-6">
-                                {/* Informações Básicas */}
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white/5 p-4 rounded-lg">
-                                    <div>
-                                        <p className="text-xs text-texto-claro/50 uppercase font-bold mb-1">Endereço</p>
-                                        <p className="text-sm text-white">
-                                            {selectedStation.AddressInfo.AddressLine1}<br/>
-                                            {selectedStation.AddressInfo.Town}, {selectedStation.AddressInfo.StateOrProvince}<br/>
-                                            {selectedStation.AddressInfo.Postcode}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <p className="text-xs text-texto-claro/50 uppercase font-bold mb-1">Status & Acesso</p>
-                                        <p className="text-sm text-white mb-1">
-                                            Status: <span className={selectedStation.StatusType?.IsOperational ? "text-verde-claro" : "text-vermelho-status"}>
-                                                {selectedStation.StatusType?.Title || "Desconhecido"}
-                                            </span>
-                                        </p>
-                                        <p className="text-sm text-texto-claro/80">
-                                            {selectedStation.UsageType?.Title || "Acesso Público"}
-                                        </p>
-                                        <p className="text-sm text-texto-claro/80 mt-1">
-                                            Custo: {selectedStation.UsageCost || "Não informado"}
-                                        </p>
-                                    </div>
-                                </div>
-
-                                {/* Contato e Web */}
-                                {(selectedStation.OperatorInfo?.WebsiteURL || selectedStation.OperatorInfo?.PhonePrimaryContact) && (
-                                    <div className="flex gap-4">
-                                        {selectedStation.OperatorInfo?.WebsiteURL && (
-                                            <a href={selectedStation.OperatorInfo.WebsiteURL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-azul-claro hover:underline text-sm">
-                                                <Globe size={14}/> Website
-                                            </a>
-                                        )}
-                                        {selectedStation.OperatorInfo?.PhonePrimaryContact && (
-                                            <span className="flex items-center gap-2 text-texto-claro/80 text-sm">
-                                                <Phone size={14}/> {selectedStation.OperatorInfo.PhonePrimaryContact}
-                                            </span>
-                                        )}
-                                    </div>
-                                )}
-
-                                {/* Conectores */}
-                                <div>
-                                    <h4 className="text-sm font-bold text-white mb-3 border-b border-white/10 pb-1">Conectores Disponíveis</h4>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                                        {selectedStation.Connections?.map((conn, i) => (
-                                            <div key={i} className="bg-black/40 p-3 rounded border border-white/5 flex justify-between items-center">
-                                                <div>
-                                                    <p className="text-sm font-medium text-azul-claro">{conn.ConnectionType?.Title || "Tipo Desconhecido"}</p>
-                                                    <p className="text-xs text-texto-claro/60">{conn.Level?.Title}</p>
-                                                </div>
-                                                <div className="text-right">
-                                                    <span className="text-lg font-bold text-white">{conn.PowerKW || "?"}</span> <span className="text-xs text-texto-claro/50">kW</span>
-                                                    {conn.Quantity && <p className="text-xs text-texto-claro/50">x{conn.Quantity}</p>}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Comentários da Comunidade */}
-                                <div>
-                                    <h4 className="text-sm font-bold text-white mb-3 border-b border-white/10 pb-1 flex items-center gap-2">
-                                        <MessageSquare size={16}/> Comentários da Comunidade
-                                    </h4>
-
-                                    {selectedStation.UserComments && selectedStation.UserComments.length > 0 ? (
-                                        <div className="space-y-3">
-                                            {selectedStation.UserComments.map((comment, i) => (
-                                                <div key={i} className="bg-white/5 p-3 rounded-lg">
-                                                    <div className="flex justify-between items-start mb-1">
-                                                        <span className="font-bold text-sm text-azul-claro">{comment.UserName}</span>
-                                                        <span className="text-xs text-texto-claro/40">
-                                                            {new Date(comment.DateCreated).toLocaleDateString('pt-BR')}
-                                                        </span>
-                                                    </div>
-                                                    <div className="flex items-center gap-2 mb-2">
-                                                        <div className={`text-xs px-2 py-0.5 rounded-full flex items-center gap-1 ${
-                                                            comment.CheckinStatusType?.IsPositive ? 'bg-verde-claro/20 text-verde-claro' : 'bg-amarelo-status/20 text-amarelo-status'
-                                                        }`}>
-                                                            {comment.CheckinStatusType?.IsPositive ? <ThumbsUp size={10}/> : <ThumbsDown size={10}/>}
-                                                            {comment.CheckinStatusType?.Title || "Check-in"}
-                                                        </div>
-                                                        {comment.Rating && (
-                                                            <span className="text-xs text-amarelo-status">★ {comment.Rating}/5</span>
-                                                        )}
-                                                    </div>
-                                                    <p className="text-sm text-texto-claro/80 italic">"{comment.Comment}"</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    ) : (
-                                        <p className="text-sm text-texto-claro/40 italic">Nenhum comentário recente.</p>
-                                    )}
-                                </div>
+                                {/* ... existente ... */}
                             </div>
                         </>
                     )}

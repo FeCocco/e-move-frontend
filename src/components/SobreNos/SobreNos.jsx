@@ -6,7 +6,7 @@ export default function SobreNos() {
         { name: "Felipe Giacomini Cocco", id: "116525", role: "FullStack", github: "FeCocco" },
         { name: "Fernando Gabriel Perinotto", id: "115575", role: "Banco de Dados", github: "yFernand0W7" },
         { name: "Jhonatas K. de Oliveira Braga", id: "116707", role: "QA", github: "jhonataskevin" },
-        { name: "Lucas Santos Souza", id: "116852", role: "UX" },
+        { name: "Lucas Santos Souza", id: "116852", role: "UI/UX" },
         { name: "Samuel Wilson Rufino", id: "117792", role: "Infraestrutura", github: "sawiiru" }
     ];
 
