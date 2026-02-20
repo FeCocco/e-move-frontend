@@ -21,7 +21,17 @@ export function EstacoesProvider({ children }) {
         }
     }, []);
 
-    useEffect(() => { fetchFavoritas(); }, [fetchFavoritas]);
+    useEffect(() => {
+        // Só tenta buscar as favoritas se o usuário já estiver logado (tiver token)
+        if (typeof window !== 'undefined') {
+            const token = localStorage.getItem('e-move-token');
+            if (token) {
+                fetchFavoritas();
+            } else {
+                setLoading(false); // Libera a tela de loading se não tiver logado
+            }
+        }
+    }, [fetchFavoritas]);
 
     const toggleFavorita = async (estacao) => {
         const isFav = favoritas.some(f => f.ID === estacao.ID);
