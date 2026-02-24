@@ -169,7 +169,7 @@ export default function DashboardPage() {
                                 </div>
 
                                 <div style={{ display: activeTab === '#AbaEstacoes' ? 'block' : 'none' }}>
-                                    <AbaEstacoes />
+                                    <AbaEstacoes isActive={activeTab === '#AbaEstacoes'} />
                                 </div>
 
                                 <div style={{ display: activeTab === '#AbaMapa' ? 'block' : 'none' }}>

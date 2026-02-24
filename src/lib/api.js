@@ -60,7 +60,9 @@ export const atualizarViagem = async (id, dados) => {
 };
 
 export const getEstacoesFavoritas = async () => {
-    return api.get('/estacoes/favoritas');
+    return api.get(`/estacoes/favoritas?t=${new Date().getTime()}`, {
+        timeout: 8000
+    });
 };
 
 export const favoritarEstacao = async (stationId) => {
