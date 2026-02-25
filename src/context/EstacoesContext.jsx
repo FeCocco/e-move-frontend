@@ -1,56 +1,49 @@
 "use client";
-import { createContext, useCallback, useContext, useEffect, useState } from 'react';
+import { createContext, useCallback, useContext, useState, useRef } from 'react';
 import { desfavoritarEstacao, favoritarEstacao, getEstacoesFavoritas } from '@/lib/api';
 import { toast } from 'sonner';
 
 const EstacoesContext = createContext(null);
 
-export function EstacoesProvider({ children }) {
-    const [favoritas, setFavoritas] = useState([]);
-    const [loading, setLoading] = useState(true);
 
-    const fetchFavoritas = useCallback(async (maxTentativas = 2) => {
-        setLoading(true);
-        let tentativaAtual = 0;
+    export function EstacoesProvider({ children }) {
+        const [favoritas, setFavoritas] = useState([]);
+        const [loading, setLoading] = useState(false);
 
-        while (tentativaAtual <= maxTentativas) {
-            try {
+        const hasFetched = useRef(false);
 
-                const res = await getEstacoesFavoritas();
+        const fetchFavoritas = useCallback(async (maxTentativas = 2) => {
+            if (hasFetched.current) return;
 
-                setFavoritas(res.data);
-                setLoading(false);
-                return;
+            setLoading(true);
+            let tentativaAtual = 0;
 
-            } catch (error) {
-                tentativaAtual++;
-                console.warn(`⏳ Falha ao buscar estações. Tentativa ${tentativaAtual} de ${maxTentativas + 1}...`);
+            while (tentativaAtual <= maxTentativas) {
+                try {
+                    const res = await getEstacoesFavoritas();
+                    setFavoritas(res.data);
 
-                if (tentativaAtual > maxTentativas) {
-                    console.error("❌ Erro definitivo ao buscar favoritas:", error);
-                    toast.error("Não foi possível carregar as estações. Tente recarregar a página.");
-                    break; // Estourou o limite de tentativas, sai do loop
+                    hasFetched.current = true;
+
+                    setLoading(false);
+                    return;
+
+                } catch (error) {
+                    tentativaAtual++;
+                    console.warn(`⏳ Falha ao buscar estações. Tentativa ${tentativaAtual} de ${maxTentativas + 1}...`);
+
+                    if (tentativaAtual > maxTentativas) {
+                        console.error("❌ Erro definitivo ao buscar favoritas:", error);
+                        toast.error("Não foi possível carregar as estações. Tente recarregar a página.");
+                        break;
+                    }
+
+                    await new Promise(resolve => setTimeout(resolve, 2000));
                 }
-
-                // Aguarda 2000ms (2 segundos) antes de tentar o próximo loop
-                await new Promise(resolve => setTimeout(resolve, 2000));
             }
-        }
 
-        setLoading(false);
-    }, []);
-
-    /*useEffect(() => {
-        // Só tenta buscar as favoritas se o usuário já estiver logado (tiver token)
-        if (typeof window !== 'undefined') {
-            const token = localStorage.getItem('e-move-token');
-            if (token) {
-                fetchFavoritas();
-            } else {
-                setLoading(false); // Libera a tela de loading se não tiver logado
-            }
-        }
-    }, [fetchFavoritas]);*/
+            setLoading(false);
+        }, []);
 
     const toggleFavorita = async (estacao) => {
         const isFav = favoritas.some(f => f.ID === estacao.ID);
