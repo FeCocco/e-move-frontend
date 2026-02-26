@@ -12,7 +12,18 @@ import {
 } from "@/components/ui/dialog";
 import {Input} from "@/components/ui/input";
 import {Label} from "@/components/ui/label";
-import {Check, Edit2, LogOut, Mail, Phone, User, UserRound} from 'lucide-react';
+import {Check, Edit2, LogOut, Mail, Phone, User, UserRound, Trash2} from 'lucide-react';
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import {formatarTelefone} from "@/lib/utils";
 import GenderSelector from "@/components/ui/GenderSlector";
 import {Controller} from "react-hook-form";
@@ -23,6 +34,7 @@ export default function AbaUsuarios({
                                         setIsDialogOpen,
                                         formStatus,
                                         handleLogout,
+                                        handleDeleteAccount,
                                         handleSubmit,
                                         EditarUsuarioSubmit,
                                         register,
@@ -199,7 +211,63 @@ export default function AbaUsuarios({
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
+
+                                            {/* ZONA DE PERIGO (Dentro do Modal) */}
+                                            <div className="border-t border-red-500/20 pt-4 mt-2">
+                                                <p className="text-xs text-red-400/80 mb-3 uppercase font-bold tracking-wider">Zona de Perigo</p>
+
+                                                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-red-500/5 p-4 rounded-lg border border-red-500/10">
+                                                    <div className="flex-1">
+                                                        <p className="text-sm text-texto-claro/80">
+                                                            Deseja encerrar sua conta no E-Move?
+                                                        </p>
+                                                    </div>
+
+                                                    <AlertDialog>
+                                                        <AlertDialogTrigger asChild>
+                                                            <Button
+                                                                type="button" // Importante: evita que o botão faça submit do formulário de edição
+                                                                variant="outline"
+                                                                size="sm"
+                                                                className="w-full sm:w-auto bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border-red-500/20 transition-all flex items-center justify-center gap-2"
+                                                            >
+                                                                <Trash2 size={16} />
+                                                                Excluir conta
+                                                            </Button>
+                                                        </AlertDialogTrigger>
+
+                                                        {/* Segundo Modal (Confirmação) */}
+                                                        <AlertDialogContent className="bg-[#111] border border-white/10 text-white max-w-md w-[95%] z-[60]">
+                                                            <AlertDialogHeader>
+                                                                <AlertDialogTitle className="text-xl">Você tem certeza absoluta?</AlertDialogTitle>
+                                                                <AlertDialogDescription className="text-gray-400 mt-2 text-base">
+                                                                    Esta ação agendará a exclusão da sua conta. Todos os seus dados, rotas e veículos ficarão ocultos no sistema.
+                                                                    <br /><br />
+                                                                    <span className="text-gray-300">
+                                                                        <strong>Você tem 30 dias para mudar de ideia.</strong> Basta fazer login novamente dentro deste período para cancelar a exclusão e reativar sua conta.
+                                                                    </span>
+                                                                </AlertDialogDescription>
+                                                            </AlertDialogHeader>
+                                                            <AlertDialogFooter className="mt-6 gap-2 sm:gap-0 flex-col-reverse sm:flex-row">
+                                                                <AlertDialogCancel className="bg-transparent border-white/20 hover:bg-white/10 text-white m-0 sm:mr-2">
+                                                                    Cancelar
+                                                                </AlertDialogCancel>
+                                                                <AlertDialogAction
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault(); // Evita o submit acidental
+                                                                        handleDeleteAccount();
+                                                                    }}
+                                                                    className="bg-red-600 hover:bg-red-700 text-white border-0"
+                                                                >
+                                                                    Sim, excluir minha conta
+                                                                </AlertDialogAction>
+                                                            </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                    </AlertDialog>
+                                                </div>
+                                            </div>
+
+                                        </div> {/* Fim do grid py-6 */}
 
                                         {apiError && <p className="text-vermelho-status text-center text-sm mb-4 bg-vermelho-status/10 p-2 rounded">{apiError}</p>}
 

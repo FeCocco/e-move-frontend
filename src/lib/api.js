@@ -73,4 +73,8 @@ export const desfavoritarEstacao = async (stationId) => {
     return api.delete(`/estacoes/${stationId}/favorito`);
 };
 
+export const deletarUsuario = async () => {
+    return api.delete('/usuario/me');
+};
+
 export default api;

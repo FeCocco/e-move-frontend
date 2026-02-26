@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import DashboardNav from '@/components/DashboardNav/DashboardNav';
 import { getApiErrorMessage } from '@/lib/errorHandler';
 import { formatarTelefone } from "@/lib/utils";
-import api from '@/lib/api';
+import api, {deletarUsuario} from '@/lib/api';
 import AbaVeiculos from '@/components/AbasDashboard/AbaVeiculos';
 import AbaRotas from '@/components/AbasDashboard/AbaRotas';
 import AbaEstacoes from '@/components/AbasDashboard/AbaEstacoes';
@@ -123,6 +123,18 @@ export default function DashboardPage() {
         }
     };
 
+    const handleDeleteAccount = async () => {
+        try {
+            await deletarUsuario();
+            localStorage.removeItem('e-move-token');
+            router.push('/');
+        } catch (error) {
+            console.error("Erro ao solicitar exclusão da conta:", error);
+            const msg = error.response?.data || error.message || 'Erro ao excluir conta.';
+            setApiError(getApiErrorMessage(msg));
+        }
+    };
+
     useEffect(() => {
         const fetchProfile = async () => {
             try {
@@ -185,6 +197,7 @@ export default function DashboardPage() {
                                         setIsDialogOpen={setIsDialogOpen}
                                         formStatus={formStatus}
                                         handleLogout={handleLogout}
+                                        handleDeleteAccount={handleDeleteAccount}
                                         handleSubmit={handleSubmit}
                                         EditarUsuarioSubmit={EditarUsuarioSubmit}
                                         register={register}
