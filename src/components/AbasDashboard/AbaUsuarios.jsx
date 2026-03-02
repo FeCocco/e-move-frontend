@@ -219,14 +219,14 @@ export default function AbaUsuarios({
                                                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-red-500/5 p-4 rounded-lg border border-red-500/10">
                                                     <div className="flex-1">
                                                         <p className="text-sm text-texto-claro/80">
-                                                            Deseja encerrar sua conta no E-Move?
+                                                            Deseja encerrar sua conta no e-Move?
                                                         </p>
                                                     </div>
 
                                                     <AlertDialog>
                                                         <AlertDialogTrigger asChild>
                                                             <Button
-                                                                type="button" // Importante: evita que o botão faça submit do formulário de edição
+                                                                type="button"
                                                                 variant="outline"
                                                                 size="sm"
                                                                 className="w-full sm:w-auto bg-red-500/10 text-red-500 hover:bg-red-500 hover:text-white border-red-500/20 transition-all flex items-center justify-center gap-2"
