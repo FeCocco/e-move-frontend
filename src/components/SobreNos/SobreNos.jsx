@@ -3,7 +3,7 @@ import { Target, Users, Sparkles } from 'lucide-react';
 
 export default function SobreNos() {
     const team = [
-        { name: "Felipe Giacomini Cocco", id: "116525", role: "FullStack", github: "FeCocco" },
+        { name: "Felipe Giacomini", id: "116526", role: "FullStack", github: "FeCocco" },
         { name: "Fernando Gabriel Perinotto", id: "115575", role: "Banco de Dados", github: "yFernand0W7" },
         { name: "Jhonatas K. de Oliveira Braga", id: "116707", role: "QA", github: "jhonataskevin" },
         { name: "Lucas Santos Souza", id: "116852", role: "UI/UX" },
